@@ -1,0 +1,48 @@
+<html>
+  <head>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:700' rel='stylesheet' type='text/css'>
+    <style>
+      /* style */
+      #header {
+		font-family: 'Open Sans', sans-serif;
+        color: #ffcc00;
+      }
+      #subHeader {
+		font-family: 'Open Sans', sans-serif;
+        color:#ffcc00;
+        margin-bottom: 0.5em;
+      }
+      #banner {
+        margin-top: 0.5em;
+        margin-bottom: 2em;
+        width:1020;
+        height: auto;
+      }
+    </style>
+
+    <script>
+    var image = document.getElementById("banner");
+    var src = ["http://i.imgur.com/GX9MX0T.jpg","http://i.imgur.com/8N0nnZu.png","http://i.imgur.com/kbhjY6L.png","http://i.imgur.com/ZdPg4pL.jpg",];
+
+    var step=0
+        function nextImg() {
+            image.src = src[step];
+            image.alt = src[step];
+            if(step<3){
+                step++;
+            }else{
+                step=0;
+            }
+        }
+        setInterval(nextImg,3000);
+    </script>
+  </head>
+
+  <body>
+    <center>
+        <h1 id="header">Welcome to the</h1>
+        <h3 id="subHeader">7th Cavalry Tactical Realism Server!</h3>
+        <img id="banner" src="http://i.imgur.com/ZdPg4pL.jpg" alt="http://i.imgur.com/ZdPg4pL.jpg">
+    </center>
+  </body>
+</html>
