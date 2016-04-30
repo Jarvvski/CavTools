@@ -27,13 +27,13 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         //Get values from options
         $milpacsBoolean = XenForo_Application::get('options')->awolMilpacsBoolean;
         $pmBoolean = XenForo_Application::get('options')->awolPmOption;
+				$messageContent = XenForo_Application::get('options')->msgContent;
         $daysTillInt = XenForo_Application::get('options')->awolDaysTill;
         $checkIds = XenForo_Application::get('options')->awolCheckIDs;
         $voidIds = XenForo_Application::get('options')->awolVoidIDs;
         $ssIds = XenForo_Application::get('options')->awolSSIDs;
         $firstBnIds = XenForo_Application::get('options')->awolFirstBattIDs;
         $secondBnIds = XenForo_Application::get('options')->awolSecondBattIDs;
-        $messageContent = XenForo_Application::get('options')->msgContent;
 
         //Explode options from strings into arrays
         $checkIds = explode(',', $checkIds);
