@@ -46,7 +46,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         $secondBnMemberList = '';
         $unsortedMemberList = '';
         $submitButton = '';
-        $startConvo = "{xen:link 'conversations/add', '', 'to={$user.username}'}";
+        //$convContent = '{xen:link 'conversations/add', '', 'to={}'}';
         $awolTime = ($daysTillInt * $secondsDay);
         $userUrl = '/members/';
 
@@ -147,7 +147,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         }
 
         if ($pmBoolean) {
-          $submitButton .= '<button class="submit"><a href='.$startConvo.'>Submit</a></button>'.PHP_EOL;
+          $submitButton .= '<div class="submit"><input type="submit" text="submit"></div>'.PHP_EOL;
         }
 
         //View Parameters
