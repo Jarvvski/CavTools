@@ -39,7 +39,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         $firstBnIds = explode(',', $firstBnIds);
         $secondBnIds = explode(',', $secondBnIds);
 
-        //Define Variables
+        //Declare Variables
         $secondsDay = 86400;
         $ssMemberList = '';
         $firstBnMemberList = '';
