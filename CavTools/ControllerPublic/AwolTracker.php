@@ -27,7 +27,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         //Get values from options
         $milpacsBoolean = XenForo_Application::get('options')->awolMilpacsBoolean;
         $pmBoolean = XenForo_Application::get('options')->awolPmOption;
-				$messageContent = XenForo_Application::get('options')->msgContent;
+        $messageContent = XenForo_Application::get('options')->msgContent;
         $daysTillInt = XenForo_Application::get('options')->awolDaysTill;
         $checkIds = XenForo_Application::get('options')->awolCheckIDs;
         $voidIds = XenForo_Application::get('options')->awolVoidIDs;
@@ -77,64 +77,62 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
             //Optional Milpacs Integration
             if ($milpacsBoolean == 1 && $pmBoolean == 1) {
-							if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
+                if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
 
-									//Get Milpacs Position ID
-									$position = $db->fetchRow('
-					SELECT t1.position_id, t1.user_id, t2.position_title
-					FROM xf_pe_roster_user_relation t1
-					INNER JOIN xf_pe_roster_position t2
-					ON t1.position_id = t2.position_id
-					WHERE user_id = '.$member['user_id'].'
-				');
+                  //Get Milpacs Position ID
+                  $position = $db->fetchRow('
+							SELECT t1.position_id, t1.user_id, t2.position_title
+							FROM xf_pe_roster_user_relation t1
+							INNER JOIN xf_pe_roster_position t2
+							ON t1.position_id = t2.position_id
+							WHERE user_id = '.$member['user_id'].'
+						');
 
-									if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-											$firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
-											$secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
-											$ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} else {
-											$unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									}
-							}
+                    if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
+                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
+                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
+                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } else {
+                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    }
+                }
+            } elseif ($milpacsBoolean == 1 && $pmBoolean == 0) {
+                if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
 
-            } else if ($milpacsBoolean == 1 && $pmBoolean == 0){
-							if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
+                  //Get Milpacs Position ID
+                  $position = $db->fetchRow('
+							SELECT t1.position_id, t1.user_id, t2.position_title
+							FROM xf_pe_roster_user_relation t1
+							INNER JOIN xf_pe_roster_position t2
+							ON t1.position_id = t2.position_id
+							WHERE user_id = '.$member['user_id'].'
+						');
 
-									//Get Milpacs Position ID
-									$position = $db->fetchRow('
-					SELECT t1.position_id, t1.user_id, t2.position_title
-					FROM xf_pe_roster_user_relation t1
-					INNER JOIN xf_pe_roster_position t2
-					ON t1.position_id = t2.position_id
-					WHERE user_id = '.$member['user_id'].'
-				');
-
-									if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-											$firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
-											$secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
-											$ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} else {
-											$unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									}
-							}
-						} else if ($milpacsBoolean == 0 && $pmBoolean == 1){
-							if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
-									if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-											$firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
-											$secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
-											$ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									} else {
-											$unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
-									}
-							}
-
-						} else {
+                    if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
+                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
+                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
+                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } else {
+                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    }
+                }
+            } elseif ($milpacsBoolean == 0 && $pmBoolean == 1) {
+                if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
+                    if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
+                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
+                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
+                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    } else {
+                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                    }
+                }
+            } else {
                 if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
                     if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
                         $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
@@ -147,17 +145,12 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
                     }
                 }
             }
-
-						//Optional PM system
-						if ($pmBoolean == 1) {
-							if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-
-						}
         }
 
         //View Parameters
         $viewParams = array(
             'milpacsBoolean' => $milpacsBoolean,
+            'pmBoolean' => $pmBoolean,
             'ssMemberList' => $ssMemberList,
             'firstBnMemberList' => $firstBnMemberList,
             'secondBnMemberList' => $secondBnMemberList,
