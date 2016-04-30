@@ -8,9 +8,6 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
             throw $this->getNoPermissionResponseException();
         }
 
-        if (!XenForo_Visitor::getInstance()->hasPermission('canPmAwol')) {
-        }
-
         //Set Time Zone to UTC
         date_default_timezone_set('UTC');
 
@@ -48,6 +45,8 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         $firstBnMemberList = '';
         $secondBnMemberList = '';
         $unsortedMemberList = '';
+        $submitButton = '';
+        $startConvo = "{xen:link 'conversations/add', '', 'to={$user.username}'}";
         $awolTime = ($daysTillInt * $secondsDay);
         $userUrl = '/members/';
 
@@ -89,13 +88,13 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 						');
 
                     if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
-                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
-                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } else {
-                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.$position['position_title'].'</td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     }
                 }
             } elseif ($milpacsBoolean == 1 && $pmBoolean == 0) {
@@ -123,13 +122,13 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
             } elseif ($milpacsBoolean == 0 && $pmBoolean == 1) {
                 if ((count(array_intersect($checkIds, $memberIDs)) != 0) and (count(array_intersect($voidIds, $memberIDs)) == 0) and ($sinceLastPost > $awolTime) and ($memberLastPost != '')) {
                     if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
-                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $firstBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
-                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $secondBnMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
-                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $ssMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     } else {
-                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td></tr>'.PHP_EOL;
+                        $unsortedMemberList .= '<tr><td><a href='.$userUrl.$member['user_id'].'><b>'.$member['username'].'</b></a></td><td>'.date('dMy', $memberLastPost).'</td><td>'.date('dMy', $memberLastPost + $awolTime).'</td><td>'.$daysAwol.' day(s)</td><td><input type="checkbox" name="pm" value='.$member['username'].'></input></td></tr>'.PHP_EOL;
                     }
                 }
             } else {
@@ -147,14 +146,20 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
             }
         }
 
+        if ($pmBoolean) {
+          $submitButton .= '<button class="submit"><a href='.$startConvo.'>Submit</a></button>'.PHP_EOL;
+        }
+
         //View Parameters
         $viewParams = array(
             'milpacsBoolean' => $milpacsBoolean,
             'pmBoolean' => $pmBoolean,
+            'member' => $memberID,
             'ssMemberList' => $ssMemberList,
             'firstBnMemberList' => $firstBnMemberList,
             'secondBnMemberList' => $secondBnMemberList,
             'unsortedMemberList' => $unsortedMemberList,
+            'submitButton' => $submitButton,
         );
 
         //Send to template to display
