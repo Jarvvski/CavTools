@@ -43,7 +43,7 @@ class CavTools_TemplateHooks_MilpacsLinker
 
         if($milpacsID['relation_id'] != null) {
           $milpacsProfile = $milpacsUrl.$milpacsID['relation_id'];
-          $templateContent = '<dl><dt>Milpac:</dt><dd><a target="_blank" href='.$milpacsProfile.' class="OverlayTrigger">'.$member['username'].'</a></dd></dl>';
+          $templateContent = '<dl><dt>Milpac:</dt><dd><a href='.$milpacsProfile.'>'.$member['username'].'</a></dd></dl>';
 
           $contents .= $templateContent;
         }
