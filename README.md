@@ -1,6 +1,38 @@
 # 7Cav IMO repo
 <hr>
-### CavTools
+
+##### File tree
+
+|-1stBat
+|-2ndBat
+|---CSGO MOTD
+|-Website
+|---CavTools
+|-----ControllerPublic
+|-----CronJobs
+|-----REFERENCE_FILES
+|-----Route
+|-------Prefix
+|-----TemplateHooks
+
+<hr>
+
+### 1st Bat
+<hr>
+
+stuff.
+
+### 2nd Bat
+<hr>
+
+stuff.
+
+#### CSGO MOTD
+
+### Website
+<hr>
+
+#### CavTools
 
 This is the plugin for 7Cav.us. There are four main sections that affect the
 plugin.
@@ -17,5 +49,3 @@ plugin.
 ##### Options
 
 ##### Templates
-
-### CSGO MOTD
