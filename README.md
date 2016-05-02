@@ -27,7 +27,7 @@ stuff.
 
 stuff.
 
-- #### CSGO MOTD
+#### CSGO MOTD
 
 ### Website
 <hr>
