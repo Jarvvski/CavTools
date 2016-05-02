@@ -12,24 +12,60 @@ class CavTools_CronJobs_SetBillets
       //Get DB
       $db = XenForo_Application::get('db');
 
-      //Get Milpacs ID
-      $milpacsID = $db->fetchAll('
-  SELECT user_id, secondary_position_ids
-  FROM xf_pe_roster_user_relation
-');
-
-      //Concatonate all user secondary billets
-      $billetContent = $milpacsID['secondary_group_ids'];
-      $billetContent = implode(',', $billetContent);
-
-      //Set XF user info
-      $db->fetchAll('
-    UPDATE xf_user_field_value
-    SET field_value = '.$billetContent.'
-    WHERE user_id = '.$milpacsID['user_id'].'
-    AND field_id = Billets
+      //query
+      $members = $db->fetchAll('
+    SELECT user_id
+    FROM xf_user
+    ORDER BY user_id ASC
   ');
 
+    //Define Vars
+    $billetContent = "";
+    $positionIDs = "";
+
+    //Renumber Array
+    $members = array_values($members);
+
+      foreach ($members as $member)
+      // for($i=0; $i < $members[count('user_id')]; $i++)
+        {
+
+          //Get Secondary Positions
+          $milpacs = $db->fetchRow('
+        SELECT CAST(secondary_position_ids AS CHAR(100))
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = '.$member['user_id'].'
+        AND secondary_position_ids IS NOT NULL
+      ');
+
+      $list = $milpacs;
+      $list = str_replace(',','',$list);
+      $list = explode(',',$list);
+
+      foreach ($list as $ID)
+      {
+
+              //Get Position Titles
+              $positonTitle = $db->fetchRow('
+            SELECT position_title
+            FROM xf_pe_roster_position
+            WHERE position_id = '.$ID.'
+          ');
+
+              //Concatonate all user secondary billets
+              $billetContent .= $positonTitle['position_title'] + ', ';
+
+          }
+
+          //Set XF user info
+          $db->fetchAll('
+        UPDATE xf_user_field_value
+        SET field_value = '.$billetContent.'
+        WHERE user_id = '.$member['user_id'].'
+        AND field_id = "Billets"
+      ');
+
+      }
     }
   }
 }
