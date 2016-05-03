@@ -36,6 +36,8 @@ class CavTools_CronJobs_SetBillets
         AND secondary_position_ids IS NOT NULL
       ');
 
+      //Reset billetContent
+      //Deal with milpac value
       $billetContent = " ";
       $list = $milpacs['secondary_group_ids'];
       $list = implode(',',$list);
@@ -50,6 +52,7 @@ class CavTools_CronJobs_SetBillets
             WHERE position_id = '.$ID.'
           ');
 
+          //Deal with position Titles
           $positonTitle = $getPositonTitle;
           $positonTitle = implode(',',$positonTitle);
 
@@ -57,27 +60,19 @@ class CavTools_CronJobs_SetBillets
               $billetContent .= $positonTitle;
               $billetContent .= ", ";
 
+              //Set dataWriter values
               $userId = $member['user_id'];
               $userModel = XenForo_Model::create('XenForo_Model_User');
               $userProfile = $userModel->getFullUserById($userId);
               $customFields = unserialize($userProfile['custom_fields']);
               $customFields['Billets'] = $billetContent;
 
+              //Use datawriter
               $dw = XenForo_DataWriter::create('XenForo_DataWriter_User');
               $dw->setExistingData($userProfile);
               $dw->setCustomFields($customFields);
               $dw->save();
           }
-
-      //     //Set XF user info
-      //     $db->fetchAll('
-      //   UPDATE xf_user_field_value
-      //   SET field_value = '.$billetContent.'
-      //   WHERE user_id = '.$member['user_id'].'
-      //   AND field_id = "Billets"
-      // ');
-
-      //$db->update('xf_user_field_value', 'field_value' => .$db->quote($billetContent), 'user_id =' .$member['user_id'].);
       }
     }
   }

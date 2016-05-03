@@ -26,8 +26,6 @@ class CavTools_TemplateHooks_MilpacsLinker
       WHERE user_id = '.$user.'
     ');
 
-
-
         //Declare Variables
         $milpacsProfile = '';
         $templateContent = '';
