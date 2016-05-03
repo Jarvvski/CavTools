@@ -43,7 +43,7 @@ class CavTools_TemplateHooks_MemberCardMilpacs
 
         if($milpacsID['relation_id'] != null) {
           $milpacsProfile = $milpacsUrl.$milpacsID['relation_id'];
-          $templateContent = '<dt>Milpacs:</dt> <dd><a class="Treck" href='.$milpacsProfile.'>'.$member['username'].'</a></dd>';
+          $templateContent = '<dt>Milpac:</dt> <dd><a class="Treck" href='.$milpacsProfile.'>'.$member['username'].'</a></dd>';
           $contents .= $templateContent;
         }
       }
