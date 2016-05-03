@@ -10,7 +10,6 @@ class CavTools_TemplateHooks_MilpacsLinker
       //Get values from options
       $linker = XenForo_Application::get('options')->linkerBoolean;
 
-
       if($linker) {
 
         //Get DB
