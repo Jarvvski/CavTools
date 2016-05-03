@@ -15,7 +15,7 @@ class CavTools_CronJobs_SetBillets
       //query
       $members = $db->fetchAll('
     SELECT user_id
-    FROM xf_user
+    FROM xf_pe_roster_user_relation
     ORDER BY user_id ASC
   ');
 
@@ -44,6 +44,8 @@ class CavTools_CronJobs_SetBillets
 
       foreach ($list as $ID)
       {
+        if ($ID != null)
+        {
               //Get Position Titles
               $getPositonTitle = $db->fetchRow('
             SELECT position_title
@@ -57,15 +59,16 @@ class CavTools_CronJobs_SetBillets
 
               //Concatonate all user secondary billets
               $billetContent .= $positonTitle;
-              $billetContent .= ",";
+              $billetContent .= ",  ";
           }
+        }
 
           //Define datawriter variables
           $userId = $member['user_id'];
           $userModel = XenForo_Model::create('XenForo_Model_User');
           $userProfile = $userModel->getFullUserById($userId);
           $customFields = unserialize($userProfile['custom_fields']);
-          $customFields['Billets'] = rtrim($billetContent, ",");
+          $customFields['Billets'] = rtrim($billetContent, ",  ");
 
           //Use datawriter
           $dw = XenForo_DataWriter::create('XenForo_DataWriter_User');

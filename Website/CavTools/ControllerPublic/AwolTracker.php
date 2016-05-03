@@ -1,10 +1,10 @@
 <?php
 
-class TreckTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abstract
+class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abstract
 {
 	public function actionIndex()
 	{
-		if (!XenForo_Visitor::getInstance()->hasPermission('treckToolsGroupId', 'awoltrackerView'))
+		if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'awoltrackerView'))
 		{
 			throw $this->getNoPermissionResponseException();
 		}
@@ -148,7 +148,7 @@ class TreckTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_A
 		);
 
 		//Send to template to display
-		return $this->responseView('TreckTools_ViewPublic_AwolTracker', 'trecktools_awoltracker', $viewParams);
+		return $this->responseView('CavTools_ViewPublic_AwolTracker', 'CavTools_awoltracker', $viewParams);
 
 	}
 }
