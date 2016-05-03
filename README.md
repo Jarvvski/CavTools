@@ -1,49 +1,11 @@
-# 7Cav IMO repo
-<hr>
+![](http://i.imgur.com/s44iXEv.png)
 
-##### File tree
+# Welcome
+Welcome to the 7th Cavalry IMO repository. Here we store items that are usfull to us, as well as the code base for our XF Addon 'CavTools'. We never push directly to the live branch, it is protected. Always make a branch of dev and create your feature in there. When testing it on the dev server, merge into dev. When we move a build the website, merge dev into live.
 
-|-1stBat<br>
-|-2ndBat<br>
-|---CSGO MOTD<br>
-|-Website<br>
-|---CavTools<br>
-|-----ControllerPublic<br>
-|-----Route<br>
-|-------Prefix<br>
+##### Summary:
 
+***live*** -------> Live website. Do not work in whatsoever<br>
+***dev***  -------> Dev site. Merge feature branches into here when testing on the dev site. Rollback if not functioning.<br>
+***'feature'*** -> Feature area. This is where you work on your local system.<br>
 
-<hr>
-
-### 1st Bat
-<hr>
-
-stuff.
-
-### 2nd Bat
-<hr>
-
-stuff.
-
-#### CSGO MOTD
-
-### Website
-<hr>
-
-#### CavTools
-
-This is the plugin for 7Cav.us. There are four main sections that affect the
-plugin.
-
-- Route Prefixes (only for new pages)
-- Permission Definitions
-- Options (cannot add new options in live)
-- Templates (appearance -> templates)
-
-##### Route Prefixes
-
-##### Permission Definitions
-
-##### Options
-
-##### Templates
