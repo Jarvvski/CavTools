@@ -26,8 +26,6 @@ class CavTools_TemplateHooks_MemberCardMilpacs
       WHERE user_id = '.$user.'
     ');
 
-
-
         //Declare Variables
         $milpacsProfile = '';
         $templateContent = '';
