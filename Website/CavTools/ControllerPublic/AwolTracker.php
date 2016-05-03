@@ -4,6 +4,13 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 {
 	public function actionIndex()
 	{
+		//Get values from options
+		$enable = XenForo_Application::get('options')->enableAwolTracker;
+
+		if(!$enable) {
+			throw $this->getNoPermissionResponseException();
+		}
+
 		if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'awoltrackerView'))
 		{
 			throw $this->getNoPermissionResponseException();
@@ -128,7 +135,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
 					}
 					else {
-						
+
 						$unsortedMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td></tr>" .  PHP_EOL;
 
 					}
@@ -149,6 +156,5 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
 		//Send to template to display
 		return $this->responseView('CavTools_ViewPublic_AwolTracker', 'CavTools_awoltracker', $viewParams);
-
 	}
 }
