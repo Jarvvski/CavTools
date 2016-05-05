@@ -66,13 +66,13 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
 
       $member = $squad->addChild("member id='' nick='' ");
       $member->addChild("name", "".);
-      $member->addChild("email", "" .$);
+      $member->addChild("email", "");
       $member->addChild("icq", "");
       $member->addChild("remark", "");
 
     }
 
-    //TODO 
+    //TODO
     // - check if need to output dtd, xsl aswell
     // - set file paths as well as template output for manual checking
     // - create cron job to automatically run when not using for checking xml
