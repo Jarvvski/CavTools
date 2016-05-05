@@ -74,33 +74,6 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     $squad->addChild("picture","7thCavCrest.paa");
     $squad->addChild("title", "7th Cavalry");
 
-
-    //BEGIN Arlington National Cemetery
-    $divider = $squad->addChild("member id='' nick='' ");
-    $divider->addChild("name", "".);
-    $divider->addChild("email", "-- Arlington National Cemetery --");
-    $divider->addChild("icq", "");
-    $divider->addChild("remark", "");
-
-    $deceased = $squad->addChild("member id='' nick='=7Cav=BGEN.Kraz' ");
-    $deceased->addChild("name", "BGEN.Krazee ( James Foster )".);
-    $deceased->addChild("email", "");
-    $deceased->addChild("icq", "");
-    $deceased->addChild("remark", "Rest in Peace Our Friend");
-
-    $deceased = $squad->addChild("member id='' nick='=7Cav=CSM.Cold.R' ");
-    $deceased->addChild("name", "CSM.Cold ( Ronnie 'Coldblud' Bussey )".);
-    $deceased->addChild("email", "");
-    $deceased->addChild("icq", "");
-    $deceased->addChild("remark", "Rest in Peace Our Friend");
-
-    $deceased = $squad->addChild("member id='' nick='=7Cav=CPL.Tarkas.T' ");
-    $deceased->addChild("name", "Corporal Tars Tarkas".);
-    $deceased->addChild("email", "");
-    $deceased->addChild("icq", "");
-    $deceased->addChild("remark", "Rest in Peace Our Friend");
-    //END Arlington National Cemetery
-
     for ($i=0;$i<3;$i++) {
 
       switch ($i) {
