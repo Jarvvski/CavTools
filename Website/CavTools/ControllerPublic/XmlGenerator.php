@@ -1,5 +1,14 @@
 <?php
 
+//TODO
+// - use DB values for items
+// - maybe extrapolate nick based on username and cav rank
+// - check if field has value, if not set value to null
+// - check if need to output dtd, xsl aswell
+// - set file paths as well as template output for manual checking
+// - create cron job to automatically run when not using for checking xml
+// - replace S1 XML: IMO bot on ADR ;)
+
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
   public function actionIndex() {
 
@@ -23,60 +32,164 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     //Get DB
     $db = XenForo_Application::get('db');
 
-    //Basic member query
-    $memberInfo = $db->fetchAll("
-      SELECT user_id, username
-      FROM xf_user
-      ORDER BY username ASC
+    //Basic user query
+    $userIDs = $db->fetchAll("
+    SELET user_id
+    FROM xf_users
+    ORDER BY user_id ASC
     ");
+
+    //Real name + rank milpacs query
+    $rankInfo = $db->fetchAll("
+      SELECT xf_pe_roster_user_relation.real_name, xf_pe_roster_rank.title
+      FROM xf_pe_roster_user_relation
+      INNER JOIN xf_pe_roster_rank
+      ON xf_pe_roster_user_relation.rank_id=xf_pe_roster_rank.rank_id
+      ORDER BY xf_pe_roster_rank.title ASC
+    ");
+
+    // SELECT Customers.CustomerName, Orders.OrderID
+    // FROM Customers
+    // INNER JOIN Orders
+    // ON Customers.CustomerID=Orders.CustomerID
+    // ORDER BY Customers.CustomerName;
 
     //Set Variables
     $xmlOutput = "";
+    $officerID = 11;
+    $ncoID = 12;
+    $enlistedID = 13;
 
-    //Create XML header
+    //BEGIN Create XML header
     $xml = new SimpleXMLElement('<?xml version="1.0"?><!DOCTYPE squad SYSTEM "squad.dtd">
     <?xml-stylesheet href="squad.xsl" type="text/xsl"?>');
+    //END XML header
 
-    //Begin XML body creation
-    $squad = $xml->addChild("squad nick='' ");
-    $squad->addChild("name");
-    $squad->addChild("email");
-    $squad->addChild("web");
-    $squad->addChild("picture");
-    $squad->addChild("title");
 
-    //Renumber Array
-    $memberIDs = array_values($memberIDs);
+    //BEGIN XML body creation
+    $squad = $xml->addChild("squad nick='7Cav' ");
+    $squad->addChild("name", "7th Cavalry Regiment");
+    $squad->addChild("email", "Admin@7cav.us");
+    $squad->addChild("web", "www.7cav.us");
+    $squad->addChild("picture","7thCavCrest.paa");
+    $squad->addChild("title", "7th Cavalry");
 
-    //Create a member section for each member
-    foreach($memberInfo as $member) {
 
-      //Member custom field query
-      $memberFields = $db->fetchAll('
-        SELECT field_value, field_id
-        FROM xf_user_field_value
-        WHERE user_id = '.$member['user_id'].'
-        ');
+    //BEGIN Arlington National Cemetery
+    $divider = $squad->addChild("member id='' nick='' ");
+    $divider->addChild("name", "".);
+    $divider->addChild("email", "-- Arlington National Cemetery --");
+    $divider->addChild("icq", "");
+    $divider->addChild("remark", "");
 
-      //Generate member xml section
-      //TODO
-      // - use DB values for items
-      // - maybe extrapolate nick based on username and cav rank
-      // - check if field has value, if not set value to null
+    $deceased = $squad->addChild("member id='' nick='=7Cav=BGEN.Kraz' ");
+    $deceased->addChild("name", "BGEN.Krazee ( James Foster )".);
+    $deceased->addChild("email", "");
+    $deceased->addChild("icq", "");
+    $deceased->addChild("remark", "Rest in Peace Our Friend");
 
-      $member = $squad->addChild("member id='' nick='' ");
-      $member->addChild("name", "".);
-      $member->addChild("email", "");
-      $member->addChild("icq", "");
-      $member->addChild("remark", "");
+    $deceased = $squad->addChild("member id='' nick='=7Cav=CSM.Cold.R' ");
+    $deceased->addChild("name", "CSM.Cold ( Ronnie 'Coldblud' Bussey )".);
+    $deceased->addChild("email", "");
+    $deceased->addChild("icq", "");
+    $deceased->addChild("remark", "Rest in Peace Our Friend");
 
+    $deceased = $squad->addChild("member id='' nick='=7Cav=CPL.Tarkas.T' ");
+    $deceased->addChild("name", "Corporal Tars Tarkas".);
+    $deceased->addChild("email", "");
+    $deceased->addChild("icq", "");
+    $deceased->addChild("remark", "Rest in Peace Our Friend");
+    //END Arlington National Cemetery
+
+    for ($i=0;$i<3;$i++) {
+
+      switch ($i) {
+
+        case 0:
+        //BEGIN officers
+        $divider = $squad->addChild("member id='' nick='' ");
+        $divider->addChild("name", "".);
+        $divider->addChild("email", "-- Officers --");
+        $divider->addChild("icq", "");
+        $divider->addChild("remark", "");
+        break;
+
+        case 1:
+        //BEGIN NCOs
+        $divider = $squad->addChild("member id='' nick='' ");
+        $divider->addChild("name", "".);
+        $divider->addChild("email", "-- Non-commissioned officers --");
+        $divider->addChild("icq", "");
+        $divider->addChild("remark", "");
+        break;
+
+        case 2:
+        //BEGIN enlisted
+        $divider = $squad->addChild("member id='' nick='' ");
+        $divider->addChild("name", "".);
+        $divider->addChild("email", "-- Enlisted --");
+        $divider->addChild("icq", "");
+        $divider->addChild("remark", "");
+        break;
+
+      }
+
+      //Renumber Array
+      $userIDs = array_values($userIDs);
+
+      //Create a member section for each member
+      foreach($userIDs as $user) {
+
+        $officer = false;
+        $nco = false;
+        $enlisted = false;
+
+        $usernameGroups = $db->fetchAll("
+        SELECT xf_user.username ,xf_user_group_relation.user_group_id
+        FROM xf_user
+        INNER JOIN xf_user_group_relation
+        ON xf_user.user_id=xf_user_group_relation.user_id
+        WHERE xf_user.user_id = ".$user['user_id']."
+        AND xf_user_group_relation.user_id = ".$user['user_id']."
+        ORDER BY xf_user.username ASC
+        ");
+
+        //Would be better to define which positons mean officer, NCO or enlisted
+        foreach ($usernameGroups['xf_user_group_relation.user_group_id'] as $key => $value)
+        {
+          switch ($key) {
+            case 11:
+                $officer = true;
+            break;
+
+            case 12:
+                $nco = true;
+            break;
+
+            case 13:
+                $enlisted = true;
+            break;
+          }
+        }
+
+        switch (true) {
+          case ($officer && ($i == 0))
+          // create officers
+          break;
+
+          case ($nco && ($i == 1))
+          // create NCOs
+          break;
+
+          case($enlisted && ($i == 2))
+          // create enlisted
+          break;
+        }
+      }
     }
 
-    //TODO
-    // - check if need to output dtd, xsl aswell
-    // - set file paths as well as template output for manual checking
-    // - create cron job to automatically run when not using for checking xml
-    // - replace S1 XML: IMO bot on ADR ;)
+      // Testing
+      // if (in_array($officerID, $usernameGroups['xf_user_group_relation.user_group_id'], true))
 
     //Set the xml created as the output for our template
     $xmlOutput = $xml;
