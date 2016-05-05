@@ -8,12 +8,45 @@
 // - set file paths as well as template output for manual checking
 // - create cron job to automatically run when not using for checking xml
 // - replace S1 XML: IMO bot on ADR ;)
+// -
 
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
   public function actionIndex() {
 
     //Get values from options
-    $enable = XenForo_Application::get('options')->enableXmlGenerator;
+    $enable  = XenForo_Application::get('options')->enableXmlGenerator;
+    $rankGOA = XenForo_Application::get('options')->goaRankID;
+    $rankGEN = XenForo_Application::get('options')->genRankID;
+    $rankLTG = XenForo_Application::get('options')->ltgRankID;
+    $rankMG  = XenForo_Application::get('options')->mgRankID;
+    $rankBG  = XenForo_Application::get('options')->bgRankID;
+    $rankCOL = XenForo_Application::get('options')->colRankID;
+    $rankLTC = XenForo_Application::get('options')->ltcRankID;
+    $rankMAJ = XenForo_Application::get('options')->majRankID;
+    $rankCPT = XenForo_Application::get('options')->cptRankID;
+    $rank1LT = XenForo_Application::get('options')->firstLtRankID;
+    $rank2LT = XenForo_Application::get('options')->secondLtRankID;
+    $rankCW5 = XenForo_Application::get('options')->WarrantFiveRankID;
+    $rankCW4 = XenForo_Application::get('options')->WarrantFourRankID;
+    $rankCW3 = XenForo_Application::get('options')->WarrantThreeRankID;
+    $rankCW2 = XenForo_Application::get('options')->WarrantTwoRankID;
+    $rankWO1 = XenForo_Application::get('options')->WarrantOneRankID;
+    $rankCSM = XenForo_Application::get('options')->csmRankID;
+    $rankSGM = XenForo_Application::get('options')->sgmRankID;
+    $rank1SG = XenForo_Application::get('options')->firstSgtRankID;
+    $rankMSG = XenForo_Application::get('options')->msgRankID;
+    $rankSFC = XenForo_Application::get('options')->sfcRankID;
+    $rankSSG = XenForo_Application::get('options')->ssgRankID;
+    $rankSGT = XenForo_Application::get('options')->sgtRankID;
+    $rankCPL = XenForo_Application::get('options')->cplRankID;
+    $rankSPC = XenForo_Application::get('options')->spcRankID;
+    $rankPFC = XenForo_Application::get('options')->pfcRankID;
+    $rankPVT = XenForo_Application::get('options')->pvtRankID;
+    $rankRCT = XenForo_Application::get('options')->rtcRankID;
+
+    $officerRanks	 = array($rankGOA, $rankGEN, $rankLTG,$rankMG, $rankBG, $rankCOL, $rankLTC, $rankMAJ, $rankCPT, $rank1LT, $rank2LT);
+    $ncoRanks		   = array($rankCW5, $rankCW4, $rankCW3, $rankCW2, $rankWO1, $rankCSM, $rankSGM, $rank1SG, $rankMSG, $rankSFC, $rankSSG, $rankSGT, $rankCPL);
+    $enlistedRanks = array($rankSPC, $rankPFC, $rankPVT, $rankRCT);
 
     //If not enabled in ACP, throw permission error for all users
     if(!$enable) {
@@ -48,23 +81,13 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
       ORDER BY xf_pe_roster_rank.title ASC
     ");
 
-    // SELECT Customers.CustomerName, Orders.OrderID
-    // FROM Customers
-    // INNER JOIN Orders
-    // ON Customers.CustomerID=Orders.CustomerID
-    // ORDER BY Customers.CustomerName;
-
     //Set Variables
-    $xmlOutput = "";
-    $officerID = 11;
-    $ncoID = 12;
-    $enlistedID = 13;
+    $xmlOutput  = "";
 
     //BEGIN Create XML header
     $xml = new SimpleXMLElement('<?xml version="1.0"?><!DOCTYPE squad SYSTEM "squad.dtd">
     <?xml-stylesheet href="squad.xsl" type="text/xsl"?>');
     //END XML header
-
 
     //BEGIN XML body creation
     $squad = $xml->addChild("squad nick='7Cav' ");
@@ -75,9 +98,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     $squad->addChild("title", "7th Cavalry");
 
     for ($i=0;$i<3;$i++) {
-
       switch ($i) {
-
         case 0:
         //BEGIN officers
         $divider = $squad->addChild("member id='' nick='' ");
@@ -104,7 +125,6 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         $divider->addChild("icq", "");
         $divider->addChild("remark", "");
         break;
-
       }
 
       //Renumber Array
@@ -127,42 +147,88 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         ORDER BY xf_user.username ASC
         ");
 
-        //Would be better to define which positons mean officer, NCO or enlisted
         foreach ($usernameGroups['xf_user_group_relation.user_group_id'] as $key => $value)
         {
           switch ($key) {
-            case 11:
+            case (in_array($key, $officerRanks, true)):
                 $officer = true;
             break;
 
-            case 12:
+            case (in_array($key, $ncoRanks, true)):
                 $nco = true;
             break;
 
-            case 13:
+            case (in_array($key, $enlistedRanks, true)):
                 $enlisted = true;
             break;
+            }
+          $nick = getNickPrefix($key);
           }
         }
+
+        $details = $db->fetchRow("
+        SELECT xf_user.username, xf_pe_roster_user_relation.real_name, xf_user_field_value.field_value
+        FROM xf_user
+        INNER JOIN xf_pe_roster_user_relation
+        ON xf_user.user_id=xf_pe_roster_user_relation.user_id
+        INNER JOIN xf_user_field_value
+        ON xf_pe_roster_user_relation.user_id=xf_user_field_value.user_id
+        WHERE xf_user.user_id = ".$user['user_id']."
+        AND xf_pe_roster_user_relation.user_id = ".$user['user_id']."
+        AND xf_user_field_value.field_id = 'armaGUID'
+        ");
+
+        $primaryBillet = $db->fetchRow("
+        SELECT xf_pe_roster_position.position_title
+        FROM xf_pe_roster_position
+        INNER JOIN xf_pe_roster_user_relation
+        ON xf_pe_roster_position.position_id=xf_pe_roster_user_relation.position_id
+        WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
+        ");
+
+        $secondaryBillets = $db->fetchRow("
+        SELECT xf_user_field_value.field_value
+        FROM xf_user_field_value
+        WHERE field_id = 'Billets'
+        AND user_id = ".$user['user_id']."
+        ");
+
+        $nick .= $details['xf_user.username'];
+        $GUID  = $details['xf_user_field_value.field_value'];
+        $name  = $details['xf_pe_roster_user_relation.real_name'];
+        $email = $details['xf_user.username'] + "@7cav.us";
+        $remark = $primaryBillet['xf_pe_roster_position.position_title'] + ", " + $secondaryBillets['xf_user_field_value.field_value'];
 
         switch (true) {
           case ($officer && ($i == 0))
           // create officers
+          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
+          $member->addChild("name", $name);
+          $member->addChild("email", $email);
+          $member->addChild("icq", "");
+          $member->addChild("remark", $remark);
           break;
 
           case ($nco && ($i == 1))
           // create NCOs
+          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
+          $member->addChild("name", $name);
+          $member->addChild("email", $email);
+          $member->addChild("icq", "");
+          $member->addChild("remark", $remark);
           break;
 
           case($enlisted && ($i == 2))
           // create enlisted
+          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
+          $member->addChild("name", $name);
+          $member->addChild("email", $email);
+          $member->addChild("icq", "");
+          $member->addChild("remark", $remark);
           break;
         }
       }
     }
-
-      // Testing
-      // if (in_array($officerID, $usernameGroups['xf_user_group_relation.user_group_id'], true))
 
     //Set the xml created as the output for our template
     $xmlOutput = $xml;
@@ -174,5 +240,57 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
 
     //Send to template for displaying
     return $this->responseView('CavTools_ViewPublic_XmlGenerator', 'CavTools_XmlGenerator', $viewParams);
+  }
+
+  public function getNickPrefix($key) {
+
+    $nickPrefix = "";
+
+    switch($key) {
+      case (array_intersect($key, $officerRanks)):
+        switch (array_intersect($key, $officerRanks)) {
+          case $rankGOA: $nickPrefix = "=7Cav=GOA." break;
+          case $rankGEN: $nickPrefix = "=7Cav=GEN." break;
+          case $rankLTG: $nickPrefix = "=7Cav=LTG." break;
+          case $rankMG : $nickPrefix = "=7Cav=MG."  break;
+          case $rankBG : $nickPrefix = "=7Cav=BG."  break;
+          case $rankCOL: $nickPrefix = "=7Cav=COL." break;
+          case $rankLTC: $nickPrefix = "=7Cav=LTC." break;
+          case $rankMAJ: $nickPrefix = "=7Cav=MAJ." break;
+          case $rankCPT: $nickPrefix = "=7Cav=CPT." break;
+          case $rank1LT: $nickPrefix = "=7Cav=1LT." break;
+          case $rank2LT: $nickPrefix = "=7Cav=2LT." break;
+          default      : $nickPrefix = "Failed::"   break;
+        }
+        break;
+      case (array_intersect($key, $ncoRanks)):
+        switch (array_intersect($key, $ncoRanks)) {
+          case $rankCW5: $nickPrefix = "=7Cav=CW5." break;
+          case $rankCW4: $nickPrefix = "=7Cav=CW4." break;
+          case $rankCW3: $nickPrefix = "=7Cav=CS3." break;
+          case $rankCW2: $nickPrefix = "=7Cav=CW2." break;
+          case $rankWO1: $nickPrefix = "=7Cav=WO1." break;
+          case $rankCSM: $nickPrefix = "=7Cav=CSM." break;
+          case $rankSGM: $nickPrefix = "=7Cav=SGM." break;
+          case $rank1SG: $nickPrefix = "=7Cav=1SG." break;
+          case $rankMSG: $nickPrefix = "=7Cav=MSG." break;
+          case $rankSFC: $nickPrefix = "=7Cav=SFC." break;
+          case $rankSSG: $nickPrefix = "=7Cav=SSG." break;
+          case $rankSGT: $nickPrefix = "=7Cav=SGT." break;
+          case $rankCPl: $nickPrefix = "=7Cav=CPL." break;
+          default      : $nickPrefix = "Failed::"   break:
+        }
+        break;
+      case (array_intersect($key, $enlistedRanks)):
+        switch (array_intersect($key, $enlistedRanks)) {
+          case $rankSPC: $nickPrefix = "=7Cav=SPC." break;
+          case $rankPFC: $nickPrefix = "=7Cav=PFC." break;
+          case $rankPVT: $nickPrefix = "=7Cav=PVT." break;
+          case $rankRCT: $nickPrefix = "=7Cav=RCT." break;
+          default      : $nickPrefix = "Failed::"   break;
+        }
+        break;
+      }
+    return $nickPrefix;
   }
 }
