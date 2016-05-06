@@ -55,8 +55,8 @@ class CavTools_CronJobs_XmlGenerator {
 
     //Basic user query
     $userIDs = $db->fetchAll("
-    SELET user_id
-    FROM xf_users
+    SELECT user_id
+    FROM xf_user
     ORDER BY user_id ASC
     ");
 
@@ -168,24 +168,27 @@ class CavTools_CronJobs_XmlGenerator {
         ORDER BY xf_user.username ASC
         ");
 
+        //Renumber Array
+        $usernameGroups['user_group_id'] = array_values($userGroupIDs);
+
         //Loop to get rank type
-        foreach ($usernameGroups['xf_user_group_relation.user_group_id'] as $key => $value)
+        foreach ($userGroupIDs as $userGroupID)
         {
-          switch ($key) {
-            case (in_array($key, $officerRanks, true)):
+          switch ($userGroupID) {
+            case (in_array($userGroupID, $officerRanks, true)):
                 $officer = true;
             break;
 
-            case (in_array($key, $ncoRanks, true)):
+            case (in_array($userGroupID, $ncoRanks, true)):
                 $nco = true;
             break;
 
-            case (in_array($key, $enlistedRanks, true)):
+            case (in_array($userGroupID, $enlistedRanks, true)):
                 $enlisted = true;
             break;
             }
           //Get user nick prefix
-          $nick = getNickPrefix($key);
+          $nick = getNickPrefix($userGroupID);
           }
         }
 
@@ -220,11 +223,11 @@ class CavTools_CronJobs_XmlGenerator {
         ");
 
         //Form user variables from queries
-        $nick  .= $details['xf_user.username'];
-        $GUID   = $details['xf_user_field_value.field_value'];
-        $name   = $details['xf_pe_roster_user_relation.real_name'];
-        $email  = $details['xf_user.username'] + "@7cav.us";
-        $remark = $primaryBillet['xf_pe_roster_position.position_title'] + ", " + $secondaryBillets['xf_user_field_value.field_value'];
+        $nick  .= $details['xusername'];
+        $GUID   = $details['field_value'];
+        $name   = $details['real_name'];
+        $email  = $details['username'] + "@7cav.us";
+        $remark = $primaryBillet['position_title'] + ", " + $secondaryBillets['field_value'];
 
         //Generate our members
         switch (true) {
@@ -303,16 +306,16 @@ class CavTools_CronJobs_XmlGenerator {
     }
 
   //Get our nick prefix
-  public static function getNickPrefix($key) {
+  public static function getNickPrefix($userGroupID) {
 
     //Reset our prefix
     $nickPrefix = "";
 
     //Use key from positions
-    switch($key) {
+    switch($userGroupID) {
       //If value is in this array
-      case (array_intersect($key, $officerRanks)):
-        switch (array_intersect($key, $officerRanks)) {
+      case (array_intersect($userGroupID, $officerRanks)):
+        switch (array_intersect($userGroupID, $officerRanks)) {
           case $rankGOA: $nickPrefix = "=7Cav=GOA."; break;
           case $rankGEN: $nickPrefix = "=7Cav=GEN."; break;
           case $rankLTG: $nickPrefix = "=7Cav=LTG."; break;
@@ -328,8 +331,8 @@ class CavTools_CronJobs_XmlGenerator {
         }
         break;
       //If value is in this array
-      case (array_intersect($key, $ncoRanks)):
-        switch (array_intersect($key, $ncoRanks)) {
+      case (array_intersect($userGroupID, $ncoRanks)):
+        switch (array_intersect($userGroupID, $ncoRanks)) {
           case $rankCW5: $nickPrefix = "=7Cav=CW5."; break;
           case $rankCW4: $nickPrefix = "=7Cav=CW4."; break;
           case $rankCW3: $nickPrefix = "=7Cav=CS3."; break;
@@ -347,8 +350,8 @@ class CavTools_CronJobs_XmlGenerator {
         }
         break;
       //If value is in this array
-      case (array_intersect($key, $enlistedRanks)):
-        switch (array_intersect($key, $enlistedRanks)) {
+      case (array_intersect($userGroupID, $enlistedRanks)):
+        switch (array_intersect($userGroupID, $enlistedRanks)) {
           case $rankSPC: $nickPrefix = "=7Cav=SPC."; break;
           case $rankPFC: $nickPrefix = "=7Cav=PFC."; break;
           case $rankPVT: $nickPrefix = "=7Cav=PVT."; break;
