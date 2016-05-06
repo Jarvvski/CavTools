@@ -10,7 +10,7 @@
 // - replace S1 XML: IMO bot on ADR ;)
 
 class CavTools_CronJobs_XmlGenerator {
-  public function createXML() {
+  public static function createXML() {
 
     //Get values from options
     $enable  = XenForo_Application::get('options')->enableXmlGenerator;
@@ -47,17 +47,6 @@ class CavTools_CronJobs_XmlGenerator {
     $ncoRanks		   = array($rankCW5, $rankCW4, $rankCW3, $rankCW2, $rankWO1, $rankCSM, $rankSGM, $rank1SG, $rankMSG, $rankSFC, $rankSSG, $rankSGT, $rankCPL);
     $enlistedRanks = array($rankSPC, $rankPFC, $rankPVT, $rankRCT);
 
-    //If not enabled in ACP, throw permission error for all users
-    if(!$enable) {
-      throw $this->getNoPermissionResponseException();
-    }
-
-    //If user does not have perms, throw permission eror
-    if (!XenForo_Visitor::getInstance()->hasPermission('XmlGeneratorView'))
-    {
-      throw $this->getNoPermissionResponseException();
-    }
-
     //Set Time Zone to UTC
     date_default_timezone_set("UTC");
 
@@ -72,48 +61,88 @@ class CavTools_CronJobs_XmlGenerator {
     ");
 
     //Set Variables
-    $xmlOutput  = "";
+    $squadNickAtribute = "";
+    $squadNameNode = "";
+    $squadEmailNode = "";
+    $squadWebsiteNode = "";
+    $squadPictureNode = "";
+    $squadTitleNode = "";
 
     //BEGIN Create XML header
-    $xml = new SimpleXMLElement('<?xml version="1.0"?><!DOCTYPE squad SYSTEM "squad.dtd">
-    <?xml-stylesheet href="squad.xsl" type="text/xsl"?>');
+    $xml = new DOMDocument();
+    $nickAtribute = $xml->createAttribute("nick");
+    $idAtribute = $xml->createAttribute("id");
     //END XML header
 
     //BEGIN XML body creation
-    $squad = $xml->addChild("squad nick='7Cav' ");
-    $squad->addChild("name", "7th Cavalry Regiment");
-    $squad->addChild("email", "Admin@7cav.us");
-    $squad->addChild("web", "www.7cav.us");
-    $squad->addChild("picture","7thCavCrest.paa");
-    $squad->addChild("title", "7th Cavalry");
+    $squad = $xml->createElement("squad");
+    $nickAtribute->value = '7Cav';
+    $squad->appendChild($nickAtribute);
+    $xml->appendChild($squad);
+
+    $squadNameNode = $xml->createElement("name", "7th Cavalry Regiment");
+    $squad->appendChild($squadNameNode);
+    $squadEmailNode = $xml->createElement("email", "Admin@7cav.us");
+    $squad->appendChild($squadEmailNode);
+    $squadWebsiteNode = $xml->createElement("web", "www.7cav.us");
+    $squad->appendChild($squadWebsiteNode);
+    $squadPictureNode = $xml->createElement("picture","7thCavCrest.paa");
+    $squad->appendChild($squadPictureNode);
+    $squadTitleNode = $xml->createElement("title", "7th Cavalry");
+    $squad->appendChild($squadTitleNode);
+
 
     for ($i=0;$i<3;$i++) {
       switch ($i) {
         case 0:
         //BEGIN officers
-        $divider = $squad->addChild("member id='' nick='' ");
-        $divider->addChild("name", "".);
-        $divider->addChild("email", "-- Officers --");
-        $divider->addChild("icq", "");
-        $divider->addChild("remark", "");
+        $divider = $xml->createElement("member");
+        $nickAtribute->value = '';
+        $idAtribute->value = '';
+        $divider->appendChild($idAtribute);
+        $divider->appendChild($nickAtribute);
+        $dividerNameNode = $xml->createElement("name", "");
+        $divider->appendChild($dividerNameNode);
+        $dividerEmailNode = $xml->createElement("email", "-- Officers --");
+        $divider->appendChild($dividerEmailNode);
+        $dividerICQNode = $xml->createElement("icq", "");
+        $divider->appendChild($dividerICQNode);
+        $dividerRemarkNode = $xml->createElement("remark", "");
+        $divider->appendChild($dividerRemarkNode);
         break;
 
         case 1:
         //BEGIN NCOs
-        $divider = $squad->addChild("member id='' nick='' ");
-        $divider->addChild("name", "".);
-        $divider->addChild("email", "-- Non-commissioned officers --");
-        $divider->addChild("icq", "");
-        $divider->addChild("remark", "");
+        $divider = $xml->createElement("member");
+        $nickAtribute->value = '';
+        $idAtribute->value = '';
+        $divider->appendChild($idAtribute);
+        $divider->appendChild($nickAtribute);
+        $dividerNameNode = $xml->createElement("name", "");
+        $divider->appendChild($dividerNameNode);
+        $dividerEmailNode = $xml->createElement("email", "-- Non-commissioned officers --");
+        $divider->appendChild($dividerEmailNode);
+        $dividerICQNode = $xml->createElement("icq", "");
+        $divider->appendChild($dividerICQNode);
+        $dividerRemarkNode = $xml->createElement("remark", "");
+        $divider->appendChild($dividerRemarkNode);
         break;
 
         case 2:
         //BEGIN enlisted
-        $divider = $squad->addChild("member id='' nick='' ");
-        $divider->addChild("name", "".);
-        $divider->addChild("email", "-- Enlisted --");
-        $divider->addChild("icq", "");
-        $divider->addChild("remark", "");
+        $divider = $xml->createElement("member");
+        $nickAtribute->value = '';
+        $idAtribute->value = '';
+        $divider->appendChild($idAtribute);
+        $divider->appendChild($nickAtribute);
+        $dividerNameNode = $xml->createElement("name", "");
+        $divider->appendChild($dividerNameNode);
+        $dividerEmailNode = $xml->createElement("email", "-- Enlisted --");
+        $divider->appendChild($dividerEmailNode);
+        $dividerICQNode = $xml->createElement("icq", "");
+        $divider->appendChild($dividerICQNode);
+        $dividerRemarkNode = $xml->createElement("remark", "");
+        $divider->appendChild($dividerRemarkNode);
         break;
       }
 
@@ -200,46 +229,81 @@ class CavTools_CronJobs_XmlGenerator {
         //Generate our members
         switch (true) {
           //If rank type is officer
-          case ($officer && ($i == 0))
-          // create officers
-          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
-          $member->addChild("name", $name);
-          $member->addChild("email", $email);
-          $member->addChild("icq", "");
-          $member->addChild("remark", $remark);
+          case ($officer && ($i == 0)):
+            // create officers
+            $member = $xml->createElement("member");
+            $nickAtribute->value = $nick;
+            $idAtribute->value = $GUID;
+            $member->appendChild($idAtribute);
+            $member->appendChild($nickAtribute);
+            $memberNameNode = $xml->createElement("name");
+            $member->appendChild($memberNameNode);
+            $memberNameValue = $xml->createTextNode($name);
+            $member->appendChild($memberNameValue);
+            $memberEmailNode = $xml->createElement("email");
+            $member->appendChild($memberEmailNode);
+            $memberEmailValue = $xml->createTextNode($email);
+            $member->appendChild($memberEmailValue);
+            $memberICQNode = $xml->createElement("icq", "");
+            $member->appendChild($memberICQNode);
+            $memberRemarkNode = $xml->createElement("remark");
+            $member->appendChild($memberRemarkNode);
+            $memberRemarkValue = $xml->createTextNode($remark);
+            $member->appendChild($memberRemarkValue);
           break;
           //If rank type is NCO
-          case ($nco && ($i == 1))
-          // create NCOs
-          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
-          $member->addChild("name", $name);
-          $member->addChild("email", $email);
-          $member->addChild("icq", "");
-          $member->addChild("remark", $remark);
+          case ($nco && ($i == 1)):
+            // create NCOs
+            $member = $xml->createElement("member");
+            $nickAtribute->value = $nick;
+            $idAtribute->value = $GUID;
+            $member->appendChild($idAtribute);
+            $member->appendChild($nickAtribute);
+            $memberNameNode = $xml->createElement("name");
+            $member->appendChild($memberNameNode);
+            $memberNameValue = $xml->createTextNode($name);
+            $member->appendChild($memberNameValue);
+            $memberEmailNode = $xml->createElement("email");
+            $member->appendChild($memberEmailNode);
+            $memberEmailValue = $xml->createTextNode($email);
+            $member->appendChild($memberEmailValue);
+            $memberICQNode = $xml->createElement("icq", "");
+            $member->appendChild($memberICQNode);
+            $memberRemarkNode = $xml->createElement("remark");
+            $member->appendChild($memberRemarkNode);
+            $memberRemarkValue = $xml->createTextNode($remark);
+            $member->appendChild($memberRemarkValue);
           break;
           //If rank type is enlisted
-          case($enlisted && ($i == 2))
-          // create enlisted
-          $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
-          $member->addChild("name", $name);
-          $member->addChild("email", $email);
-          $member->addChild("icq", "");
-          $member->addChild("remark", $remark);
+          case($enlisted && ($i == 2)):
+            // create enlisted
+            $member = $xml->createElement("member");
+            $nickAtribute->value = $nick;
+            $idAtribute->value = $GUID;
+            $member->appendChild($idAtribute);
+            $member->appendChild($nickAtribute);
+            $memberNameNode = $xml->createElement("name");
+            $member->appendChild($memberNameNode);
+            $memberNameValue = $xml->createTextNode($name);
+            $member->appendChild($memberNameValue);
+            $memberEmailNode = $xml->createElement("email");
+            $member->appendChild($memberEmailNode);
+            $memberEmailValue = $xml->createTextNode($email);
+            $member->appendChild($memberEmailValue);
+            $memberICQNode = $xml->createElement("icq", "");
+            $member->appendChild($memberICQNode);
+            $memberRemarkNode = $xml->createElement("remark");
+            $member->appendChild($memberRemarkNode);
+            $memberRemarkValue = $xml->createTextNode($remark);
+            $member->appendChild($memberRemarkValue);
           break;
         }
       }
+      $xml->save("/var/www/html/7CavXML/7Cav.xml");
     }
 
-    //Set the xml created as the output for our template
-    $xmlOutput = print($xml);
-
-    $xmlFile = fopen("/var/www/html/7CavXML/7Cav.xml","w");
-    fwrite($xmlFile, $xmlOutput);
-    fclose($xmlFile);
-  }
-
   //Get our nick prefix
-  public function getNickPrefix($key) {
+  public static function getNickPrefix($key) {
 
     //Reset our prefix
     $nickPrefix = "";
@@ -249,47 +313,47 @@ class CavTools_CronJobs_XmlGenerator {
       //If value is in this array
       case (array_intersect($key, $officerRanks)):
         switch (array_intersect($key, $officerRanks)) {
-          case $rankGOA: $nickPrefix = "=7Cav=GOA." break;
-          case $rankGEN: $nickPrefix = "=7Cav=GEN." break;
-          case $rankLTG: $nickPrefix = "=7Cav=LTG." break;
-          case $rankMG : $nickPrefix = "=7Cav=MG."  break;
-          case $rankBG : $nickPrefix = "=7Cav=BG."  break;
-          case $rankCOL: $nickPrefix = "=7Cav=COL." break;
-          case $rankLTC: $nickPrefix = "=7Cav=LTC." break;
-          case $rankMAJ: $nickPrefix = "=7Cav=MAJ." break;
-          case $rankCPT: $nickPrefix = "=7Cav=CPT." break;
-          case $rank1LT: $nickPrefix = "=7Cav=1LT." break;
-          case $rank2LT: $nickPrefix = "=7Cav=2LT." break;
-          default      : $nickPrefix = "Failed::"   break;
+          case $rankGOA: $nickPrefix = "=7Cav=GOA."; break;
+          case $rankGEN: $nickPrefix = "=7Cav=GEN."; break;
+          case $rankLTG: $nickPrefix = "=7Cav=LTG."; break;
+          case $rankMG : $nickPrefix = "=7Cav=MG.";  break;
+          case $rankBG : $nickPrefix = "=7Cav=BG.";  break;
+          case $rankCOL: $nickPrefix = "=7Cav=COL."; break;
+          case $rankLTC: $nickPrefix = "=7Cav=LTC."; break;
+          case $rankMAJ: $nickPrefix = "=7Cav=MAJ."; break;
+          case $rankCPT: $nickPrefix = "=7Cav=CPT."; break;
+          case $rank1LT: $nickPrefix = "=7Cav=1LT."; break;
+          case $rank2LT: $nickPrefix = "=7Cav=2LT."; break;
+          default:       $nickPrefix = "Failed::";   break;
         }
         break;
       //If value is in this array
       case (array_intersect($key, $ncoRanks)):
         switch (array_intersect($key, $ncoRanks)) {
-          case $rankCW5: $nickPrefix = "=7Cav=CW5." break;
-          case $rankCW4: $nickPrefix = "=7Cav=CW4." break;
-          case $rankCW3: $nickPrefix = "=7Cav=CS3." break;
-          case $rankCW2: $nickPrefix = "=7Cav=CW2." break;
-          case $rankWO1: $nickPrefix = "=7Cav=WO1." break;
-          case $rankCSM: $nickPrefix = "=7Cav=CSM." break;
-          case $rankSGM: $nickPrefix = "=7Cav=SGM." break;
-          case $rank1SG: $nickPrefix = "=7Cav=1SG." break;
-          case $rankMSG: $nickPrefix = "=7Cav=MSG." break;
-          case $rankSFC: $nickPrefix = "=7Cav=SFC." break;
-          case $rankSSG: $nickPrefix = "=7Cav=SSG." break;
-          case $rankSGT: $nickPrefix = "=7Cav=SGT." break;
-          case $rankCPl: $nickPrefix = "=7Cav=CPL." break;
-          default      : $nickPrefix = "Failed::"   break:
+          case $rankCW5: $nickPrefix = "=7Cav=CW5."; break;
+          case $rankCW4: $nickPrefix = "=7Cav=CW4."; break;
+          case $rankCW3: $nickPrefix = "=7Cav=CS3."; break;
+          case $rankCW2: $nickPrefix = "=7Cav=CW2."; break;
+          case $rankWO1: $nickPrefix = "=7Cav=WO1."; break;
+          case $rankCSM: $nickPrefix = "=7Cav=CSM."; break;
+          case $rankSGM: $nickPrefix = "=7Cav=SGM."; break;
+          case $rank1SG: $nickPrefix = "=7Cav=1SG."; break;
+          case $rankMSG: $nickPrefix = "=7Cav=MSG."; break;
+          case $rankSFC: $nickPrefix = "=7Cav=SFC."; break;
+          case $rankSSG: $nickPrefix = "=7Cav=SSG."; break;
+          case $rankSGT: $nickPrefix = "=7Cav=SGT."; break;
+          case $rankCPl: $nickPrefix = "=7Cav=CPL."; break;
+          default:       $nickPrefix = "Failed::";   break;
         }
         break;
       //If value is in this array
       case (array_intersect($key, $enlistedRanks)):
         switch (array_intersect($key, $enlistedRanks)) {
-          case $rankSPC: $nickPrefix = "=7Cav=SPC." break;
-          case $rankPFC: $nickPrefix = "=7Cav=PFC." break;
-          case $rankPVT: $nickPrefix = "=7Cav=PVT." break;
-          case $rankRCT: $nickPrefix = "=7Cav=RCT." break;
-          default      : $nickPrefix = "Failed::"   break;
+          case $rankSPC: $nickPrefix = "=7Cav=SPC."; break;
+          case $rankPFC: $nickPrefix = "=7Cav=PFC."; break;
+          case $rankPVT: $nickPrefix = "=7Cav=PVT."; break;
+          case $rankRCT: $nickPrefix = "=7Cav=RCT."; break;
+          default:       $nickPrefix = "Failed::";   break;
         }
         break;
       }
