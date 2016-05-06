@@ -168,8 +168,26 @@ class CavTools_CronJobs_XmlGenerator {
         ORDER BY xf_user.username ASC
         ");
 
+        // array (
+        //   0 =>
+        //   array (
+        //     'username' => 'TreckTest',
+        //     'user_group_id' => '2',
+        //   ),
+        //   1 =>
+        //   array (
+        //     'username' => 'TreckTest',
+        //     'user_group_id' => '6',
+        //   ),
+        //   2 =>
+        //   array (
+        //     'username' => 'TreckTest',
+        //     'user_group_id' => '9',
+        //   ),
+        // )
+
         //Renumber Array
-        $usernameGroups['user_group_id'] = array_values($userGroupIDs);
+        $userGroupIDs = array_values($usernameGroups['user_group_id']);
 
         //Loop to get rank type
         foreach ($userGroupIDs as $userGroupID)
