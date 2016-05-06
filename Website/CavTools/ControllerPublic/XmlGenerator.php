@@ -8,7 +8,6 @@
 // - set file paths as well as template output for manual checking
 // - create cron job to automatically run when not using for checking xml
 // - replace S1 XML: IMO bot on ADR ;)
-// -
 
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
   public function actionIndex() {
@@ -133,10 +132,12 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
       //Create a member section for each member
       foreach($userIDs as $user) {
 
+        //Reset variables to false
         $officer = false;
         $nco = false;
         $enlisted = false;
 
+        //Get username groups
         $usernameGroups = $db->fetchAll("
         SELECT xf_user.username ,xf_user_group_relation.user_group_id
         FROM xf_user
@@ -147,6 +148,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         ORDER BY xf_user.username ASC
         ");
 
+        //Loop to get rank type
         foreach ($usernameGroups['xf_user_group_relation.user_group_id'] as $key => $value)
         {
           switch ($key) {
@@ -162,10 +164,12 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
                 $enlisted = true;
             break;
             }
+          //Get user nick prefix
           $nick = getNickPrefix($key);
           }
         }
 
+        //Get user details
         $details = $db->fetchRow("
         SELECT xf_user.username, xf_pe_roster_user_relation.real_name, xf_user_field_value.field_value
         FROM xf_user
@@ -178,6 +182,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         AND xf_user_field_value.field_id = 'armaGUID'
         ");
 
+        //Get primary billet
         $primaryBillet = $db->fetchRow("
         SELECT xf_pe_roster_position.position_title
         FROM xf_pe_roster_position
@@ -186,6 +191,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
         ");
 
+        //Get secondary billets
         $secondaryBillets = $db->fetchRow("
         SELECT xf_user_field_value.field_value
         FROM xf_user_field_value
@@ -193,13 +199,16 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         AND user_id = ".$user['user_id']."
         ");
 
-        $nick .= $details['xf_user.username'];
-        $GUID  = $details['xf_user_field_value.field_value'];
-        $name  = $details['xf_pe_roster_user_relation.real_name'];
-        $email = $details['xf_user.username'] + "@7cav.us";
+        //Form user variables from queries
+        $nick  .= $details['xf_user.username'];
+        $GUID   = $details['xf_user_field_value.field_value'];
+        $name   = $details['xf_pe_roster_user_relation.real_name'];
+        $email  = $details['xf_user.username'] + "@7cav.us";
         $remark = $primaryBillet['xf_pe_roster_position.position_title'] + ", " + $secondaryBillets['xf_user_field_value.field_value'];
 
+        //Generate our members
         switch (true) {
+          //If rank type is officer
           case ($officer && ($i == 0))
           // create officers
           $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
@@ -208,7 +217,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           $member->addChild("icq", "");
           $member->addChild("remark", $remark);
           break;
-
+          //If rank type is NCO
           case ($nco && ($i == 1))
           // create NCOs
           $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
@@ -217,7 +226,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           $member->addChild("icq", "");
           $member->addChild("remark", $remark);
           break;
-
+          //If rank type is enlisted
           case($enlisted && ($i == 2))
           // create enlisted
           $member = $squad->addChild("member id=".$GUID." nick=".$nick." ");
@@ -242,11 +251,15 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     return $this->responseView('CavTools_ViewPublic_XmlGenerator', 'CavTools_XmlGenerator', $viewParams);
   }
 
+  //Get our nick prefix
   public function getNickPrefix($key) {
 
+    //Reset our prefix
     $nickPrefix = "";
 
+    //Use key from positions
     switch($key) {
+      //If value is in this array
       case (array_intersect($key, $officerRanks)):
         switch (array_intersect($key, $officerRanks)) {
           case $rankGOA: $nickPrefix = "=7Cav=GOA." break;
@@ -263,6 +276,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           default      : $nickPrefix = "Failed::"   break;
         }
         break;
+      //If value is in this array
       case (array_intersect($key, $ncoRanks)):
         switch (array_intersect($key, $ncoRanks)) {
           case $rankCW5: $nickPrefix = "=7Cav=CW5." break;
@@ -281,6 +295,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           default      : $nickPrefix = "Failed::"   break:
         }
         break;
+      //If value is in this array
       case (array_intersect($key, $enlistedRanks)):
         switch (array_intersect($key, $enlistedRanks)) {
           case $rankSPC: $nickPrefix = "=7Cav=SPC." break;
@@ -291,6 +306,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         }
         break;
       }
+    //Send our prefix back
     return $nickPrefix;
   }
 }
