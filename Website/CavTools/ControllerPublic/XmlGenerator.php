@@ -71,15 +71,6 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     ORDER BY user_id ASC
     ");
 
-    //Real name + rank milpacs query
-    $rankInfo = $db->fetchAll("
-      SELECT xf_pe_roster_user_relation.real_name, xf_pe_roster_rank.title
-      FROM xf_pe_roster_user_relation
-      INNER JOIN xf_pe_roster_rank
-      ON xf_pe_roster_user_relation.rank_id=xf_pe_roster_rank.rank_id
-      ORDER BY xf_pe_roster_rank.title ASC
-    ");
-
     //Set Variables
     $xmlOutput  = "";
 
@@ -240,7 +231,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
     }
 
     //Set the xml created as the output for our template
-    $xmlOutput = $xml;
+    $xmlOutput = print($xml);
 
     //View Parameters
     $viewParams = array(
