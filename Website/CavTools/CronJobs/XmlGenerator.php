@@ -101,6 +101,7 @@ class CavTools_CronJobs_XmlGenerator {
         $idAtribute->value = '';
         $divider->appendChild($idAtribute);
         $divider->appendChild($nickAtribute);
+        $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
         $dividerEmailNode = $xml->createElement("email", "-- Officers --");
@@ -118,6 +119,7 @@ class CavTools_CronJobs_XmlGenerator {
         $idAtribute->value = '';
         $divider->appendChild($idAtribute);
         $divider->appendChild($nickAtribute);
+        $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
         $dividerEmailNode = $xml->createElement("email", "-- Non-commissioned officers --");
@@ -135,6 +137,7 @@ class CavTools_CronJobs_XmlGenerator {
         $idAtribute->value = '';
         $divider->appendChild($idAtribute);
         $divider->appendChild($nickAtribute);
+        $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
         $dividerEmailNode = $xml->createElement("email", "-- Enlisted --");
@@ -257,6 +260,7 @@ class CavTools_CronJobs_XmlGenerator {
             $idAtribute->value = $GUID;
             $member->appendChild($idAtribute);
             $member->appendChild($nickAtribute);
+            $squad->appendChild($member);
             $memberNameNode = $xml->createElement("name");
             $member->appendChild($memberNameNode);
             $memberNameValue = $xml->createTextNode($name);
@@ -280,6 +284,7 @@ class CavTools_CronJobs_XmlGenerator {
             $idAtribute->value = $GUID;
             $member->appendChild($idAtribute);
             $member->appendChild($nickAtribute);
+            $squad->appendChild($member);
             $memberNameNode = $xml->createElement("name");
             $member->appendChild($memberNameNode);
             $memberNameValue = $xml->createTextNode($name);
@@ -303,6 +308,7 @@ class CavTools_CronJobs_XmlGenerator {
             $idAtribute->value = $GUID;
             $member->appendChild($idAtribute);
             $member->appendChild($nickAtribute);
+            $squad->appendChild($member);
             $memberNameNode = $xml->createElement("name");
             $member->appendChild($memberNameNode);
             $memberNameValue = $xml->createTextNode($name);
