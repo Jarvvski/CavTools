@@ -53,31 +53,19 @@ class CavTools_CronJobs_XmlGenerator {
     //Get DB
     $db = XenForo_Application::get('db');
 
-    //Basic user query
-    $userIDs = $db->fetchAll("
-    SELECT user_id
-    FROM xf_user
-    ORDER BY user_id ASC
-    ");
-
-    //Set Variables
-    $squadNickAtribute = "";
-    $squadNameNode = "";
-    $squadEmailNode = "";
-    $squadWebsiteNode = "";
-    $squadPictureNode = "";
-    $squadTitleNode = "";
-
     //BEGIN Create XML header
-    $xml = new DOMDocument();
-    $nickAtribute = $xml->createAttribute("nick");
-    $idAtribute = $xml->createAttribute("id");
+    $imp = new DOMImplementation;
+    $docType = $imp->createDocumentType('squad', '', 'squad.dtd');
+    $xml = $imp->createDocument("1.0", "", $docType);
+    $xml->preserveWhiteSpace = false;
+    $xml->formatOutput = true;
+    $xslt = $xml->createProcessingInstruction('xml-stylesheet', 'href="squad.xsl" type="text/xsl"');
+    $xml->appendChild($xslt);
     //END XML header
 
     //BEGIN XML body creation
     $squad = $xml->createElement("squad");
-    $nickAtribute->value = '7Cav';
-    $squad->appendChild($nickAtribute);
+    $squad->setAttribute("nick","7Cav");
     $xml->appendChild($squad);
 
     $squadNameNode = $xml->createElement("name", "7th Cavalry Regiment");
@@ -97,10 +85,8 @@ class CavTools_CronJobs_XmlGenerator {
         case 0:
         //BEGIN officers
         $divider = $xml->createElement("member");
-        $nickAtribute->value = '';
-        $idAtribute->value = '';
-        $divider->appendChild($idAtribute);
-        $divider->appendChild($nickAtribute);
+        $divider->setAttribute("nick","");
+        $divider->setAttribute("id","");
         $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
@@ -115,10 +101,8 @@ class CavTools_CronJobs_XmlGenerator {
         case 1:
         //BEGIN NCOs
         $divider = $xml->createElement("member");
-        $nickAtribute->value = '';
-        $idAtribute->value = '';
-        $divider->appendChild($idAtribute);
-        $divider->appendChild($nickAtribute);
+        $divider->setAttribute("nick","");
+        $divider->setAttribute("id","");
         $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
@@ -133,10 +117,8 @@ class CavTools_CronJobs_XmlGenerator {
         case 2:
         //BEGIN enlisted
         $divider = $xml->createElement("member");
-        $nickAtribute->value = '';
-        $idAtribute->value = '';
-        $divider->appendChild($idAtribute);
-        $divider->appendChild($nickAtribute);
+        $divider->setAttribute("nick","");
+        $divider->setAttribute("id","");
         $squad->appendChild($divider);
         $dividerNameNode = $xml->createElement("name", "");
         $divider->appendChild($dividerNameNode);
@@ -149,6 +131,13 @@ class CavTools_CronJobs_XmlGenerator {
         break;
       }
 
+      //Basic user query
+      $userIDs = $db->fetchAll("
+      SELECT user_id
+      FROM xf_user
+      ORDER BY user_id ASC
+      ");
+
       //Renumber Array
       $userIDs = array_values($userIDs);
 
@@ -160,162 +149,25 @@ class CavTools_CronJobs_XmlGenerator {
         $nco = false;
         $enlisted = false;
 
-        //Get username groups
-        $usernameGroups = $db->fetchAll("
-        SELECT xf_user_group_relation.user_group_id
-        FROM xf_user
-        INNER JOIN xf_user_group_relation
-        ON xf_user.user_id=xf_user_group_relation.user_id
-        WHERE xf_user.user_id = ".$user['user_id']."
-        AND xf_user_group_relation.user_id = ".$user['user_id']."
-        AND xf_user_group_relation.is_primary = 1
+        //Get user rank ID
+        $usernameID = $db->fetchRow("
+        SELECT rank_ID
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = ".$user['user_id']."
         ");
 
+        if (in_array($usernameID['rank_ID'], $officerRanks)) {
+          $officer = true;
+        } else if (in_array($usernameID['rank_ID'], $ncoRanks)) {
+          $nco = true;
+        } else if (in_array($usernameID['rank_ID'], $enlistedRanks)) {
+          $enlisted = true;
+        } else
 
-          switch ($userGroupID) {
-            case (in_array($userGroupID, $officerRanks, true)):
-                $officer = true;
-            break;
 
-            case (in_array($userGroupID, $ncoRanks, true)):
-                $nco = true;
-            break;
-
-            case (in_array($userGroupID, $enlistedRanks, true)):
-                $enlisted = true;
-            break;
-          }
-
-        //Get user nick prefix
-        $nick = getNickPrefix($userGroupID);
-
-      }
-
-      //Get user details
-      $details = $db->fetchRow("
-      SELECT xf_user.username, xf_pe_roster_user_relation.real_name, xf_user_field_value.field_value
-      FROM xf_user
-      INNER JOIN xf_pe_roster_user_relation
-      ON xf_user.user_id=xf_pe_roster_user_relation.user_id
-      INNER JOIN xf_user_field_value
-      ON xf_pe_roster_user_relation.user_id=xf_user_field_value.user_id
-      WHERE xf_user.user_id = ".$user['user_id']."
-      AND xf_pe_roster_user_relation.user_id = ".$user['user_id']."
-      AND xf_user_field_value.field_id = 'armaGUID'
-      ");
-
-      //Get primary billet
-      $primaryBillet = $db->fetchRow("
-      SELECT xf_pe_roster_position.position_title
-      FROM xf_pe_roster_position
-      INNER JOIN xf_pe_roster_user_relation
-      ON xf_pe_roster_position.position_id=xf_pe_roster_user_relation.position_id
-      WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
-      ");
-
-      //Get secondary billets
-      $secondaryBillets = $db->fetchRow("
-      SELECT xf_user_field_value.field_value
-      FROM xf_user_field_value
-      WHERE field_id = 'Billets'
-      AND user_id = ".$user['user_id']."
-      ");
-
-      //Form user variables from queries
-      $nick  .= $details['username'];
-      $GUID   = $details['field_value'];
-      $name   = $details['real_name'];
-      $email  = $details['username'] + "@7cav.us";
-      $remark = $primaryBillet['position_title'] + ", " + $secondaryBillets['field_value'];
-
-      //Generate our members
-      //If rank type is officer
-      if ($officer && ($i == 0)) {
-        // create officers
-        $member = $xml->createElement("member");
-        $nickAtribute->value = $nick;
-        $idAtribute->value = $GUID;
-        $member->appendChild($idAtribute);
-        $member->appendChild($nickAtribute);
-        $squad->appendChild($member);
-        $memberNameNode = $xml->createElement("name");
-        $member->appendChild($memberNameNode);
-        $memberNameValue = $xml->createTextNode($name);
-        $member->appendChild($memberNameValue);
-        $memberEmailNode = $xml->createElement("email");
-        $member->appendChild($memberEmailNode);
-        $memberEmailValue = $xml->createTextNode($email);
-        $member->appendChild($memberEmailValue);
-        $memberICQNode = $xml->createElement("icq", "");
-        $member->appendChild($memberICQNode);
-        $memberRemarkNode = $xml->createElement("remark");
-        $member->appendChild($memberRemarkNode);
-        $memberRemarkValue = $xml->createTextNode($remark);
-        $member->appendChild($memberRemarkValue);
-      }
-      //If rank type is NCO
-      if ($nco && ($i == 1)) {
-        // create NCOs
-        $member = $xml->createElement("member");
-        $nickAtribute->value = $nick;
-        $idAtribute->value = $GUID;
-        $member->appendChild($idAtribute);
-        $member->appendChild($nickAtribute);
-        $squad->appendChild($member);
-        $memberNameNode = $xml->createElement("name");
-        $member->appendChild($memberNameNode);
-        $memberNameValue = $xml->createTextNode($name);
-        $member->appendChild($memberNameValue);
-        $memberEmailNode = $xml->createElement("email");
-        $member->appendChild($memberEmailNode);
-        $memberEmailValue = $xml->createTextNode($email);
-        $member->appendChild($memberEmailValue);
-        $memberICQNode = $xml->createElement("icq", "");
-        $member->appendChild($memberICQNode);
-        $memberRemarkNode = $xml->createElement("remark");
-        $member->appendChild($memberRemarkNode);
-        $memberRemarkValue = $xml->createTextNode($remark);
-        $member->appendChild($memberRemarkValue);
-      }
-      //If rank type is enlisted
-      if ($enlisted && ($i == 2)) {
-        // create enlisted
-        $member = $xml->createElement("member");
-        $nickAtribute->value = $nick;
-        $idAtribute->value = $GUID;
-        $member->appendChild($idAtribute);
-        $member->appendChild($nickAtribute);
-        $squad->appendChild($member);
-        $memberNameNode = $xml->createElement("name");
-        $member->appendChild($memberNameNode);
-        $memberNameValue = $xml->createTextNode($name);
-        $member->appendChild($memberNameValue);
-        $memberEmailNode = $xml->createElement("email");
-        $member->appendChild($memberEmailNode);
-        $memberEmailValue = $xml->createTextNode($email);
-        $member->appendChild($memberEmailValue);
-        $memberICQNode = $xml->createElement("icq", "");
-        $member->appendChild($memberICQNode);
-        $memberRemarkNode = $xml->createElement("remark");
-        $member->appendChild($memberRemarkNode);
-        $memberRemarkValue = $xml->createTextNode($remark);
-        $member->appendChild($memberRemarkValue);
-      }
-    }
-    $xml->save("/var/www/html/XML/7Cav.xml");
-  }
-
-  //Get our nick prefix
-  public static function getNickPrefix($userGroupID) {
-
-    //Reset our prefix
-    $nickPrefix = "";
-
-    //Use key from positions
-    switch($userGroupID) {
-      //If value is in this array
-      case (array_intersect($userGroupID, $officerRanks)):
-        switch (array_intersect($userGroupID, $officerRanks)) {
+        //Start our prefix
+        $nickPrefix = "";
+        switch ($usernameID['rank_ID']) {
           case $rankGOA: $nickPrefix = "=7Cav=GOA."; break;
           case $rankGEN: $nickPrefix = "=7Cav=GEN."; break;
           case $rankLTG: $nickPrefix = "=7Cav=LTG."; break;
@@ -327,12 +179,6 @@ class CavTools_CronJobs_XmlGenerator {
           case $rankCPT: $nickPrefix = "=7Cav=CPT."; break;
           case $rank1LT: $nickPrefix = "=7Cav=1LT."; break;
           case $rank2LT: $nickPrefix = "=7Cav=2LT."; break;
-          default:       $nickPrefix = "Failed::";   break;
-        }
-      break;
-      //If value is in this array
-      case (array_intersect($userGroupID, $ncoRanks)):
-        switch (array_intersect($userGroupID, $ncoRanks)) {
           case $rankCW5: $nickPrefix = "=7Cav=CW5."; break;
           case $rankCW4: $nickPrefix = "=7Cav=CW4."; break;
           case $rankCW3: $nickPrefix = "=7Cav=CS3."; break;
@@ -345,22 +191,120 @@ class CavTools_CronJobs_XmlGenerator {
           case $rankSFC: $nickPrefix = "=7Cav=SFC."; break;
           case $rankSSG: $nickPrefix = "=7Cav=SSG."; break;
           case $rankSGT: $nickPrefix = "=7Cav=SGT."; break;
-          case $rankCPl: $nickPrefix = "=7Cav=CPL."; break;
-          default:       $nickPrefix = "Failed::";   break;
-        }
-      break;
-      //If value is in this array
-      case (array_intersect($userGroupID, $enlistedRanks)):
-        switch (array_intersect($userGroupID, $enlistedRanks)) {
+          case $rankCPL: $nickPrefix = "=7Cav=CPL."; break;
           case $rankSPC: $nickPrefix = "=7Cav=SPC."; break;
           case $rankPFC: $nickPrefix = "=7Cav=PFC."; break;
           case $rankPVT: $nickPrefix = "=7Cav=PVT."; break;
           case $rankRCT: $nickPrefix = "=7Cav=RCT."; break;
           default:       $nickPrefix = "Failed::";   break;
         }
-      break;
+
+        //Get username
+        $detailsUsername = $db->fetchRow("
+        SELECT username
+        FROM xf_user
+        WHERE xf_user.user_id = ".$user['user_id']."
+        ");
+
+        //Get Real name
+        $detailsRealname = $db->fetchRow("
+        SELECT real_name
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = ".$user['user_id']."
+        ");
+
+        //Get arma GUID
+        $armaGUID = $db->fetchRow("
+        SELECT field_value
+        FROM xf_user_field_value
+        WHERE xf_user_field_value.field_id='armaGUID'
+        AND xf_user_field_value.user_id = ".$user['user_id']."
+        ");
+
+        //Get primary billet
+        $primaryBillet = $db->fetchRow("
+        SELECT xf_pe_roster_position.position_title
+        FROM xf_pe_roster_position
+        INNER JOIN xf_pe_roster_user_relation
+        ON xf_pe_roster_position.position_id=xf_pe_roster_user_relation.position_id
+        WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
+        ");
+
+        //Get secondary billets
+        $secondaryBillets = $db->fetchRow("
+        SELECT xf_user_field_value.field_value
+        FROM xf_user_field_value
+        WHERE field_id = 'Billets'
+        AND user_id = ".$user['user_id']."
+        ");
+
+        //Form user variables from queries
+        $nick = $nickPrefix;
+        $nick .= $detailsUsername['username'];
+        $GUID = "";
+        if ($armaGUID['field_value'] != null) {
+          $GUID   = $armaGUID['field_value'];
+        }
+        $name   = $detailsRealname['real_name'];
+        $email  = $detailsUsername['username'];
+        $email .= "@7cav.us";
+        $remark = $primaryBillet['position_title'];
+        if ($secondaryBillets['field_value'] != null) {
+          $remark .= ", ";
+          $remark .= $secondaryBillets['field_value'];
+        }
+
+        //Generate our members
+        //If rank type is officer
+        if ($officer && ($i == 0)) {
+          // create officers
+          $member = $xml->createElement("member");
+          $member->setAttribute("id",$GUID);
+          $member->setAttribute("nick",$nick);
+          $squad->appendChild($member);
+          $memberNameNode = $xml->createElement("name", $name);
+          $member->appendChild($memberNameNode);
+          $memberEmailNode = $xml->createElement("email", $email);
+          $member->appendChild($memberEmailNode);
+          $memberICQNode = $xml->createElement("icq", null);
+          $member->appendChild($memberICQNode);
+          $memberRemarkNode = $xml->createElement("remark", $remark);
+          $member->appendChild($memberRemarkNode);
+        }
+        //If rank type is NCO
+        if ($nco && ($i == 1)) {
+          // create NCOs
+          $member = $xml->createElement("member");
+          $member->setAttribute("id",$GUID);
+          $member->setAttribute("nick",$nick);
+          $squad->appendChild($member);
+          $memberNameNode = $xml->createElement("name", $name);
+          $member->appendChild($memberNameNode);
+          $memberEmailNode = $xml->createElement("email", $email);
+          $member->appendChild($memberEmailNode);
+          $memberICQNode = $xml->createElement("icq", null);
+          $member->appendChild($memberICQNode);
+          $memberRemarkNode = $xml->createElement("remark", $remark);
+          $member->appendChild($memberRemarkNode);
+        }
+        //If rank type is enlisted
+        if ($enlisted && ($i == 2)) {
+          // create enlisted
+          $member = $xml->createElement("member");
+          $member->setAttribute("id",$GUID);
+          $member->setAttribute("nick",$nick);
+          $squad->appendChild($member);
+          $memberNameNode = $xml->createElement("name", $name);
+          $member->appendChild($memberNameNode);
+          $memberEmailNode = $xml->createElement("email", $email);
+          $member->appendChild($memberEmailNode);
+          $memberICQNode = $xml->createElement("icq", null);
+          $member->appendChild($memberICQNode);
+          $memberRemarkNode = $xml->createElement("remark", $remark);
+          $member->appendChild($memberRemarkNode);
+        }
+      }
     }
-    //Send our prefix back
-    return $nickPrefix;
+    $xml->save("/var/www/html/XML/7Cav.xml");
   }
 }
