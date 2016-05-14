@@ -72,6 +72,7 @@ class CavTools_CronJobs_SetBillets
 
           //Use datawriter
           $dw = XenForo_DataWriter::create('XenForo_DataWriter_User');
+          $dw->setOption(XenForo_DataWriter_User::OPTION_ADMIN_EDIT, true);
           $dw->setExistingData($userProfile);
           $dw->setCustomFields($customFields);
           $dw->save();
