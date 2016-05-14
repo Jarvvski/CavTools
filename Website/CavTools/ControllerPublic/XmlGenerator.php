@@ -1,14 +1,5 @@
 <?php
 
-//TODO
-// - use DB values for items
-// - maybe extrapolate nick based on username and cav rank
-// - check if field has value, if not set value to null
-// - check if need to output dtd, xsl aswell
-// - set file paths as well as template output for manual checking
-// - create cron job to automatically run when not using for checking xml
-// - replace S1 XML: IMO bot on ADR ;)
-
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
   public function actionIndex() {
 
@@ -34,6 +25,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
       $rankCW3 = XenForo_Application::get('options')->WarrantThreeRankID;
       $rankCW2 = XenForo_Application::get('options')->WarrantTwoRankID;
       $rankWO1 = XenForo_Application::get('options')->WarrantOneRankID;
+      $rankWOC = XenForo_Application::get('options')->WarrantCandidateRankID;
       $rankCSM = XenForo_Application::get('options')->csmRankID;
       $rankSGM = XenForo_Application::get('options')->sgmRankID;
       $rank1SG = XenForo_Application::get('options')->firstSgtRankID;
@@ -48,7 +40,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
       $rankRCT = XenForo_Application::get('options')->rtcRankID;
 
       $officerRanks	 = array($rankGOA, $rankGEN, $rankLTG,$rankMG, $rankBG, $rankCOL, $rankLTC, $rankMAJ, $rankCPT, $rank1LT, $rank2LT);
-      $ncoRanks		   = array($rankCW5, $rankCW4, $rankCW3, $rankCW2, $rankWO1, $rankCSM, $rankSGM, $rank1SG, $rankMSG, $rankSFC, $rankSSG, $rankSGT, $rankCPL);
+      $ncoRanks		   = array($rankCW5, $rankCW4, $rankCW3, $rankCW2, $rankWO1, $rankWOC, $rankCSM, $rankSGM, $rank1SG, $rankMSG, $rankSFC, $rankSSG, $rankSGT, $rankCPL);
       $enlistedRanks = array($rankSPC, $rankPFC, $rankPVT, $rankRCT);
 
       //Set Time Zone to UTC
@@ -174,34 +166,35 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             //Start our prefix
             $nickPrefix = "";
             switch ($usernameID['rank_ID']) {
-              case $rankGOA: $nickPrefix = "=7Cav=GOA."; break;
-              case $rankGEN: $nickPrefix = "=7Cav=GEN."; break;
-              case $rankLTG: $nickPrefix = "=7Cav=LTG."; break;
-              case $rankMG : $nickPrefix = "=7Cav=MG.";  break;
-              case $rankBG : $nickPrefix = "=7Cav=BG.";  break;
-              case $rankCOL: $nickPrefix = "=7Cav=COL."; break;
-              case $rankLTC: $nickPrefix = "=7Cav=LTC."; break;
-              case $rankMAJ: $nickPrefix = "=7Cav=MAJ."; break;
-              case $rankCPT: $nickPrefix = "=7Cav=CPT."; break;
-              case $rank1LT: $nickPrefix = "=7Cav=1LT."; break;
-              case $rank2LT: $nickPrefix = "=7Cav=2LT."; break;
-              case $rankCW5: $nickPrefix = "=7Cav=CW5."; break;
-              case $rankCW4: $nickPrefix = "=7Cav=CW4."; break;
-              case $rankCW3: $nickPrefix = "=7Cav=CS3."; break;
-              case $rankCW2: $nickPrefix = "=7Cav=CW2."; break;
-              case $rankWO1: $nickPrefix = "=7Cav=WO1."; break;
-              case $rankCSM: $nickPrefix = "=7Cav=CSM."; break;
-              case $rankSGM: $nickPrefix = "=7Cav=SGM."; break;
-              case $rank1SG: $nickPrefix = "=7Cav=1SG."; break;
-              case $rankMSG: $nickPrefix = "=7Cav=MSG."; break;
-              case $rankSFC: $nickPrefix = "=7Cav=SFC."; break;
-              case $rankSSG: $nickPrefix = "=7Cav=SSG."; break;
-              case $rankSGT: $nickPrefix = "=7Cav=SGT."; break;
-              case $rankCPL: $nickPrefix = "=7Cav=CPL."; break;
-              case $rankSPC: $nickPrefix = "=7Cav=SPC."; break;
-              case $rankPFC: $nickPrefix = "=7Cav=PFC."; break;
-              case $rankPVT: $nickPrefix = "=7Cav=PVT."; break;
-              case $rankRCT: $nickPrefix = "=7Cav=RCT."; break;
+              case $rankGOA: $nickPrefix = "=7Cav=GOA."; $nameTitle = "General of the Army "; break;
+              case $rankGEN: $nickPrefix = "=7Cav=GEN."; $nameTitle = "General ";break;
+              case $rankLTG: $nickPrefix = "=7Cav=LTG."; $nameTitle = "Lieutenant General ";break;
+              case $rankMG : $nickPrefix = "=7Cav=MG."; $nameTitle = "Major General "; break;
+              case $rankBG : $nickPrefix = "=7Cav=BG."; $nameTitle = "Brigadier General "; break;
+              case $rankCOL: $nickPrefix = "=7Cav=COL."; $nameTitle = "Colonel "; break;
+              case $rankLTC: $nickPrefix = "=7Cav=LTC."; $nameTitle = "Lieutenant Colonel "; break;
+              case $rankMAJ: $nickPrefix = "=7Cav=MAJ."; $nameTitle = "Major "; break;
+              case $rankCPT: $nickPrefix = "=7Cav=CPT."; $nameTitle = "Captain "; break;
+              case $rank1LT: $nickPrefix = "=7Cav=1LT."; $nameTitle = "First Lieutenant "; break;
+              case $rank2LT: $nickPrefix = "=7Cav=2LT."; $nameTitle = "Second Lieutenant "; break;
+              case $rankCW5: $nickPrefix = "=7Cav=CW5."; $nameTitle = "Chief Warrant Officer 5 "; break;
+              case $rankCW4: $nickPrefix = "=7Cav=CW4."; $nameTitle = "Chief Warrant Officer 4 "; break;
+              case $rankCW3: $nickPrefix = "=7Cav=CS3."; $nameTitle = "Chief Warrant Officer 3 "; break;
+              case $rankCW2: $nickPrefix = "=7Cav=CW2."; $nameTitle = "Chief Warrant Officer 2 "; break;
+              case $rankWO1: $nickPrefix = "=7Cav=WO1."; $nameTitle = "Warrant Officer 1 "; break;
+              case $rankWOC: $nickPrefix = "=7Cav=WOC" ; $nameTitle = "Warrant Officer Candidate "; break;
+              case $rankCSM: $nickPrefix = "=7Cav=CSM."; $nameTitle = "Command Sergeant Major "; break;
+              case $rankSGM: $nickPrefix = "=7Cav=SGM."; $nameTitle = "Sergeant Major "; break;
+              case $rank1SG: $nickPrefix = "=7Cav=1SG."; $nameTitle = "First Sergeant "; break;
+              case $rankMSG: $nickPrefix = "=7Cav=MSG."; $nameTitle = "Master Sergeant "; break;
+              case $rankSFC: $nickPrefix = "=7Cav=SFC."; $nameTitle = "Sergeant First Class "; break;
+              case $rankSSG: $nickPrefix = "=7Cav=SSG."; $nameTitle = "Staff Sergeant "; break;
+              case $rankSGT: $nickPrefix = "=7Cav=SGT."; $nameTitle = "Sergeant "; break;
+              case $rankCPL: $nickPrefix = "=7Cav=CPL."; $nameTitle = "Corporal "; break;
+              case $rankSPC: $nickPrefix = "=7Cav=SPC."; $nameTitle = "Specialist "; break;
+              case $rankPFC: $nickPrefix = "=7Cav=PFC."; $nameTitle = "Private First Class "; break;
+              case $rankPVT: $nickPrefix = "=7Cav=PVT."; $nameTitle = "Private "; break;
+              case $rankRCT: $nickPrefix = "=7Cav=RCT."; $nameTitle = "Recruit "; break;
               default:       $nickPrefix = "Failed::";   break;
             }
 
@@ -251,7 +244,8 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             if ($armaGUID['field_value'] != null) {
               $GUID   = $armaGUID['field_value'];
             }
-            $name   = $detailsRealname['real_name'];
+            $name   = $nameTitle;
+            $name  .= $detailsRealname['real_name'];
             $email  = $detailsUsername['username'];
             $email .= "@7cav.us";
             $remark = $primaryBillet['position_title'];
@@ -312,12 +306,12 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           }
         }
       }
-      $xml->save("/var/www/html/XML/7Cav.xml");
+      $xml->save("/var/www/html/xml/7Cav.xml");
     }
 
     //View Parameters
     $viewParams = array(
-      'xmlOutput' => $xml
+      'xmlOutput' => $xml->saveXML()
     );
 
     //Send to template for displaying
