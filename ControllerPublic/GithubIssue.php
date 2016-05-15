@@ -84,16 +84,16 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
 
     //Set variables
     $ch  = curl_init();
-    $header = "Authorization: token %s", $token;
+    $header = sprintf("Authorization: token %s", $token);
     $title = $formTitle;
-    $body  = "<h2>Problem</h2><br />%s<br /><hr><h2>Reason</h2><br />%s<br /><hr><h2>Solution</h2><br />%s<br><br>-%s %s", $problem, $reason, $solution, $rank, $username;
+    $body  = sprintf("<h2>Problem</h2><br />%s<br /><hr><h2>Reason</h2><br />%s<br /><hr><h2>Solution</h2><br />%s<br><br>-%s %s", $problem, $reason, $solution, $rank, $username);
     $data = array("title" => $title, "body" => $body);
     $data_string = json_encode($data);
-    $url   = "https://api.github.com/repos/%s/%s/issues", $repoOwner, $repo;
+    $url   = sprintf("https://api.github.com/repos/%s/%s/issues", $repoOwner, $repo);
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-    curl_setopt($ch, CIRLOPT_HEADER, $header);
+    curl_setopt($ch, CURLOPT_HEADER, $header);
     curl_exec($ch);
   }
 }
