@@ -3,6 +3,11 @@
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
   public function actionIndex() {
 
+    if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'xmlGeneratorView'))
+    {
+      throw $this->getNoPermissionResponseException();
+    }
+
     //Get values from options
     $enable  = XenForo_Application::get('options')->enableXmlGenerator;
 
