@@ -319,7 +319,7 @@ class CavTools_CronJobs_XmlGenerator {
           }
         }
       }
-      $xml->save("/var/www/html/xml/7Cav.xml");
+      $xml->save("/srv/www/7cav.us/public_htmlxml/7Cav.xml");
     }
   }
 }
