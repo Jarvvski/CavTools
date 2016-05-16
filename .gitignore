@@ -1,0 +1,11 @@
+#Ignore all
+*
+#Except for:
+!.gitignore
+!js/
+!js/CavTools/
+!js/CavTools/*
+!library/
+!library/CavTools/
+!library/CavTools/*/
+!library/CavTools/*/*
