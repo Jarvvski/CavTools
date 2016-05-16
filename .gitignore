@@ -4,3 +4,5 @@
 !.gitignore
 !/js/CavTools/*
 !/library/CavTools/*
+!/library/CavTools/*/*
+!/library/CavTools/*/*/*
