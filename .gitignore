@@ -2,7 +2,7 @@
 *
 #Except for:
 !.gitignore
-!/js/CavTools/*
-!/library/CavTools/*
-!/library/CavTools/*/*
-!/library/CavTools/*/*/*
+!js/CavTools/*
+!library/CavTools/*
+!library/CavTools/*/*
+!library/CavTools/*/*/*
