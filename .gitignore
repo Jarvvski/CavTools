@@ -1,0 +1,6 @@
+#Ignore all
+*
+#Except for:
+!.gitignore
+!js/CavTools/
+!library/CavTools/
