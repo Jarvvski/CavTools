@@ -99,19 +99,19 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
                         if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
 
-                            $firstBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $firstBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
 
-                            $secondBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $secondBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
 
-                            $ssMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $ssMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } else {
 
-                            $unsortedMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $unsortedMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $position['position_title'] . "</td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         }
                     }
@@ -121,19 +121,19 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
                         if (count(array_intersect($firstBnIds, $memberIDs)) != 0) {
 
-                            $firstBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $firstBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } elseif (count(array_intersect($secondBnIds, $memberIDs)) != 0) {
 
-                            $secondBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $secondBnMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } elseif (count(array_intersect($ssIds, $memberIDs)) != 0) {
 
-                            $ssMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $ssMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         } else {
 
-                            $unsortedMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"user\" value=" . $member['username'] . ">PM user</td></tr>" . PHP_EOL;
+                            $unsortedMemberList .= "<tr><td><a href=" . $userUrl . $member['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . date('dMy', $memberLastPost) . "</td><td>" . date('dMy', $memberLastPost + $awolTime) . "</td><td>" . $daysAwol . " day(s)</td><td><input type=\"checkbox\" name=\"users[]\" value=" . $member['user_id'] . "></td></tr>" . PHP_EOL;
 
                         }
                     }
@@ -217,12 +217,77 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
     
     public function actionSendPM() 
     {
-        $users = $this->_input->filter('user', XenForo_Input::BOOLEAN);
-        
+
+        //Action can only be called via post
+        $this->_assertPostOnly();
+
+        // get user values
+        $users = $_POST['users'];
         
         //Get values from options
         $messageText		= XenForo_Application::get('options')->awolPMText;
-        
-        $messageHeader = 
+        $subject            = XenForo_Application::get('options')->awolPMSubject;
+
+
+        foreach ($users as $user) {
+
+            $message = $messageText;
+            $sender = array('user_id' => $this->getUserID(), 'username' => $this->getUsername());
+            $recipient = array($user);
+
+            $this->createConversation($sender, $recipient, $subject, $message,
+                $noInvites = true, $conversationClosed = true, $markReadForSender = true);
+        }
+
+        // redirect back to the normal scratchpad index page
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::SUCCESS,
+            XenForo_Link::buildPublicLink('awoltracker')
+        );
+
+    }
+
+    public function getUserID()
+    {
+        $visitor = XenForo_Visitor::getInstance()->toArray();
+        return $visitor['user_id'];
+    }
+
+    public function getUsername()
+    {
+        $visitor = XenForo_Visitor::getInstance()->toArray();
+        return $visitor['username'];
+    }
+
+    public static function createConversation(array $sender, array $recipients, $subject, $message,
+                                              $noInvites = false, $conversationClosed = false, $markReadForSender = true)
+    {
+        /** @var $conversationDw XenForo_DataWriter_ConversationMaster */
+        $conversationDw = XenForo_DataWriter::create('XenForo_DataWriter_ConversationMaster');
+        $conversationDw->set('user_id', $sender['user_id']);
+        $conversationDw->set('username', $sender['username']);
+        $conversationDw->set('title', $subject);
+        if ($noInvites) {
+            $conversationDw->set('open_invite', 0);
+        }
+        if ($conversationClosed) {
+            $conversationDw->set('conversation_open', 0);
+        }
+
+        $conversationDw->addRecipientUserIds($recipients);
+        $messageDw = $conversationDw->getFirstMessageDw();
+        $messageDw->set('message', $message);
+        $conversationDw->preSave();
+        $conversationDw->save();
+        $conversation = $conversationDw->getMergedData();
+        /** @var $convModel XenForo_Model_Conversaiont */
+        $convModel = XenForo_Model::create('XenForo_Model_Conversation');
+        if ($markReadForSender) {
+            $convModel->markConversationAsRead(
+                $conversation['conversation_id'], $sender['user_id'], XenForo_Application::$time
+            );
+        }
+
+        return $conversationDw->getMergedData();
     }
 }

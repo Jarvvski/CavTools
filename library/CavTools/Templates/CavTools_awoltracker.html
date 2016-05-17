@@ -1,10 +1,25 @@
 <xen:require css="CavTools_awoltracker.css" />
 <xen:title>{xen:phrase awolfinder_title}</xen:title>
 
-<form>
-<xen:if is="{$ssMemberList}">
-    <h5>Support Staff</h5>
-    <table>
+<form action="{xen:link awoltracker/send-pm}" method="post" class="AutoValidator">
+    <xen:if is="{$ssMemberList}">
+        <h5>Support Staff</h5>
+        <table>
+                <tr>
+                    <th>Member</th>
+                    <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
+                    <th>Last Post</th>
+                    <th>AWOL Since</th>
+                    <th>Days AWOL</th>
+                    <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
+                </tr>
+                {xen:raw $ssMemberList}
+        </table>
+        <br><br>
+    </xen:if>
+    <xen:if is="{$firstBnMemberList}">
+        <h5>1st Battalion</h5>
+        <table>
             <tr>
                 <th>Member</th>
                 <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
@@ -13,57 +28,44 @@
                 <th>Days AWOL</th>
                 <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
             </tr>
-            {xen:raw $ssMemberList}
-    </table>
-    <br><br>
-</xen:if>
-
-<xen:if is="{$firstBnMemberList}">
-    <h5>1st Battalion</h5>
-    <table>
-        <tr>
-            <th>Member</th>
-            <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
-            <th>Last Post</th>
-            <th>AWOL Since</th>
-            <th>Days AWOL</th>
-            <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
-        </tr>
-        {xen:raw $firstBnMemberList}
-    </table>
-    <br><br>
-</xen:if>
-
-<xen:if is="{$secondBnMemberList}">
-    <h5>2nd Battalion</h5>
-    <table>
-        <tr>
-            <th>Member</th>
-            <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
-            <th>Last Post</th>
-            <th>AWOL Since</th>
-            <th>Days AWOL</th>
-            <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
-        </tr>
-        {xen:raw $secondBnMemberList}
-    </table>
-    <br><br>
-</xen:if>
-
-<xen:if is="{$unsortedMemberList}">
-    <h5>Unsorted</h5>
-    <table>
-        <tr>
-            <th>Member</th>
-            <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
-            <th>Last Post</th>
-            <th>AWOL Since</th>
-            <th>Days AWOL</th>
-            <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
-        </tr>
-        {xen:raw $unsortedMemberList}
-    </table>
-</xen:if>
-
+            {xen:raw $firstBnMemberList}
+        </table>
+        <br><br>
+    </xen:if>
+    <xen:if is="{$secondBnMemberList}">
+        <h5>2nd Battalion</h5>
+        <table>
+            <tr>
+                <th>Member</th>
+                <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
+                <th>Last Post</th>
+                <th>AWOL Since</th>
+                <th>Days AWOL</th>
+                <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
+            </tr>
+            {xen:raw $secondBnMemberList}
+        </table>
+        <br><br>
+    </xen:if>
+    <xen:if is="{$unsortedMemberList}">
+        <h5>Unsorted</h5>
+        <table>
+            <tr>
+                <th>Member</th>
+                <xen:if is="{$milpacsBoolean}"><th>Position</th></xen:if>
+                <th>Last Post</th>
+                <th>AWOL Since</th>
+                <th>Days AWOL</th>
+                <xen:if is="{$canSendPM}"><th>PM User</th></xen:if>
+            </tr>
+            {xen:raw $unsortedMemberList}
+        </table>
+    </xen:if>
+    <xen:if is="{$canSendPM}">
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="Send PM" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </xen:if>
 </form>
 <br />
