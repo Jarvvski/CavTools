@@ -327,7 +327,9 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           }
         }
       }
-      $xml->save("/var/www/html/xml/7Cav.xml");
+
+      $redirect = XenForo_Application::get('options')->redirect;
+      $xml->save($redirect);
     }
 
     //View Parameters
