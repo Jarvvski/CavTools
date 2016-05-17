@@ -324,7 +324,8 @@ class CavTools_CronJobs_XmlGenerator {
           }
         }
       }
-      $xml->save("/var/www/html/xml/7Cav.xml");
+      $redirect = XenForo_Application::get('options')->redirect;
+      $xml->save($redirect);
     }
   }
 }
