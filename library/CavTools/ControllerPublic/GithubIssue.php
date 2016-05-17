@@ -90,7 +90,7 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
 
     public function callAPI($repoOwner, $repo, $token, $formTitle, $problem, $reason, $username, $rank, $label) {
 
-        // curl -H 'Authorization: token d6132407cfe91d8b19b14c3a4ae38c1af7f150f2' -d '{"title": "sdsdsdsd", "body":"asadsaads"}' https://api.github.com/repos/Jarvvski/Test/issues
+        // curl -H 'Authorization: token $token' -d '{"title": "My title", "body":"My content"}' https://api.github.com/repos/$repoOwner/$repo/issues
 
         //Set variables
         $headerValue = " Bearer " . $token;
