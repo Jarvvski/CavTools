@@ -105,13 +105,13 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         $ch  = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url );
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch,CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_USERAGENT,'7Cav');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        curl_exec($ch);
 
 
     }
