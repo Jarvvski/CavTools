@@ -147,13 +147,18 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
         //Create a member section for each member
         foreach($userIDs as $user) {
 
-          $primaryBilletID = $db->fetchRow("
-          SELECT position_id
-          FROM  xf_pe_roster_user_relation
-          WHERE user_id = ".$user['user_id']."
-          ");
+            //Get primary billet
+            $checkingDischarged = $db->fetchRow("
+              SELECT position_id
+              FROM xf_pe_roster_user_relation
+              WHERE user_id = ".$user['user_id']."
+              ");
 
-          if ($primaryBilletID['position_id'] != $disDischPos || $primaryBilletID['position_id'] != $dischPos) {
+            $discharged = false;
+            if ($checkingDischarged['position_id'] == $disDischPos || $checkingDischarged['position_id'] == $dischPos) {
+                $discharged = true;
+            }
+            if (!$discharged) {
 
             //Reset variables to false
             $officer = false;
@@ -322,7 +327,9 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
           }
         }
       }
-      $xml->save("/srv/www/7cav.us/public_html/xml/7Cav.xml");
+
+      $redirect = XenForo_Application::get('options')->redirect;
+      $xml->save($redirect);
     }
 
     //View Parameters
