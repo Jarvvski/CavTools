@@ -13,7 +13,7 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
             'xf_ct_rrd_enlistments' => array(
                 'enlistment_id' => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
                 'user_id' => array('type' => self::TYPE_STRING, 'required' => true),
-                'enlistment_date' => array('type' => self::TYPE_UINT, 'required' => false, 'default' => XenForo_Application:$time),
+                'enlistment_date' => array('type' => self::TYPE_STRING, 'required' => true),
                 'username' => array( 'type' => self::TYPE_STRING, 'required' => true),
                 'last_name' => array('type' => self::TYPE_STRING, 'required' => true),
                 'first_name' => array('type' => self::TYPE_STRING, 'required' => true),
@@ -21,8 +21,9 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
                 'steamID' => array('type' => self::TYPE_STRING, 'required' => true),
                 'clan' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
                 'orders' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
-                'game' => array('type' => self::TYPE_UINT, 'required' => true),
+                'game' => array('type' => self::TYPE_STRING, 'required' => true),
                 'enlistment_type' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
+                'hidden' => array('type' => self::TYPE_BOOLEAN, 'required => true', 'default' => false),
             )
         );
     }
@@ -43,7 +44,7 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
             return false;
         }
 
-        return array('xf_simple_text' => $this->_getSimpleTextModel()->getEnlistmentById($id));
+        return array('xf_ct_rrd_enlistments' => $this->_getEnlistmentModel()->getEnlistmentById($id));
     }
 
     /**
@@ -63,7 +64,7 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
      *
      * @return CavTools_Model_Enlistment
      */
-    protected function _getSimpleTextModel()
+    protected function _getEnlistmentModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_Enlistment' );
     }
