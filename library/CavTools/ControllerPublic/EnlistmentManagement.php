@@ -22,27 +22,34 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         //Get DB
         $db = XenForo_Application::get('db');
 
-        $normalEnlistments = '';
-        $reEnlistments = '';
-        $userUrl = '/members/';
+        $normalEnlistments = " ";
+        $reEnlistments = " ";
+        $threadURL = '/threads/';
+        $recruiter = " ";
 
-        $enlistments = array('CavTools' => $this->_getEnlistmentModel()->getAllEnlistment());
+        $enlistModel = $this->_getEnlistmentModel();
+        $enlistments = $enlistModel->getAllEnlistment();
+        $threadID = $enlistModel->getEnlistmentThreadID();
 
         if (count($enlistments) != 0) {
             foreach ($enlistments as $enlistment) {
 
-                $cavName  = $enlistment['last_name'];
-                $cavName .= '.';
-                $cavName .= substr($enlistment['first_name'], 0, 1);
+                $name = $enlistment['first_name'] . $enlistment['last_name'];
+                
+                $thread = $threadURL . $threadID;
 
-                if ($enlistment['enlistment_type'] = false) {
-                    $normalEnlistments .= "<tr><td><a href=" . $userUrl . $enlistment['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $cavName . "</td><td>" . $enlistment['enlistment_date'] . "</td><td>" . $enlistment['age'] . "</td><td>" . $enlistment['steamID'] . "</td><td>" . $enlistment['clan'] . "</td><td>" . $enlistment['orders'] . "</td><td>" . $enlistment['game'] . "</td><td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                if ($enlistment['recruiters'] != null)
+                {
+                    $recruiter = $enlistment['recruiters'];
+                }
+
+                if ($enlistment['reenlistment'] = false) {
+                    $normalEnlistments .= "<tr><td><a href=" . $threadURL . $enlistment['en'] . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . $enlistment['enlistment_date'] . "</td><td>" . $name . "</td><td>" . $recruiter . "</td><td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                 } else {
-                    $reEnlistments .= "<tr><td><a href=" . $userUrl . $enlistment['user_id'] . "><b>" . $member['username'] . "</b></a></td><td>" . $cavName . "</td><td>" . $enlistment['enlistment_date'] . "</td><td>" . $enlistment['age'] . "</td><td>" . $enlistment['steamID'] . "</td><td>" . $enlistment['clan'] . "</td><td>" . $enlistment['orders'] . "</td><td>" . $enlistment['game'] . "</td><td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                    $reEnlistments .= "<tr><td><a href=" . $threadURL . $enlistment['en'] . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . $enlistment['enlistment_date'] . "</td><td>" . $name . "</td><td>" . $recruiter . "</td><td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                 }
             }
         }
-
 
         //View Parameters
         $viewParams = array(
@@ -56,7 +63,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
     public function actionPost()
     {
-
+        // TODO - write function to do dennials, approvals, etc
     }
 
     public static function actionCreatePost($userID, $username, $threadId, $message, $state = 'visible')
@@ -73,6 +80,53 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $post = $writer->getMergedData();
         return $post;
     }
+
+    public static function createConversation(array $sender, array $recipients, $subject, $message,
+                                              $noInvites = false, $conversationClosed = false, $markReadForSender = true)
+    {
+        /** @var $conversationDw XenForo_DataWriter_ConversationMaster */
+        $conversationDw = XenForo_DataWriter::create('XenForo_DataWriter_ConversationMaster');
+        $conversationDw->set('user_id', $sender['user_id']);
+        $conversationDw->set('username', $sender['username']);
+        $conversationDw->set('title', $subject);
+        if ($noInvites) {
+            $conversationDw->set('open_invite', 0);
+        }
+        if ($conversationClosed) {
+            $conversationDw->set('conversation_open', 0);
+        }
+
+        $conversationDw->addRecipientUserIds($recipients);
+        $messageDw = $conversationDw->getFirstMessageDw();
+        $messageDw->set('message', $message);
+        $conversationDw->preSave();
+        $conversationDw->save();
+        $conversation = $conversationDw->getMergedData();
+        /** @var $convModel XenForo_Model_Conversaiont */
+        $convModel = XenForo_Model::create('XenForo_Model_Conversation');
+        if ($markReadForSender) {
+            $convModel->markConversationAsRead(
+                $conversation['conversation_id'], $sender['user_id'], XenForo_Application::$time
+            );
+        }
+
+        return $conversationDw->getMergedData();
+    }
+    
+    public function vacBan()
+    {
+        // TODO - steam API check
+        // http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=084E3337CA952D16B3810AA53629B262&steamids=76561197977479862
+    }
+
+    public function checkName()
+    {
+        // TODO - query DB for name in milpacs
+    }
+
+
+    
+    
 
 
 }

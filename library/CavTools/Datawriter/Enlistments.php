@@ -12,18 +12,20 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
         return array(
             'xf_ct_rrd_enlistments' => array(
                 'enlistment_id' => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
-                'user_id' => array('type' => self::TYPE_STRING, 'required' => true),
-                'enlistment_date' => array('type' => self::TYPE_STRING, 'required' => true),
-                'username' => array( 'type' => self::TYPE_STRING, 'required' => true),
-                'last_name' => array('type' => self::TYPE_STRING, 'required' => true),
-                'first_name' => array('type' => self::TYPE_STRING, 'required' => true),
-                'age' => array('type' => self::TYPE_UINT, 'required' => true),
-                'steamID' => array('type' => self::TYPE_STRING, 'required' => true),
-                'clan' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
-                'orders' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
-                'game' => array('type' => self::TYPE_STRING, 'required' => true),
-                'enlistment_type' => array('type' => self::TYPE_BOOLEAN, 'required' => true),
-                'hidden' => array('type' => self::TYPE_BOOLEAN, 'required => true', 'default' => false),
+                'user_id' => array('type' => self::TYPE_STRING),
+                'recruiter' => array('type' => self::TYPE_STRING),
+                'last_name' => array('type' => self::TYPE_STRING),
+                'first_name' => array('type' => self::TYPE_STRING),
+                'age' => array('type' => self::TYPE_UINT),
+                'timezone' => array('type' => self::TYPE_STRING),
+                'enlistment_date' => array('type' => self::TYPE_STRING),
+                'steamID' => array('type' => self::TYPE_STRING),
+                'in_clan' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'past_clans' => array('type' => self::TYPE_STRING),
+                'orders' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'game' => array('type' => self::TYPE_STRING),
+                'enlistment_type' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
             )
         );
     }
@@ -60,7 +62,7 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
     }
 
     /**
-     * Get the simple text model.
+     * Get the enlistment model.
      *
      * @return CavTools_Model_Enlistment
      */

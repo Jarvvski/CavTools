@@ -49,6 +49,15 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ', 'enlistment_id');
     }
 
+    public function getEnlistmentThreadID($enlistmentID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT thread_id
+        FROM xf_thread
+        WHERE title LIKE '%$enlistmentID%'
+        ");
+    }
+
 
 
 
