@@ -1,0 +1,60 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<div class="section">
+    <form action="{xen:link enlistments/post}" method="post" class="AutoValidator">
+        <xen:if is="{$normalEnlistments}">
+            <h5>Enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Days since application</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $normalEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$reEnlistments}">
+            <h5>Re-enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Days since application</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $reEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$canAction}">
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <input type="radio" name="rrd_option" value="1" required class="option"> Name change
+                    <input type="radio" name="rrd_option" value="2" class="option"> Steam ID missing
+                    <input type="radio" name="rrd_option" value="3" class="option"> Approved
+                    <input type="radio" name="rrd_option" value="4" class="option"> Timed out / denied
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+            <dl class="ctrlUnit logsButton">
+                <dd>
+                    <a href="{xen:link enlistmentLogs">Logs</a>
+                </dd>
+            </dl>
+        </xen:if>
+    </form>
+</div>
