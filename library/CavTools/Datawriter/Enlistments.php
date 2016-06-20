@@ -18,14 +18,16 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
                 'first_name' => array('type' => self::TYPE_STRING),
                 'age' => array('type' => self::TYPE_UINT),
                 'timezone' => array('type' => self::TYPE_STRING),
-                'enlistment_date' => array('type' => self::TYPE_STRING),
-                'steamID' => array('type' => self::TYPE_STRING),
-                'in_clan' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'enlistment_date' => array('type' => self::TYPE_FLOAT),
+                'steamID' => array('type' => self::TYPE_FLOAT),
+                'in_clan' => array('type' => self::TYPE_BOOLEAN),
                 'past_clans' => array('type' => self::TYPE_STRING),
-                'orders' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
                 'game' => array('type' => self::TYPE_STRING),
-                'enlistment_type' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
-                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'reenlistment' => array('type' => self::TYPE_BOOLEAN),
+                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => 0),
+                'thread_id' => array('type' => self::TYPE_INT),
+                'vac_ban' => array('type' => self::TYPE_BOOLEAN),
+                'under_age' => array('type' => self::TYPE_BOOLEAN),
             )
         );
     }

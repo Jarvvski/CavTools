@@ -6,4 +6,9 @@ class CavTools_Route_Prefix_Enlistment implements XenForo_Route_Interface
 	{
 		return $router->getRouteMatch('CavTools_ControllerPublic_EnlistmentForm', $routePath, 'forums');
 	}
+
+    public function buildLink($originalPrefix, $outputPrefix, $action, $extension, $data, array &$extraParams)
+    {
+        return XenForo_Link::buildBasicLinkWithIntegerParam($outputPrefix, $action, $extension, $data, 'thread_id');
+    }
 }
