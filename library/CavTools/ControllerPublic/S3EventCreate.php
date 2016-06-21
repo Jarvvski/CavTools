@@ -1,10 +1,9 @@
 <?php
 
-class CavTools_ControllerPublic_S3Events extends XenForo_ControllerPublic_Abstract {
-    
-    public function actionIndex() 
+class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_Abstract
+{
+    public function actionIndex()
     {
-
         //Get values from options
         $enable = XenForo_Application::get('options')->enableS3Events;
 
@@ -25,12 +24,7 @@ class CavTools_ControllerPublic_S3Events extends XenForo_ControllerPublic_Abstra
 
         //View Parameters
         $viewParams = array(
+            'games' => $games
         );
     }
-
-    public function actionPost()
-    {
-        //Action can only be called via post
-        $this->_assertPostOnly();
-    }
-} 
+}
