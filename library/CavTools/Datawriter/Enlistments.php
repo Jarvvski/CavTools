@@ -26,8 +26,10 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
                 'reenlistment' => array('type' => self::TYPE_BOOLEAN),
                 'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => 0),
                 'thread_id' => array('type' => self::TYPE_INT),
-                'vac_ban' => array('type' => self::TYPE_BOOLEAN),
-                'under_age' => array('type' => self::TYPE_BOOLEAN),
+                'vac_ban' => array('type' => self::TYPE_UINT),
+                'under_age' => array('type' => self::TYPE_UINT),
+                'current_status' => array('type' => self::TYPE_UINT),
+                'last_update' => array('type' => self::TYPE_FLOAT),
             )
         );
     }

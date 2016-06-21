@@ -1,18 +1,19 @@
 <xen:require css="CavTools_EnlistmentManagement.css" />
 <div class="section">
-    <form action="{xen:link enlistments/post}" method="post" class="AutoValidator">
+    <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
         <xen:if is="{$normalEnlistments}">
             <h5>Enlistments</h5>
             <table>
                 <tr>
                     <th>Enlistment ID</th>
                     <th>Enlistment Date</th>
-                    <th>Days since application</th>
-                    <th>First name</th>
-                    <th>Last name</th>
+                    <th>Last update</th>
+                    <th>Name</th>
+                    <th>First Name</th>
                     <th>Recruiter</th>
                     <th>Steam ID</th>
                     <th>Age</th>
+                    <th>Status</th>
                     <xen:if is="{$canAction}"><th>Select application</th></xen:if>
                 </tr>
                 {xen:raw $normalEnlistments}
@@ -25,12 +26,13 @@
                 <tr>
                     <th>Enlistment ID</th>
                     <th>Enlistment Date</th>
-                    <th>Days since application</th>
+                    <th>Last update</th>
+                    <th>Name</th>
                     <th>First name</th>
-                    <th>Last name</th>
                     <th>Recruiter</th>
                     <th>Steam ID</th>
                     <th>Age</th>
+                    <th>Status</th>
                     <xen:if is="{$canAction}"><th>Select application</th></xen:if>
                 </tr>
                 {xen:raw $reEnlistments}
@@ -40,10 +42,13 @@
         <xen:if is="{$canAction}">
             <dl class="ctrlUnit rrdActions">
                 <dd>
-                    <input type="radio" name="rrd_option" value="1" required class="option"> Name change
-                    <input type="radio" name="rrd_option" value="2" class="option"> Steam ID missing
-                    <input type="radio" name="rrd_option" value="3" class="option"> Approved
-                    <input type="radio" name="rrd_option" value="4" class="option"> Timed out / denied
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="2"> Name change - inappropriate</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="3"> Steam ID missing</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="4"> Approved</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="5"> Timed out / denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="6"> Denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="7"> Move application</div>
                     <br /><br />
                 </dd>
             </dl>
@@ -52,9 +57,15 @@
             </dl>
             <dl class="ctrlUnit logsButton">
                 <dd>
-                    <a href="{xen:link enlistmentLogs">Logs</a>
+                    <a href="{xen:link enlistmentlogs}">Logs</a>
                 </dd>
             </dl>
         </xen:if>
+        <br/>
+        <dl class="ctrlUnit logsButton">
+            <dd>
+                <a href="{xen:link enlistmentupdate}">Enlistment Update</a>
+            </dd>
+        </dl>
     </form>
 </div>

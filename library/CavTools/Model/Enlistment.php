@@ -68,6 +68,34 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ");
     }
 
+    public function getThreadID($enlistmentID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT thread_id
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_id = '$enlistmentID'
+        ");
+    }
+
+    public function getThreadTitle($threadID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT title
+        FROM xf_thread
+        WHERE thread_id = '$threadID'
+        ");
+    }
+
+    public function getEnlistmentStatus($enlistmentID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT current_status
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_id = '$enlistmentID' 
+        ");
+    }
+    
+
 
 
 

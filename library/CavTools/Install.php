@@ -20,6 +20,8 @@ class CavTools_Install {
                 `thread_id` INT ( 10 ) NOT NULL,
                 `vac_ban` TINYINT( 1 ) NOT NULL,
                 `under_age` TINYINT ( 1 ) NOT NULL,
+                `current_status` TINYINT ( 1 ) NOT NULL,
+                `last_update` BIGINT ( 20 ) NOT NULL,
                 PRIMARY KEY (`enlistment_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
@@ -35,7 +37,7 @@ class CavTools_Install {
                 PRIMARY KEY (`log_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
-        'dropRRDLogs' => 'DROP TABLE IF EXISTS `xf_ct_rrd_enlistments`'
+        'dropRRDLogs' => 'DROP TABLE IF EXISTS `xf_ct_rrd_logs`'
     );
 
     // This is the function to create a table in the database so our addon will work.
