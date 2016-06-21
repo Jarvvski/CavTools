@@ -1,48 +1,87 @@
 <?php
-class CavTools_Install
-{
-    protected static $_db = null;
-    protected static $_version = 0;
+class CavTools_Install {
 
-    protected static $_contentTypes = array();
+    protected static $table = array(
+        'createEnlistments' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_enlistments` (             
+                `enlistment_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `user_id` INT( 10 ) UNSIGNED NOT NULL,
+                `recruiter` VARCHAR( 50 ),
+                `last_name` VARCHAR( 50 ) NOT NULL,
+                `first_name` VARCHAR( 50 ) NOT NULL,
+                `age` INT( 10 ) UNSIGNED NOT NULL,
+                `timezone` VARCHAR( 10 ) NOT NULL,
+                `enlistment_date` BIGINT ( 20 ) NOT NULL,
+                `steamID` BIGINT ( 50 ) UNSIGNED NOT NULL,
+                `in_clan` VARCHAR ( 10 ) NOT NULL,
+                `past_clans` VARCHAR( 50 ),
+                `game` VARCHAR( 50 ) NOT NULL,
+                `reenlistment` TINYINT ( 1 ) NOT NULL,
+                `hidden` TINYINT( 1 ) NOT NULL,
+                `thread_id` INT ( 10 ) NOT NULL,
+                `vac_ban` TINYINT( 1 ) NOT NULL,
+                `under_age` TINYINT ( 1 ) NOT NULL,
+                `current_status` TINYINT ( 1 ) NOT NULL,
+                `last_update` BIGINT ( 20 ) NOT NULL,
+                PRIMARY KEY (`enlistment_id`)
+                )
+            ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
+        'dropEnlistments' => 'DROP TABLE IF EXISTS `xf_ct_rrd_enlistments`',
 
-    protected static $_contentTypeTables = array(
-        'xf_content_type', 'xf_content_type_field',
-        'xf_user_alert'
+        'createRRDLogs' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_logs` (             
+                `log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `enlistment_id` INT( 10 ) UNSIGNED NOT NULL,
+                `user_id` INT ( 10 ) NOT NULL ,
+                `username` VARCHAR (50) NOT NULL ,
+                `log_date` BIGINT ( 20 ) NOT NULL,
+                `action_taken` VARCHAR (50) NOT NULL,
+                PRIMARY KEY (`log_id`)
+                )
+            ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
+        'dropRRDLogs' => 'DROP TABLE IF EXISTS `xf_ct_rrd_logs`',
+
+        'createS3Events' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_events` (             
+                `event_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `event_type` INT( 10 ) UNSIGNED NOT NULL,
+                `event_title` INT ( 10 ) NOT NULL ,
+                `event_date` VARCHAR ( 50 ) NOT NULL ,
+                `event_game` VARCHAR ( 50 ) NOT NULL ,
+                `event_text` VARCHAR ( 50 ) NOT NULL ,
+                `username` VARCHAR ( 50 ) NOT NULL ,
+                `hidden` TINYINT ( 50 ) NOT NULL ,
+                `thread_id` INT ( 10 ) NOT NULL ,
+                PRIMARY KEY (`event_id`)
+                )
+            ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
+        'dropS3Events' => 'DROP TABLE IF EXISTS `xf_ct_s3_events`',
+        
+        'createS3Classes' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_classes` (             
+                `log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `enlistment_id` INT( 10 ) UNSIGNED NOT NULL,
+                `user_id` INT ( 10 ) NOT NULL ,
+                `username` VARCHAR (50) NOT NULL ,
+                `log_date` BIGINT ( 20 ) NOT NULL,
+                `action_taken` VARCHAR (50) NOT NULL,
+                PRIMARY KEY (`log_id`)
+                )
+            ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
+        'dropS3Classes' => 'DROP TABLE IF EXISTS `xf_ct_s3_classes`'
     );
 
-    protected static function _canBeInstalled(&$error)
+    // This is the function to create a table in the database so our addon will work.
+    public static function install()
     {
-        if (XenForo_Application::$versionId < 1030070)
-        {
-            $error = 'This add-on requires XenForo 1.3.0 or higher.';
-            return false;
-        }
-
-        return true;
+        $db = XenForo_Application::getDb();
+        $db->query(self::$table['createEnlistments']);
+        $db->query(self::$table['createRRDLogs']);
     }
 
-    public static function install($existingAddon)
+    // This is the function to DELETE the table of our addon in the database.
+    public static function uninstall()
     {
-
-        if (!self::_canBeInstalled($error))
-        {
-            throw new XenForo_Exception($error, true);
-        }
-
-        self::$_version = is_array($installedAddon) ? $installedAddon['version_id'] : 0;
-
-        self::stepTables();
-        self::stepVersionAlters();
-
-        if (self::$_version < 1000370)
-        {
-            XenForo_Model::create('PixelExit_Roster_Model_RosterAward')->rebuildAwardMaterializedOrder();
-            XenForo_Model::create('PixelExit_Roster_Model_Position')->rebuildPositionMaterializedOrder();
-        }
-
-        //self::stepCoreAlters();
-        //self::stepData();
-        //self::stepDeleteObsolete();
+        $db = XenForo_Application::getDb();
+        $db->query(self::$table['dropEnlistments']);
+        $db->query(self::$table['dropRRDLogs']);
     }
 }
+
+?>
