@@ -10,10 +10,5 @@ class CavTools_Model_S3Event extends XenForo_Model {
 		');
     }
 
-    public function canViewEvents()
-    {
-        $this->standardizeViewingUserReference($viewingUser);
 
-        return XenForo_Permission::hasPermission($viewingUser['permissions'], 'peRosters', 'manage');
-    }
 }
