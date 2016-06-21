@@ -84,7 +84,8 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         // redirect back to the normal scratchpad index page
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('featurerequest')
+            XenForo_Link::buildPublicLink('forums'),
+            new XenForo_Phrase('request_received')
         );
     }
 
@@ -112,7 +113,5 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         curl_setopt($ch, CURLOPT_USERAGENT,'7Cav');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_exec($ch);
-
-
     }
 }
