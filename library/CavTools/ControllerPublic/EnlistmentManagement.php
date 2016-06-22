@@ -47,7 +47,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 // capitalise the first letters of the first and last name, even if uppercase already
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
-                $cavName = '';
+                $cavName = "";
                 $cavName = $lastName . "." . $firstName[0];
                 $nameCheck = $this->checkName($cavName);
                 
@@ -57,6 +57,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     case 2: $status = '<td style="color:green;">Approved</td>';break;
                     case 3: $status = '<td style="color:yellow;">Open</td>';break;
                 }
+                
                 
                 if ($daysSince > 7) {
                     $dayStatus = '<td style="color:red;">';
@@ -84,25 +85,25 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 if ($canAction) {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . $cavName . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . $cavName . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
                 } else {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . $cavName . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . $cavName . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
                         }
                     }
                 }
