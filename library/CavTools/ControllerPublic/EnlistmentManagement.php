@@ -85,25 +85,25 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 if ($canAction) {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
                 } else {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus " . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status</tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". $enlistment['first_name'] . "</td><td>" . $enlistment['recruiter'] . "</td>$banStatus" . $enlistment['steamID'] . "</td>$ageStatus" . $enlistment['age'] . "</td>$status</tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status</tr>" . PHP_EOL;
                         }
                     }
                 }
@@ -163,28 +163,27 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 case '4':
                     // Approved
                     $message = '[B]Application approved.[/B]';
-                    $newTitle .= ' - APPROVED';
-                    $this->updateThread($threadID['thread_id'], $newTitle);
                     $currentStatus = 2;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
+                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
                     break;
                 case '5':
                     // Denied - Timed out
                     $message = '[B]Application timed out. Enlistment denied[/B]';
-                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
+                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied - Timed out';
                     $this->writeLog($enlistmentID, $action);
                     break;
                 case '6':
                     // Denied
                     $message = '[B]Enlistment denied.[/B]';
-                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
+                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied';
                     $this->writeLog($enlistmentID, $action);
                     break;
