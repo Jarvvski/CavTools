@@ -23,6 +23,8 @@ class CavTools_ControllerPublic_S3Events extends XenForo_ControllerPublic_Abstra
         //Get DB
         $db = XenForo_Application::get('db');
 
+        // TODO - Show S3 Events 
+
         //View Parameters
         $viewParams = array(
         );
@@ -32,5 +34,7 @@ class CavTools_ControllerPublic_S3Events extends XenForo_ControllerPublic_Abstra
     {
         //Action can only be called via post
         $this->_assertPostOnly();
+        
+        // TODO - Remove S3 Event 
     }
 } 
