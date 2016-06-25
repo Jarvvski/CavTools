@@ -22,11 +22,13 @@ class CavTools_Install {
                 `under_age` TINYINT ( 1 ) NOT NULL,
                 `current_status` TINYINT ( 1 ) NOT NULL,
                 `last_update` BIGINT ( 20 ) NOT NULL,
+                `rtc_thread_id` INT ( 10 ),
+                `s2_thread_id` INT ( 10 ),
                 PRIMARY KEY (`enlistment_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
         'dropEnlistments' => 'DROP TABLE IF EXISTS `xf_ct_rrd_enlistments`',
-        
+
         'createRRDLogs' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_logs` (             
                 `log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `enlistment_id` INT( 10 ) UNSIGNED NOT NULL,
@@ -54,6 +56,19 @@ class CavTools_Install {
         $db = XenForo_Application::getDb();
         $db->query(self::$table['dropEnlistments']);
         $db->query(self::$table['dropRRDLogs']);
+    }
+
+    protected function _getFields()
+    {
+        return array(
+            'xf_trophy' => array(
+                'trophy_id'   => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
+                'trophy_points' => array('type' => self::TYPE_UINT, 'required' => true),
+                'user_criteria' => array('type' => self::TYPE_UNKNOWN, 'required' => true,
+                    'verification' => array('$this', '_verifyCriteria')
+                )
+            )
+        );
     }
 }
 

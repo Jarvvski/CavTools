@@ -94,9 +94,4 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         WHERE enlistment_id = '$enlistmentID' 
         ");
     }
-    
-
-
-
-
 }

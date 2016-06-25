@@ -136,8 +136,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         {
             
             $enlistModel = $this->_getEnlistmentModel();
-            $threadID = $enlistModel->getThreadID($enlistmentID);
-            $currentStatus = $enlistModel->getEnlistmentStatus($enlistmentID);
+            $query = $enlistModel->getEnlistmentById($enlistmentID);
+            $folderCreation = XenForo_Application::get('options')->enableFolderCreation;
             $message = "";
             
             switch($rrdOption)
@@ -165,7 +165,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $message = '[B]Application approved.[/B]';
                     $currentStatus = 2;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
-                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
+                    $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
+                    if($folderCreation) {
+                        $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
+                        $this->setRTCThreadID($enlistmentID,$rtcThreadID);
+                        $steamContent = $this->getSteamContent($query['steamID']);
+                        $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
+                        $this->setS2ThreadID($enlistmentID,$s2ThreadID);
+                    }
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
                     break;
@@ -174,7 +181,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $message = '[B]Application timed out. Enlistment denied[/B]';
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
-                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
+                    $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied - Timed out';
                     $this->writeLog($enlistmentID, $action);
                     break;
@@ -183,16 +190,16 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $message = '[B]Enlistment denied.[/B]';
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
-                    $this->updateThread($threadID['thread_id'], $this->buildTitle($enlistmentID));
+                    $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied';
                     $this->writeLog($enlistmentID, $action);
                     break;
                 case '7':
                     // Moved
                     $message = '[B]Application sorted[/B]';
-                    $this->sortApplication($enlistmentID, $threadID, $currentStatus['current_status']);
+                    $this->sortApplication($enlistmentID, $query['thread_id'], $query['current_status']);
             }
-            $this->createPost($threadID, $message);
+            $this->createPost($query['thread_id'], $message);
         }
 
         return $this->responseRedirect(
@@ -242,7 +249,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $writer->set('username', $poster['username']);
         $writer->set('message', $message);
         $writer->set('message_state', 'visible');
-        $writer->set('thread_id', $threadId['thread_id']);
+        $writer->set('thread_id', $threadId);
         $writer->save();
     }
 
@@ -347,6 +354,208 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $dw->set('node_id', $forumID);
         $dw->set('discussion_open', '0');
         $dw->save();
+    }
+
+    public function createRTCFolderTitle($enlistmentID)
+    {
+        $enlistModel = $this->_getEnlistmentModel();
+        $query = $enlistModel->getEnlistmentById($enlistmentID);
+        $rank = "RTC";
+        return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED | " . $query['game'];
+    }
+
+    public function createRTCFolderContent($enlistmentID)
+    {
+        $enlistModel = $this->_getEnlistmentModel();
+        $query = $enlistModel->getEnlistmentById($enlistmentID);
+        $content = "";
+        $newLine = "\n";
+        
+        $generalInformation = "[Size=6][B]General Information[/B][/Size]";
+        if ($query['reenlistment'])
+        {
+            $reenlistment = "[B]Re-enlistment:[/B] Yes";
+        } else {
+            $reenlistment = "[B]Re-enlistment:[/B] No";
+        }
+
+        $dateApproved = "[B]Date Approved:[/B] " . date('dMy', XenForo_Application::$time);
+        $home = XenForo_Application::get('options')->homeURL;
+        $threadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
+        $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
+        $steamID = "[B]Steam 64-bit ID:[/B] " . $query['steamID'];
+        $bootCamp = "[B]Boot Camp Class Assigned[/B]: UNASSIGNED";
+        $timeZone = "[B]Time Zone:[/B] " . $query['timezone'];
+
+        // Standard text
+        $bootcampInfo = "[Size=6][B]Bootcamp Information[/B][/Size]";
+        $bootCampDate = "[B]Date of Bootcamp:[/B]";
+        $leadDI = "[B]Lead DI [RANK.Last.F]:[/B]";
+        $attending = "[B]Attending DI [RANK.Last.F]:[/B]";
+        $cadre = "[B]Cadre [RANK.Last.F]:[/B]";
+        $scores = "[Size=6][B]Scores[/B][/Size]";
+        $oral = "[B]Oral Test Scores [X/10]:[/B]";
+        $targets1 = "[B]Time Stationary Targets [Rounds/MAX/X.XX sec]:[/B]";
+        $targets2 = "[B]Result Moving targets [X/X]:[/B]";
+        $targets3 = "[B]Shoot House Time [X.XX sec]:[/B]";
+        $targets4 = "[B]Rifle Range Course Qualification [EX/SS/MM]:[/B]";
+        $targets5 = "[B]Grenade Course Qualification [EX/SS/MM]:[/B]";
+        $targets6 = "[B]Tactical/Obstacle Training Completed [Y - X.XX sec]:[/B]";
+        $survey = "[B]Survey Sent [Y/N - LASTNAME]:[/B]";
+        $check = "[B]S2 - Security Check Status:[/B]";
+        $notes = "[B]Notes:[/B]";
+
+        $folderContent = $bootcampInfo . $newLine . $bootCampDate . $newLine . $leadDI . $newLine . $attending . $newLine . $cadre .
+                        $newLine . $newLine. $scores . $newLine . $oral . $newLine . $targets1 . $newLine .$targets2 . $newLine .
+                        $targets3 . $newLine . $targets4 . $newLine. $targets5 . $newLine . $targets6 .
+                        $newLine . $newLine . $survey . $newLine . $newLine . $check;
+
+        return $content = $generalInformation . $newLine . $reenlistment . $newLine . $dateApproved . $newLine . $thread . $newLine . $steamID .
+            $newLine . $bootCamp . $newLine . $timeZone . $newLine .$newLine . $folderContent . $newLine . $newLine . $notes;
+    }
+
+    public function setRTCThreadID($enlistmentID, $threadID)
+    {
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
+        $dw->setExistingData($enlistmentID);
+        $dw->set('rtc_thread_id', $threadID);
+        $dw->save();
+    }
+
+    public function getSteamContent($steamID)
+    {
+
+        // Player summary - http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$key&steamids=$id
+        // Player groups - http://api.steampowered.com/ISteamUser/GetUserGroupList/v0001/?key=$key&steamid=$id
+        // Group names -  http://steamcommunity.com/gid/$gID/memberslistxml/?xml=1
+        $key = XenForo_Application::get('options')->steamAPIKey;
+
+        // Do player summary
+        $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, $steamID);
+        //Send curl message
+        $ch  = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $reply = curl_exec($ch);
+        curl_close($ch);
+
+        $reply = json_decode($reply, true);
+
+        $name = $reply['response']['players'][0]['personaname'];
+        $profile = $reply['response']['players'][0]['profileurl'];
+
+        try {
+            if ($reply['response']['players'][0]['communityvisibilitystate'] == 1) {
+                $status = 1;
+            } else if ($reply['response']['players'][0]['communityvisibilitystate'] == 3) {
+                $status = 2;
+            }
+        }catch (Exception $e) {
+            $status = 3;
+        }
+
+        return array('id' => $steamID, 'name' => $name, 
+            'status' => $status, 'profile_url' => $profile);
+    }
+
+    public function createS2FolderTitle($enlistmentID)
+    {
+        $enlistModel = $this->_getEnlistmentModel();
+        $query = $enlistModel->getEnlistmentById($enlistmentID);
+        $rank = "RTC";
+        return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED";
+    }
+
+    public function createS2FolderContent($enlistmentID, $steamContent)
+    {
+        $enlistModel = $this->_getEnlistmentModel();
+        $query = $enlistModel->getEnlistmentById($enlistmentID);
+        $content = "";
+        $newLine = "\n";
+
+        $general = "[Size=6][B]General Information[/B][/Size]";
+        $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . $query['last_name'];
+
+        if ($query['reenlistment'])
+        {
+            $reenlistment = "[B]Re-enlistment:[/B] Yes";
+        } else {
+            $reenlistment = "[B]Re-enlistment:[/B] No";
+        }
+        
+        $aliases = "[B]Aliases:[/B] ";
+        $ip = "[B]IP Addresses:[/B] ";
+        $home = XenForo_Application::get('options')->homeURL;
+        $rtcThreadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'RTC Folder' .$query['enlistment_id'].'[/URL]';
+        $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
+        $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
+        $thread = '[B]Enlistment Thread:[/B] ' . $rtcThreadURL;
+        $steam = "[Size=6][B]Steam Review-Cleared/Hold[/B][/Size]";
+        $steamName = "[B]Username:[/B] " . $steamContent['name'];
+
+        if ($steamContent['status'] = 1) {
+            $steamStatus = "[B]Status:[/B] [Color=red]Private[/Color]";
+        } else if ($steamContent['status'] = 2) {
+            $steamStatus = "[B]Status:[/B] [Color=green]Public[/Color]";
+        } else if ($steamContent['status'] = 3) {
+            $steamStatus = "[B]Status:[/B] [Color=yellow]Unknown[/Color]";
+        }
+
+        $steamID = "[B]ID:[/B] " . $steamContent['id'];
+        $steamURL = '[URL="' . $steamContent['profile_url'] . '"]Profile[/URL]';
+        $steamLink = "[B]Account link:[/B] " . $steamURL;
+        $steamGroups = "[B]Groups:[/B] ";
+        $steamAliases = "[B]Aliases:[/B] ";
+
+        $info = "[B]Additional Information:[/B] ";
+        $echelon  = "[Size=6][B]Echelon Review Status-Cleared/Hold[/B][/Size]";
+        $echelonName = "Name:";
+        $echelonIP = "IP Address:";
+        $echelonID = "Client ID:";
+        $echelonCons = "Connections:";
+        $echelonWarn = "# of Warnings:";
+        $echelonWarnFor = "Warnings for:";
+        $echelonBans = "# of Temp Bans:";
+        $echelonBansFor = "Temp Bans for:";
+        $echelonAdd = "Additional Information";
+        $echelonContent = "[B]" .$echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
+            $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
+            $newLine . $echelonBansFor . $newLine . $echelonAdd ."[/B]";
+        $misc = "[B]Miscellaneous-[/B]";
+        $summary = "[B]Summary-[/B]";
+
+        return $content = $general . $newLine . $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
+            $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName . $newLine . $steamStatus .
+            $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine .
+            $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
+            $newLine . $summary;
+    }
+
+    public function setS2ThreadID($enlistmentID, $threadID)
+    {
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
+        $dw->setExistingData($enlistmentID);
+        $dw->set('s2_thread_id', $threadID);
+        $dw->save();
+    }
+
+    public function createThread($forumID, $title, $message)
+    {
+        // get rrd bot values
+        $poster = $this->getRRDBot();
+
+        // write the thread
+        $writer = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
+        $writer->set('user_id', $poster['userID']);
+        $writer->set('username', $poster['username']);
+        $writer->set('title', $title);
+        $postWriter = $writer->getFirstMessageDw();
+        $postWriter->set('message', $message);
+        $writer->set('node_id', $forumID);
+        $writer->preSave();
+        $writer->save();
+        return $writer->getDiscussionId();
     }
 
     protected function _getEnlistmentModel()

@@ -30,6 +30,8 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
                 'under_age' => array('type' => self::TYPE_UINT),
                 'current_status' => array('type' => self::TYPE_UINT),
                 'last_update' => array('type' => self::TYPE_FLOAT),
+                'rtc_thread_id' => array('type' => self::TYPE_INT),
+                's2_thread_id' => array('type' => self::TYPE_INT),
             )
         );
     }
