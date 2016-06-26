@@ -384,7 +384,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $threadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steamID = "[B]Steam 64-bit ID:[/B] " . $query['steamID'];
-        $bootCamp = "[B]Boot Camp Class Assigned[/B]: UNASSIGNED";
+        $bootCamp = "[B]Boot Camp Class Assigned[/B]: " . date('W/m/o');
         $timeZone = "[B]Time Zone:[/B] " . $query['timezone'];
 
         // Standard text
