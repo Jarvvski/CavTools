@@ -1,0 +1,71 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<div class="section">
+    <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
+        <xen:if is="{$normalEnlistments}">
+            <h5>Enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Last update</th>
+                    <th>Name</th>
+                    <th>First Name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $normalEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$reEnlistments}">
+            <h5>Re-enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Last update</th>
+                    <th>Name</th>
+                    <th>First name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $reEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$canAction}">
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="2"> Name change - inappropriate</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="3"> Steam ID missing</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="4"> Approved</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="5"> Timed out / denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="6"> Denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="7"> Move application</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+            <dl class="ctrlUnit logsButton">
+                <dd>
+                    <a href="{xen:link enlistmentlogs}">Logs</a>
+                </dd>
+            </dl>
+        </xen:if>
+        <br/>
+        <dl class="ctrlUnit logsButton">
+            <dd>
+                <a href="{xen:link enlistmentupdate}">Enlistment Update</a>
+            </dd>
+        </dl>
+    </form>
+</div>
