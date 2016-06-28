@@ -1,0 +1,42 @@
+<xen:require js="js/CavTools/createEvent.js" />
+<div class="section">
+    <h2 class="subHeading">Create S3 Event</h2>
+    <br />
+    <br />
+    <form action="{xen:link createEvent/post}" method="post" class="xenForm AutoValidator createEvent">
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Class or Operation</label></dt>
+            <dd><input type="radio" name="type" value="Class" required> Class
+                <br /><br />
+                <input type="radio" name="type" value="Operation"> Operation<br></dd>
+        </dl>
+        <dl>
+            <dt><label for="ctrl_message">Operation Name</label></dt>
+            <dd><textarea name="" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
+        </dl>
+        <dl>
+            <dt><label for="ctrl_message">Class selection</label></dt>
+            <dd><select name="className" class="textCtrl">
+                <xen:foreach loop="$classNames" value="$className">
+                    <option value="{xen:raw $className}">{xen:raw $className}</option>
+                </xen:foreach>
+            </select></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Game selection</label></dt>
+            <dd><select name="game" class="textCtrl" required>
+                <xen:foreach loop="$games" value="$game">
+                    <option value="{xen:raw $game}">{xen:raw $game}</option>
+                </xen:foreach>
+            </select></dd>
+        </dl>
+        <dl>
+            <dt><label for="ctrl_message">Custom Text</label></dt>
+            <dd><textarea name="" id="ctrl_message" class="textCtrl" rows="10" cols="50"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="submit" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </form>
+</div>
