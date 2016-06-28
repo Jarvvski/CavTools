@@ -57,7 +57,7 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
     
     public function createData($className, $classText, $visitor)
     {
-        $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Event');
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Class');
         $dw->set('class_name', $className);
         $dw->set('class_text', $classText);
         $dw->set('username', $visitor['username']);

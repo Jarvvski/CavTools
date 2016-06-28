@@ -19,4 +19,13 @@ class CavTools_Model_S3Class extends XenForo_Model {
         WHERE hidden = FALSE
         ");
     }
+
+    public function getClassById($id)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT *
+        FROM xf_ct_s3_classes
+        WHERE class_id = '$id'
+        ");
+    }
 }

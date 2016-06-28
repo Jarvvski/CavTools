@@ -42,7 +42,7 @@ class CavTools_Install {
         'createS3Events' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_events` (             
                 `event_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `event_type` INT( 10 ) UNSIGNED NOT NULL,
-                `event_title` VARCHAR( 100 ) NOT NULL ,
+                `event_title` VARCHAR( 200 ) NOT NULL ,
                 `event_date` BIGINT ( 20 ) NOT NULL,
                 `event_time` BIGINT ( 20 ) NOT NULL,
                 `event_game` VARCHAR ( 50 ) NOT NULL ,

@@ -17,7 +17,7 @@
             </dd>
         </dl>
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Event time</label></dt>
+            <dt><label for="ctrl_message">Event time (in zulu)</label></dt>
             <dd><select name="event_time" class="textCtrl" required>
                 <xen:foreach loop="$timeOptions" value="$timeOption">
                     <option value="{xen:raw $timeOption}">{xen:raw $timeOption}</option>

@@ -80,7 +80,7 @@ class CavTools_ControllerPublic_S3Classes extends XenForo_ControllerPublic_Abstr
 
     public function setHidden($class)
     {
-        $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Classes');
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Class');
         $dw->setExistingData($class);
         $dw->set('hidden', 1);
         $dw->save();
@@ -89,7 +89,7 @@ class CavTools_ControllerPublic_S3Classes extends XenForo_ControllerPublic_Abstr
 
     protected function _getS3ClassModel()
     {
-        return $this->getModelFromCache ( 'CavTools_Model_S3Event' );
+        return $this->getModelFromCache ( 'CavTools_Model_S3Class' );
     }
 
 }
