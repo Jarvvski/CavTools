@@ -1,39 +1,61 @@
-<xen:require js="js/CavTools/createEvent.js" />
+<xen:require js="js/CavTools/createS3Event.js" />
 <div class="section">
     <h2 class="subHeading">Create S3 Event</h2>
     <br />
     <br />
-    <form action="{xen:link createEvent/post}" method="post" class="xenForm AutoValidator createEvent">
+    <form action="{xen:link createEvent/post}" method="post" class="xenForm AutoValidator createS3Event" data-redirect="on">
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Class or Operation</label></dt>
-            <dd><input type="radio" name="type" value="Class" required> Class
+            <dt><label for="ctrl_message">Event type</label></dt>
+            <dd><input type="radio" name="type" value="Class" id="class" required onclick="javascript:typeCheck();"> Class
                 <br /><br />
-                <input type="radio" name="type" value="Operation"> Operation<br></dd>
-        </dl>
-        <dl>
-            <dt><label for="ctrl_message">Operation Name</label></dt>
-            <dd><textarea name="" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
-        </dl>
-        <dl>
-            <dt><label for="ctrl_message">Class selection</label></dt>
-            <dd><select name="className" class="textCtrl">
-                <xen:foreach loop="$classNames" value="$className">
-                    <option value="{xen:raw $className}">{xen:raw $className}</option>
-                </xen:foreach>
-            </select></dd>
+                <input type="radio" name="type" value="Operation" id="operation" onclick="javascript:typeCheck();"> Operation<br></dd>
         </dl>
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Game selection</label></dt>
-            <dd><select name="game" class="textCtrl" required>
-                <xen:foreach loop="$games" value="$game">
-                    <option value="{xen:raw $game}">{xen:raw $game}</option>
+            <dt><label for="ctrl_message">Event date</label></dt>
+            <dd>
+                <input id="ctrl_message" type="date" class="textCtrl autoSize" name="event_date"/>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Event time</label></dt>
+            <dd><select name="event_time" class="textCtrl" required>
+                <xen:foreach loop="$timeOptions" value="$timeOption">
+                    <option value="{xen:raw $timeOption}">{xen:raw $timeOption}</option>
                 </xen:foreach>
             </select></dd>
         </dl>
-        <dl>
-            <dt><label for="ctrl_message">Custom Text</label></dt>
-            <dd><textarea name="" id="ctrl_message" class="textCtrl" rows="10" cols="50"></textarea></dd>
-        </dl>
+        <div id="game_selection" style="display:none;">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Game selection</label></dt>
+                <dd><select name="game" class="textCtrl" required>
+                    <xen:foreach loop="$games" value="$game">
+                        <option value="{xen:raw $game}">{xen:raw $game}</option>
+                    </xen:foreach>
+                </select></dd>
+            </dl>
+        </div>
+        <div id="operation_title" style="display:none">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Operation Name</label></dt>
+                <dd><textarea name="title" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
+            </dl>
+        </div>
+        <div id="class_selection" style="display:none">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Class selection</label></dt>
+                <dd><select name="class" class="textCtrl">
+                    <xen:foreach loop="$classNames" value="$className">
+                        <option value="{xen:raw $className}">{xen:raw $className}</option>
+                    </xen:foreach>
+                </select></dd>
+            </dl>
+        </div>
+        <div id="custom_text" style="display:none">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Custom Text</label></dt>
+                <dd><textarea name="text" id="ctrl_message" class="textCtrl" rows="10" cols="50"></textarea></dd>
+            </dl>
+        </div>
         <dl class="ctrlUnit submitUnit">
             <dt></dt>
             <dd><input type="submit" value="submit" class="button primary" accesskey="s" /></dd>

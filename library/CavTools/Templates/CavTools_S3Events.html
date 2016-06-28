@@ -1,0 +1,37 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<div class="section">
+    <form action="{xen:link s3events/post}" method="post" class="AutoValidator" data-redirect="on">
+        <xen:if is="{$eventList}">
+            <h5>Events</h5>
+            <table>
+                <tr>
+                    <th>Thread</th>
+                    <th>Date</th>
+                    <th>Zulu Time</th>
+                    <th>CST Time</th>
+                    <th>Poster Username</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $eventList}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$canAction}">
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Remove Event</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+        </xen:if>
+        <br/>
+        <dl class="ctrlUnit logsButton">
+            <dd>
+                <a href="{xen:link createEvent}">Create Event</a>
+            </dd>
+        </dl>
+    </form>
+</div>
