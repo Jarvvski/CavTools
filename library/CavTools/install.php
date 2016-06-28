@@ -42,11 +42,13 @@ class CavTools_Install {
         'createS3Events' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_events` (             
                 `event_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `event_type` INT( 10 ) UNSIGNED NOT NULL,
-                `event_title` INT ( 10 ) NOT NULL ,
-                `event_date` VARCHAR ( 50 ) NOT NULL ,
+                `event_title` VARCHAR( 100 ) NOT NULL ,
+                `event_date` BIGINT ( 20 ) NOT NULL,
+                `event_time` BIGINT ( 20 ) NOT NULL,
                 `event_game` VARCHAR ( 50 ) NOT NULL ,
-                `event_text` VARCHAR ( 50 ) NOT NULL ,
+                `event_text` LONGTEXT NOT NULL ,
                 `username` VARCHAR ( 50 ) NOT NULL ,
+                `user_id` INT ( 10 ) NOT NULL ,
                 `hidden` TINYINT ( 50 ) NOT NULL ,
                 `thread_id` INT ( 10 ) NOT NULL ,
                 PRIMARY KEY (`event_id`)
@@ -56,8 +58,10 @@ class CavTools_Install {
         
         'createS3Classes' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_classes` (             
                 `class_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `class_name` VARCHAR ( 10 ) NOT NULL,
-                `class_text` VARCHAR ( 60 ) NOT NULL ,
+                `class_name` VARCHAR ( 50 ) NOT NULL,
+                `class_text` LONGTEXT NOT NULL ,
+                `username` VARCHAR( 50 ) NOT NULL ,
+                `user_id` INT ( 10 ) NOT NULL ,
                 `hidden` TINYINT ( 10) NOT NULL ,
                 PRIMARY KEY (`class_id`)
                 )
@@ -81,7 +85,7 @@ class CavTools_Install {
         $db = XenForo_Application::getDb();
         $db->query(self::$table['dropEnlistments']);
         $db->query(self::$table['dropRRDLogs']);
-        $db->query(self::$table['dropS3Classes']);
+        $db->query(self::$table['dropS3Events']);
         $db->query(self::$table['dropS3Classes']);
     }
 }
