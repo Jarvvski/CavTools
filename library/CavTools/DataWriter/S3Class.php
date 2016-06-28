@@ -14,7 +14,9 @@ class CavTools_DataWriter_S3Class extends XenForo_DataWriter {
                 'class_id' => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
                 'class_name' => array('type' => self::TYPE_STRING),
                 'class_text' => array('type' => self::TYPE_STRING),
-                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'username' => array('type' => self::TYPE_STRING),
+                'user_id' => array('type' => self::TYPE_INT),
+                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => 0),
             )
         );
     }

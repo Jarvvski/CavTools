@@ -1,13 +1,13 @@
 <?php
 
-class CavTools_DataWriter_S3Events extends XenForo_DataWriter {
+class CavTools_DataWriter_S3Event extends XenForo_DataWriter {
 
     /**
      * Gets the fields that are defined for the table. See parent for explanation.
      *
      * @return array
      */
-    protected function _getFields()
+    protected function _getFields() 
     {
         return array(
             'xf_ct_s3_events' => array(
@@ -15,10 +15,12 @@ class CavTools_DataWriter_S3Events extends XenForo_DataWriter {
                 'event_type' => array('type' => self::TYPE_UINT),
                 'event_title' => array('type' => self::TYPE_STRING),
                 'event_date' => array('type' => self::TYPE_FLOAT),
+                'event_time' => array('type' => self::TYPE_FLOAT),
                 'event_game' => array('type' => self::TYPE_STRING),
                 'event_text' => array('type' => self::TYPE_STRING),
                 'username' => array('type' => self::TYPE_STRING),
-                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => false),
+                'user_id' => array('type' => self::TYPE_INT),
+                'hidden' => array('type' => self::TYPE_BOOLEAN, 'default' => 0),
                 'thread_id' => array('type' => self::TYPE_INT),
             )
         );
