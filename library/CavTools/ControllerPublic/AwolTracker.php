@@ -242,7 +242,8 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         // redirect back to the normal scratchpad index page
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('awoltracker')
+            XenForo_Link::buildPublicLink('forums'),
+            new XenForo_Phrase('request_received')
         );
 
     }

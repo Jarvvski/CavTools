@@ -7,7 +7,11 @@
 !js/CavTools/*
 !library/
 !library/CavTools/
+<<<<<<< HEAD
 !library/CavTools/*
+=======
+!library/CavTools/install.php
+>>>>>>> dev
 !library/CavTools/*/
 !library/CavTools/*/*
 !library/CavTools/*/*/

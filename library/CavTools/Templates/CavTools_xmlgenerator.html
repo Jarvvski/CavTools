@@ -1,9 +1,15 @@
-<xen:title>{xen:phrase xmlgenerator_title}</xen:title>
-
-<xen:if is="{$xml}">
-	<pre><code>
-    {xen:raw $xml}
-
-  </code></pre>
-</xen:if>
+<xen:title>XML Generator</xen:title>
+<div class="section">
+    <form class="xenForm">
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">User Count</label></dt>
+            <dd><textarea name="rank" id="ctrl_message" class="textCtrl" rows="1" cols="20"></textarea></dd>
+        </dl>
+    </form>
+    <xen:if is="{$xml}">
+	    <pre><code>
+            {xen:raw $xml}
+        </code></pre>
+    </xen:if>
+</div>
 <br />
