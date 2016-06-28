@@ -10,4 +10,13 @@ class CavTools_Model_S3Class extends XenForo_Model {
         WHERE class_name = '$className'
         ");
     }
+
+    public function getClassList()
+    {
+        return $this->_getDb()->fetchAll("
+        SELECT *
+        FROM xf_ct_s3_classes
+        WHERE hidden = FALSE
+        ");
+    }
 }
