@@ -10,18 +10,17 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $botUsername = $db->fetchRow("
                             SELECT username
                            FROM xf_user
-                           WHERE user_id = " . $userID . "
+                           WHERE user_id = '$userID'
                        ");
         $username = $botUsername['username'];
-        $botVars = array("user_id", "username");
-        return compact($botVars);
+        $botVars = array('user_id' => $userID, 'username' => $username);
+        return $botVars;
     }
 
     public function actionIndex()
     {
         //Get values from options
-        $enable = XenForo_Application::get('options')->enableS3Events;
-        $games = XenForo_Application::get('options')->games;
+        $enable = XenForo_Application::get('options')->enableS3EventCreate;
 
         if(!$enable) {
             throw $this->getNoPermissionResponseException();
@@ -32,6 +31,19 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
             throw $this->getNoPermissionResponseException();
         }
 
+        $model = $this->_getS3ClassModel();
+        $query = $model->getClassList();
+        $classNames = array();
+
+        foreach ($query as $item)
+        {
+            array_push($classNames, $item['class_name']);
+        }
+
+        $games = XenForo_Application::get('options')->s3Games;
+        $games = explode(',', $games);
+        $timeOptions = $this->createTimeOptions();
+        
         //Set Time Zone to UTC
         date_default_timezone_set("UTC");
 
@@ -40,8 +52,28 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
 
         //View Parameters
         $viewParams = array(
+            'timeOptions' => $timeOptions,
+            'classNames' => $classNames,
             'games' => $games
         );
+
+        //Send to template to display
+        return $this->responseView('CavTools_ViewPublic_CreateEvent', 'CavTools_S3EventCreation', $viewParams);
+    }
+    
+    public function createTimeOptions()
+    {
+        $timeOptions = array();
+        for ($i=0;$i<25;$i++)
+        {
+            if ($i < 10) {
+                $timeValue ="0" . $i . "00";
+            } else {
+                $timeValue = $i . "00";
+            }
+            array_push($timeOptions, $timeValue);   
+        }
+        return $timeOptions;
     }
     
     public function actionPost()
@@ -57,9 +89,20 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $type = $this->_input->filterSingle('type', XenForo_Input::STRING);
         $customTitle = $this->_input->filterSingle('title', XenForo_Input::STRING);
         $className = $this->_input->filterSingle('class', XenForo_Input::STRING);
-        $date = $this->_input->filterSingle('date', XenForo_Input::STRING);
+        $date = $this->_input->filterSingle('event_date', XenForo_Input::STRING);
+        $time = $this->_input->filterSingle('event_time', XenForo_Input::STRING);
         $game = $this->_input->filterSingle('game', XenForo_Input::STRING);
         $text = $this->_input->filterSingle('text', XenForo_Input::STRING);
+
+        $customTitle = htmlspecialchars($customTitle);
+        $time = htmlspecialchars($time);
+        $date = htmlspecialchars($date);
+
+        $convertDate = new DateTime("$date");
+        $date = $convertDate->format('U');
+
+        $convertTime = new DateTime("$time");
+        $time = $convertTime->format('U');
 
         $operation = false;
         $class = false;
@@ -75,6 +118,8 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $operationForumID  = XenForo_Application::get('options')->s3OperationForumID;
 
         $eventType = 0;
+        $forumID = "";
+        $eventTitle = "";
 
         if ($operation) {
             $forumID = $operationForumID;
@@ -86,11 +131,11 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
             $eventTitle = $className;
         }
 
-        $title = $this->createThreadTitle($eventTitle, $eventType, $game);
+        $title = $this->createThreadTitle($eventTitle, $eventType, $game, $time, $date);
         $message = $this->createThreadContent($text, $eventType, $className, $visitor);
         $threadID = $this->createThread($forumID, $title, $message);
 
-        $this->createData($eventType, $title, $date, $game, $message, $visitor, $threadID);
+        $this->createData($eventType, $title, $date, $time, $game, $message, $visitor, $threadID);
 
         // redirect after post
         return $this->responseRedirect(
@@ -100,8 +145,10 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         );
     }
 
-    public function createThreadTitle($eventTitle, $eventType, $game)
+    public function createThreadTitle($eventTitle, $eventType, $game, $time, $date)
     {
+        $eventDate = date('dMy', $date);
+        $zuluTime = date('Hi', $time);
         $title = "";
         switch ($eventType)
         {
@@ -109,7 +156,11 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
             case 2: $title .= "[Class]"; break;
             case 0: $title .= "[Unknown Type]";
         }
-        return $title .= " " . $eventTitle . " " . $game;
+        if ($eventType != 2) {
+            return $title .= " " . $game . " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
+        } else {
+            return $title .= " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
+        }
     }
 
     public function createThreadContent($text, $eventType, $className, $visitor)
@@ -117,17 +168,22 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $message = "";
         $classText = "";
         $newLine = "\n";
-        $classNames = XenForo_Application::get('options')->s3ClassNames;
         $home = XenForo_Application::get('options')->homeURL;
-        $classNames = explode(',', $classNames);
-        $s3ClassModel = $this->_getS3ClassModel();
+        $model = $this->_getS3ClassModel();
+        $query = $model->getClassList();
+        $classNames = array();
+
+        foreach ($query as $item)
+        {
+            array_push($classNames, $item['class_name']);
+        }
         
 
         foreach ($classNames as $class)
         {
             if ($className == $class)
             {
-                $classQuery = $s3ClassModel->getClassByClassName($className);
+                $classQuery = $model->getClassByClassName($className);
                 $classText = $classQuery['class_text'];
             }
         }
@@ -160,21 +216,23 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         return $writer->getDiscussionId();
     }
     
-    public function createData($type, $title, $date, $game, $text, $visitor, $threadID)
+    public function createData($type, $title, $date, $time, $game, $text, $visitor, $threadID)
     {
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Event');
         $dw->set('event_type', $type);
         $dw->set('event_title', $title);
         $dw->set('event_date', $date);
+        $dw->set('event_time', $time);
         $dw->set('event_game', $game);
         $dw->set('event_text', $text);
         $dw->set('username', $visitor['username']);
+        $dw->set('user_id', $visitor['user_id']);
         $dw->set('thread_id', $threadID);
         $dw->save();
     }
 
-    protected function _getS3EventModel()
+    protected function _getS3ClassModel()
     {
-        return $this->getModelFromCache ( 'CavTools_Model_S3Event' );
+        return $this->getModelFromCache ( 'CavTools_Model_S3Class' );
     }
 }

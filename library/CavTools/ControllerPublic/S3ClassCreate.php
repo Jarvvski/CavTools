@@ -4,11 +4,64 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
 {
     public function actionIndex()
     {
-        // TODO - Show form to create S3 class
+        //Get values from options
+        $enable = XenForo_Application::get('options')->enableS3ClassCreate;
+
+        if(!$enable) {
+            throw $this->getNoPermissionResponseException();
+        }
+
+        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'S3ClassCreate'))
+        {
+            throw $this->getNoPermissionResponseException();
+        }
+
+        //Set Time Zone to UTC
+        date_default_timezone_set("UTC");
+
+        //Get DB
+        $db = XenForo_Application::get('db');
+
+        //View Parameters
+        $viewParams = array();
+
+        //Send to template to display
+        return $this->responseView('CavTools_ViewPublic_CreateClass', 'CavTools_S3ClassCreation', $viewParams);
     }
     
     public function actionPost()
     {
-        // TODO - create S3 class
+
+        // Action can only be called via post
+        $this->_assertPostOnly();
+
+        // Get poster info
+        $visitor = XenForo_Visitor::getInstance()->toArray();
+
+        // Get form values
+        $className = $this->_input->filterSingle('className', XenForo_Input::STRING);
+        $classText = $this->_input->filterSingle('classText', XenForo_Input::STRING);
+
+        $className = htmlspecialchars($className);
+        $classText = htmlspecialchars($classText);
+
+        $this->createData($className, $classText, $visitor);
+
+        // redirect after post
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::SUCCESS,
+            XenForo_Link::buildPublicLink('s3classes'),
+            new XenForo_Phrase('class_created')
+        );
+    }
+    
+    public function createData($className, $classText, $visitor)
+    {
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Event');
+        $dw->set('class_name', $className);
+        $dw->set('class_text', $classText);
+        $dw->set('username', $visitor['username']);
+        $dw->set('user_id', $visitor['user_id']);
+        $dw->save();
     }
 }
