@@ -22,6 +22,8 @@ class CavTools_Install {
                 `under_age` TINYINT ( 1 ) NOT NULL,
                 `current_status` TINYINT ( 1 ) NOT NULL,
                 `last_update` BIGINT ( 20 ) NOT NULL,
+                `rtc_thread_id` INT ( 10 ),
+                `s2_thread_id` INT ( 10 ),
                 PRIMARY KEY (`enlistment_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',

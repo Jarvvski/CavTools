@@ -94,4 +94,13 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         WHERE enlistment_id = '$enlistmentID' 
         ");
     }
+
+    public function userDetails($userID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT *
+        FROM xf_user
+        WHERE user_id = '$userID' 
+        ");
+    }
 }
