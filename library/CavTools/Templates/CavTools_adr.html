@@ -1,0 +1,16 @@
+
+<div class="section">
+    <form action="{xen:link adr/post}" method="post" class="xenForm AutoValidator" data-redirect="on">
+    <xen:title>ADR</xen:title>
+    <xen:if is="{$data}">
+        {xen:raw $data}
+    </xen:if>
+    <xen:if is="{$canAction}">
+        <dl class="ctrlUnit submitUnit">
+            <input type="text" name="reenlistment" value="Test" hidden>
+            <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </xen:if>
+    </form>
+</div>
+<br />
