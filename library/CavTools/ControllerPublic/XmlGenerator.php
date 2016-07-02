@@ -1,6 +1,12 @@
 <?php
 
 class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Abstract {
+
+    protected function _getXMLModel()
+    {
+        return $this->getModelFromCache ( 'CavTools_Model_XML' );
+    }
+    
     public function actionIndex() {
 
         if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'xmlGeneratorView'))
@@ -10,6 +16,7 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
 
         //Get values from options
         $enable  = XenForo_Application::get('options')->enableXmlGenerator;
+        $model = $this->_getXMLModel();
 
         if(!$enable) {
             throw $this->getNoPermissionResponseException();
@@ -139,12 +146,8 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             }
 
             //Basic user query
-            $userIDs = $db->fetchAll("
-                        SELECT user_id
-                        FROM xf_user
-                        ORDER BY user_id ASC
-                        ");
-
+            $userIDs = $model->getMemberList();
+            
             //Renumber Array
             $userIDs = array_values($userIDs);
 
@@ -152,14 +155,10 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             foreach($userIDs as $user) {
 
                 //Get primary billet
-                $checkingDischarged = $db->fetchRow("
-                              SELECT position_id
-                              FROM xf_pe_roster_user_relation
-                              WHERE user_id = ".$user['user_id']."
-                              ");
+                $milpac = $model->getMilpac($user['user_id']);
 
                 $discharged = false;
-                if ($checkingDischarged['position_id'] == $disDischPos || $checkingDischarged['position_id'] == $dischPos) {
+                if ($milpac['position_id'] == $disDischPos || $milpac['position_id'] == $dischPos) {
                     $discharged = true;
                 }
                 if (!$discharged) {
@@ -169,27 +168,21 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
                     $nco = false;
                     $enlisted = false;
 
-                    //Get user rank ID
-                    $usernameID = $db->fetchRow("
-                            SELECT rank_ID
-                            FROM xf_pe_roster_user_relation
-                            WHERE user_id = ".$user['user_id']."
-                            ");
 
-                    if ($usernameID['rank_ID'] != null) {
+                    if ($milpac['rank_id'] != null) {
 
-                        if (in_array($usernameID['rank_ID'], $officerRanks)) {
+                        if (in_array($milpac['rank_id'], $officerRanks)) {
                             $officer = true;
-                        } else if (in_array($usernameID['rank_ID'], $ncoRanks)) {
+                        } else if (in_array($milpac['rank_id'], $ncoRanks)) {
                             $nco = true;
-                        } else if (in_array($usernameID['rank_ID'], $enlistedRanks)) {
+                        } else if (in_array($milpac['rank_id'], $enlistedRanks)) {
                             $enlisted = true;
                         } else
 
 
                             //Start our prefix
                             $nickPrefix = "";
-                        switch ($usernameID['rank_ID']) {
+                        switch ($milpac['rank_id']) {
                             case $rankGOA: $nickPrefix = "=7Cav=GOA."; $nameTitle = "General of the Army "; break;
                             case $rankGEN: $nickPrefix = "=7Cav=GEN."; $nameTitle = "General ";break;
                             case $rankLTG: $nickPrefix = "=7Cav=LTG."; $nameTitle = "Lieutenant General ";break;
@@ -222,58 +215,26 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
                             default:       $nickPrefix = "Failed::";   break;
                         }
 
-                        //Get username
-                        $detailsUsername = $db->fetchRow("
-                              SELECT username
-                              FROM xf_user
-                              WHERE xf_user.user_id = ".$user['user_id']."
-                              ");
-
-                        //Get Real name
-                        $detailsRealname = $db->fetchRow("
-                              SELECT real_name
-                              FROM xf_pe_roster_user_relation
-                              WHERE user_id = ".$user['user_id']."
-                              ");
 
                         //Get arma GUID
-                        $armaGUID = $db->fetchRow("
-                              SELECT field_value
-                              FROM xf_user_field_value
-                              WHERE xf_user_field_value.field_id='armaGUID'
-                              AND xf_user_field_value.user_id = ".$user['user_id']."
-                              ");
-
-                        //Get primary billet
-                        $primaryBillet = $db->fetchRow("
-                              SELECT xf_pe_roster_position.position_title
-                              FROM xf_pe_roster_position
-                              INNER JOIN xf_pe_roster_user_relation
-                              ON xf_pe_roster_position.position_id=xf_pe_roster_user_relation.position_id
-                              WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
-                              ");
+                        $armaGUID = $model->getGUID($user['user_id']);
 
                         //Get secondary billets
-                        $secondaryBillets = $db->fetchRow("
-                              SELECT xf_user_field_value.field_value
-                              FROM xf_user_field_value
-                              WHERE field_id = 'Billets'
-                              AND user_id = ".$user['user_id']."
-                              ");
+                        $secondaryBillets = $model->getBillets($user['user_id']);
 
                         //Form user variables from queries
                         $nick = $nickPrefix;
-                        $nick .= $detailsUsername['username'];
+                        $nick .= $milpac['username'];
                         $GUID = "";
                         if ($armaGUID['field_value'] != null) {
                             $GUID   = $armaGUID['field_value'];
                             $userCounter++;
                         }
                         $name   = $nameTitle;
-                        $name  .= $detailsRealname['real_name'];
-                        $email  = $detailsUsername['username'];
+                        $name  .= $milpac['real_name'];
+                        $email  = $milpac['username'];
                         $email .= "@7cav.us";
-                        $remark = $primaryBillet['position_title'];
+                        $remark = $milpac['position_title'];
                         if ($secondaryBillets['field_value'] != null) {
                             $remark .= ", ";
                             $remark .= $secondaryBillets['field_value'];
@@ -335,11 +296,12 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
 
         $redirect = XenForo_Application::get('options')->redirect;
         $xml->save($redirect);
+        
 
         //View Parameters
         $viewParams = array(
             'userCounter' => $userCounter,
-            'xmlOutput' => $xml->saveXML()
+            'xml' => $xml->saveXML()
         );
 
         //Send to template for displaying
