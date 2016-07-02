@@ -1,15 +1,16 @@
 <xen:title>XML Generator</xen:title>
+<xen:require css="CavTools_xmlgenerator.css" />
 <div class="section">
     <form class="xenForm">
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">User Count</label></dt>
-            <dd><textarea name="rank" id="ctrl_message" class="textCtrl" rows="1" cols="20"></textarea></dd>
+            <dd><input type="text" id="ctrl_message" class="textCtrl" value="{$userCounter}"></dd>
         </dl>
-    </form>
-    <xen:if is="{$xml}">
-	    <pre><code>
+        <xen:if is="{$xml}">
+            <dd><textarea id="ctrl_message" class="textCtrl" rows="1" cols="20">
             {xen:raw $xml}
-        </code></pre>
-    </xen:if>
+        </textarea></dd>
+        </xen:if>
+    </form>
 </div>
 <br />
