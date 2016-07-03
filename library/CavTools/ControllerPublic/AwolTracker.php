@@ -199,7 +199,6 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 		}
 
 
-
 		//View Parameters
 		$viewParams = array(
 			'milpacsBoolean' => $milpacsBoolean,
@@ -241,12 +240,15 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
                 $message = $messageText;
                 $this->createConversation($users, $subject, $message);
+                
+                $phrase = new XenForo_Phrase('PM Created');
                 break;
             case '2':
                 // Create AWOL reminder Post
                 if ($postCreation) {
                     $threadID = $this->createThread(XenForo_Application::get('options')->awolRemindForum, $this->awolReminderContent($users, $battalion, $visitor));
                 }
+                $phrase = new XenForo_Phrase('Thread Created');
                 $redirect = XenForo_Link::buildPublicLink('threads', array('thread_id' => $threadID));
                 break;
             case '3':
@@ -254,6 +256,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
                 if ($postCreation) {
                     $threadID = $this->createThread(XenForo_Application::get('options')->awolDischForum, $this->awolDischContent($users, $battalion, $visitor));
                 }
+                $phrase = new XenForo_Phrase('Thread Created');
                 $redirect = XenForo_Link::buildPublicLink('threads', array('thread_id' => $threadID));
                 break;
             
@@ -263,7 +266,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
             $redirect,
-            new XenForo_Phrase('request_received')
+            $phrase
         );
 
     }
