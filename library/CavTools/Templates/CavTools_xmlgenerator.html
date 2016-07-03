@@ -3,8 +3,8 @@
 <div class="section">
     <form class="xenForm">
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">User Count</label></dt>
-            <dd><input type="text" id="ctrl_message" class="textCtrl" value="{$userCounter}"></dd>
+            <dt><label for="ctrl_message">User Count:</label></dt>
+            <dd><label for="ctrl_message">{xen:raw $userCounter}</label></dd>
         </dl>
         <xen:if is="{$xml}">
             <dd><textarea id="ctrl_message" class="textCtrl" rows="1" cols="20">
