@@ -148,4 +148,23 @@ class CavTools_Model_Enlistment extends XenForo_Model {
             return true;
         }
     }
+
+    public function getEnlistmentsForQuarter($start, $end, $game)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT count(enlistment_id)
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_date < '$end'
+        AND enlistment_date > '$start'
+        AND game = '$game'
+        ");
+        
+        if ($query['count(enlistment_id)'] == null)
+        {
+            return 0;
+        } else {
+            return $query['count(enlistment_id)'];
+        }
+    }
+    
 }

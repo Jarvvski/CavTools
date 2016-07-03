@@ -116,9 +116,29 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 }
             }
         }
+        
+        $quarter = $this->getDatesOfQuarter();
+        $prevQuarter = $this->getDatesOfQuarter('previous');
+        $games = XenForo_Application::get('options')->games;
+
+        $games = explode(',', $games);
+        $totalGameData = array();
+        foreach ($games as $game) {
+            
+            $current = $enlistModel->getEnlistmentsForQuarter($quarter['start'], $quarter['end'], $game);
+            $previous = $enlistModel->getEnlistmentsForQuarter($prevQuarter['start'], $prevQuarter['end'], $game);
+            
+            $gameData = array(
+                'title' => $game,
+                'prev_enlist' => $previous,
+                'curr_enlist' => $current
+            );
+            array_push($totalGameData, $gameData);
+        }
 
         //View Parameters
         $viewParams = array(
+            'totalGameData' => $totalGameData,
             'normalEnlistments' => $normalEnlistments,
             'reEnlistments' => $reEnlistments,
             'canMajorAction' => $canMajorAction,
@@ -127,6 +147,52 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         //Send to template to display
         return $this->responseView('CavTools_ViewPublic_EnlistmentManagement', 'CavTools_EnlistmentManagement', $viewParams);
+    }
+    
+    public static function getDatesOfQuarter($quarter = 'current', $year = null, $format = 'U')
+    {
+        if ( !is_int($year) ) {
+            $year = (new DateTime)->format('Y');
+        }
+        $current_quarter = ceil((new DateTime)->format('n') / 3);
+        switch (  strtolower($quarter) ) {
+            case 'this':
+            case 'current':
+                $quarter = ceil((new DateTime)->format('n') / 3);
+                break;
+
+            case 'previous':
+                $year = (new DateTime)->format('Y');
+                if ($current_quarter == 1) {
+                    $quarter = 4;
+                    $year--;
+                } else {
+                    $quarter =  $current_quarter - 1;
+                }
+                break;
+
+            case 'first':
+                $quarter = 1;
+                break;
+
+            case 'last':
+                $quarter = 4;
+                break;
+
+            default:
+                $quarter = (!is_int($quarter) || $quarter < 1 || $quarter > 4) ? $current_quarter : $quarter;
+                break;
+        }
+        if ( $quarter === 'this' ) {
+            $quarter = ceil((new DateTime)->format('n') / 3);
+        }
+        $start = new DateTime($year.'-'.(3*$quarter-2).'-1 00:00:00');
+        $end = new DateTime($year.'-'.(3*$quarter).'-'.($quarter == 1 || $quarter == 4 ? 31 : 30) .' 23:59:59');
+
+        return array(
+            'start' => $format ? $start->format($format) : $start,
+            'end' => $format ? $end->format($format) : $end,
+        );
     }
 
     public function actionPost()

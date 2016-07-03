@@ -1,6 +1,44 @@
 <xen:require css="CavTools_EnlistmentManagement.css" />
+<xen:require js="https://code.highcharts.com/highcharts.js" />
+<xen:require js="https://code.highcharts.com/modules/data.js" />
+<xen:require js="https://code.highcharts.com/modules/exporting.js" />
+<xen:require js="js/CavTools/enlistmentManagement.js" />
+
 <div class="section">
+    <dl class="ctrlUnit">
+        <h5>Statistics</h5>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </dl>
+    <br />
+    <br />
+    <br />
     <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
+        <table id="quarterlyData" style="display:none;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <th>{xen:raw $gameData.title}</th>
+                    </xen:foreach>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Previous Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.prev_enlist}</td>
+                    </xen:foreach>
+                </tr>
+                <tr>
+                    <th>Current Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.curr_enlist}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <br />
         <xen:if is="{$normalEnlistments}">
             <h5>Enlistments</h5>
             <table>
