@@ -51,9 +51,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
     public function actionPost()
     {
-        // get the user_id from the user
-        $visitor  = XenForo_Visitor::getInstance()->toArray();
-        
+
         // get form values
         $enlistmentID = $this->_input->filterSingle('enlistment_id', XenForo_Input::INT);
         $lastName  = $this->_input->filterSingle('last_name', XenForo_Input::STRING);
@@ -73,6 +71,39 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         } else {
             $timezone = false;
         }
+        
+        // Check if already completed
+        $model = $this->_getEnlistmentModel();
+        $canBeUpdated = $model->canUpdate($enlistmentID);
+        $enlistmentExists = $model->checkEnlistment($enlistmentID);
+        
+        if($canBeUpdated && $enlistmentExists) {
+            $this->updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
+                                    $game, $timezone);
+            $response = new XenForo_Phrase('Enlistment Updated');
+        } else if (!$enlistmentExists) {
+            $response = new XenForo_Phrase('Enlistment does not exist');
+        } else {
+            $response = new XenForo_Phrase('Enlistment already completed');
+        }
+        
+        
+
+        // redirect after post
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::SUCCESS,
+            XenForo_Link::buildPublicLink('enlistments'),
+            $response
+        );
+    }
+    
+    public function updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
+                                     $game, $timezone)
+    {
+        // get the user_id from the user
+        $visitor  = XenForo_Visitor::getInstance()->toArray();
+
+
 
         if ($reenlisting == "Yes") {
             $reenlistment = true;
@@ -86,7 +117,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $clanStatus = false;
         }
         $vacValue = $this->checkVac($steamID);
-        
+
         $nameUpdated = false;
         $banUpdated = false;
 
@@ -142,7 +173,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $home = XenForo_Application::get('options')->homeURL;
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
         $submittedBy = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
-        
+
         $postContent = '';
         if ($nameUpdated) {
             $postContent .= "[B]Name updated[/B]" . $newline . $newline;
@@ -158,7 +189,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
         $this->actionCreatePost($query['thread_id'], $postContent, $submittedBy);
         $this->updateThread($query['thread_id'],$this->rebuildTitle($enlistmentID));
-        
+
 
         $denied = false;
         if ($vacValue == 1) {
@@ -181,13 +212,6 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             }
         }
         $dw->save();
-        
-
-        // redirect after post
-        return $this->responseRedirect(
-            XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('enlistments')
-        );
     }
 
     public function checkVac($steamID)

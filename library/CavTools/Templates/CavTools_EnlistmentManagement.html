@@ -39,7 +39,7 @@
             </table>
             <br><br>
         </xen:if>
-        <xen:if is="{$canAction}">
+        <xen:if is="{$canMajorAction} == 1">
             <dl class="ctrlUnit rrdActions">
                 <dd>
                     <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
@@ -59,6 +59,19 @@
                 <dd>
                     <a href="{xen:link enlistmentlogs}">Logs</a>
                 </dd>
+            </dl>
+
+            <xen:elseif is="{$canAction} == 1"  />
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="2"> Name change - inappropriate</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="3"> Steam ID missing</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
             </dl>
         </xen:if>
         <br/>

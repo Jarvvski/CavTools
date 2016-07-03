@@ -94,4 +94,58 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         WHERE enlistment_id = '$enlistmentID' 
         ");
     }
+
+    public function userDetails($userID)
+    {
+        return $this->_getDb()->fetchRow("
+        SELECT *
+        FROM xf_user
+        WHERE user_id = '$userID' 
+        ");
+    }
+
+    public function checkMilpac($userID)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT count(relation_id)
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = '$userID'
+        ");
+        
+        if ($query['count(relation_id)'] == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function canUpdate($enlistmentID)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT hidden
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_id = '$enlistmentID'
+        ");
+
+        if ($query['hidden']) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function checkEnlistment($enlistmentID)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT count(enlistment_id)
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_id = '$enlistmentID'
+        ");
+
+        if ($query['count(enlistment_id)'] == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

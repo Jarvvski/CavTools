@@ -16,7 +16,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             throw $this->getNoPermissionResponseException();
         }
 
-        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canSubmitEnlistment'))
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canMajorActionEnlistment'))
+        {
+            $canMajorAction = true;
+        } else {
+            $canMajorAction = false;
+        }
+
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canActionEnlistment'))
         {
             $canAction = true;
         } else {
@@ -114,6 +121,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $viewParams = array(
             'normalEnlistments' => $normalEnlistments,
             'reEnlistments' => $reEnlistments,
+            'canMajorAction' => $canMajorAction,
             'canAction' => $canAction,
         );
 
@@ -147,18 +155,21 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $message = '[B]Please select a different name. Your name has been already taken.[/B]';
                     $action = 'Name Change - taken';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '2':
                     // Name Change - inappropriate
                     $message = '[B]Please select a different name. Your name is inappropriate.[/B]';
                     $action = 'Name Change - inappropriate';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '3':
                     // Steam ID
                     $message = '[B]Please provide your steam ID for checking.[/B]';
                     $action = 'Steam ID';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '4':
                     // Approved
@@ -175,6 +186,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     }
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Approved');
                     break;
                 case '5':
                     // Denied - Timed out
@@ -184,6 +196,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied - Timed out';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Denied');
                     break;
                 case '6':
                     // Denied
@@ -193,18 +206,22 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Denied');
                     break;
                 case '7':
                     // Moved
                     $message = '[B]Application sorted[/B]';
                     $this->sortApplication($enlistmentID, $query['thread_id'], $query['current_status']);
+                    $phrase = new XenForo_Phrase('Application Sorted');
+                    break;
             }
             $this->createPost($query['thread_id'], $message);
         }
 
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('enlistments')
+            XenForo_Link::buildPublicLink('enlistments'),
+            $phrase
         );
     }
 
@@ -473,9 +490,12 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $query = $enlistModel->getEnlistmentById($enlistmentID);
         $content = "";
         $newLine = "\n";
-
+        $userDetails = $enlistModel->userDetails($query['user_id']);
+        $home = XenForo_Application::get('options')->homeURL;
+        
         $general = "[Size=6][B]General Information[/B][/Size]";
-        $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . $query['last_name'];
+        $username = "[b]Username: [/b]" . '[URL="http://' .$home.'/members/'.$query['user_id'].'"]'. $userDetails['username']. '[/URL]';
+        $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . ", ". $query['last_name'];
 
         if ($query['reenlistment'])
         {
@@ -486,11 +506,11 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
-        $home = XenForo_Application::get('options')->homeURL;
-        $rtcThreadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'RTC Folder' .$query['enlistment_id'].'[/URL]';
+        $email = "[B]Email address:[/B] " . $userDetails['email'];
+        $rtcThreadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
-        $thread = '[B]Enlistment Thread:[/B] ' . $rtcThreadURL;
+        $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steam = "[Size=6][B]Steam Review-Cleared/Hold[/B][/Size]";
         $steamName = "[B]Username:[/B] " . $steamContent['name'];
 
@@ -510,24 +530,24 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         $info = "[B]Additional Information:[/B] ";
         $echelon  = "[Size=6][B]Echelon Review Status-Cleared/Hold[/B][/Size]";
-        $echelonName = "Name:";
-        $echelonIP = "IP Address:";
-        $echelonID = "Client ID:";
-        $echelonCons = "Connections:";
-        $echelonWarn = "# of Warnings:";
-        $echelonWarnFor = "Warnings for:";
-        $echelonBans = "# of Temp Bans:";
-        $echelonBansFor = "Temp Bans for:";
-        $echelonAdd = "Additional Information";
-        $echelonContent = "[B]" .$echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
+        $echelonName = "[B]Name:[/B]";
+        $echelonIP = "[B]IP Address:[/B]";
+        $echelonID = "[B]Client ID:[/B]";
+        $echelonCons = "[B]Connections:[/B]";
+        $echelonWarn = "[B]# of Warnings:[/B]";
+        $echelonWarnFor = "Warnings for:[/B]";
+        $echelonBans = "[B]# of Temp Bans:[/B]";
+        $echelonBansFor = "Temp Bans for:[/B]";
+        $echelonAdd = "[B]Additional Information[/B]";
+        $echelonContent = $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
-            $newLine . $echelonBansFor . $newLine . $echelonAdd ."[/B]";
+            $newLine . $echelonBansFor . $newLine . $echelonAdd;
         $misc = "[B]Miscellaneous-[/B]";
-        $summary = "[B]Summary-[/B]";
+        $summary = "[B]Summary -[/B]";
 
-        return $content = $general . $newLine . $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
-            $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName . $newLine . $steamStatus .
-            $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine .
+        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
+            $email . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName . 
+            $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine .
             $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
             $newLine . $summary;
     }
