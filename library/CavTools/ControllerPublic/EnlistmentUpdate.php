@@ -51,6 +51,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
     public function actionPost()
     {
+        $visitor  = XenForo_Visitor::getInstance()->toArray();
 
         // get form values
         $enlistmentID = $this->_input->filterSingle('enlistment_id', XenForo_Input::INT);
@@ -79,7 +80,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         
         if($canBeUpdated && $enlistmentExists) {
             $this->updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
-                                    $game, $timezone);
+                                    $game, $timezone, $steamID);
             $response = new XenForo_Phrase('Enlistment Updated');
         } else if (!$enlistmentExists) {
             $response = new XenForo_Phrase('Enlistment does not exist');
@@ -87,7 +88,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $response = new XenForo_Phrase('Enlistment already completed');
         }
         
-        
+        $this->tweet($visitor, $enlistmentID);
 
         // redirect after post
         return $this->responseRedirect(
@@ -98,7 +99,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     }
     
     public function updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
-                                     $game, $timezone)
+                                     $game, $timezone, $steamID)
     {
         // get the user_id from the user
         $visitor  = XenForo_Visitor::getInstance()->toArray();
@@ -447,6 +448,20 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     protected function _getEnlistmentModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_Enlistment' );
+    }
+
+    public function tweet($visitor, $enlistmentID)
+    {
+        $text = $visitor['username'] . " just used the recruitment updater, helping out enlistee #" . $enlistmentID . " join the Cav!";
+        $hashtag = "#RRD #7Cav #IMO";
+        
+        $twitterModel = $this->_getTwitterBot();
+        $twitterModel->postStatus($text, $hashtag);
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
     
 }

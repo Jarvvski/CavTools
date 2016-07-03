@@ -60,7 +60,6 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $visitor  = XenForo_Visitor::getInstance()->toArray();
         $model = $this->_getEnlistmentModel();
         $hasMilpac = $model->checkMilpac($visitor['user_id']);
-        var_dump($hasMilpac);
         
         //View Parameters
         $viewParams = array(
@@ -167,6 +166,19 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $this->actionWrite($userID, $recruiter, $lastName, $firstName, $age,
             $timezone, $date, $steamID, $clanStatus, $pastClans,
             $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus);
+
+        $twitterModel = $this->_getTwitterBot();
+
+        if ($denied)
+        {
+            $text = "Sorry " . $visitor['username'] . ", your enlistment is denied!";
+            $hashtag = "#Denied #7Cav #IMO";
+        } else {
+            $text = "Hey " . $visitor['username'] . ", your enlistment is under review!";
+            $hashtag = "#maybe? #7Cav #IMO";
+        }
+
+        $twitterModel->postStatus($text, $hashtag);
 
         // redirect after post
         return $this->responseRedirect(
@@ -532,5 +544,10 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     protected function _getEnlistmentModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_Enlistment' );
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
 }

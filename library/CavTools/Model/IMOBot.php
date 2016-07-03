@@ -1,5 +1,5 @@
 <?php
-require_once('TwitterAPIExchange.php');
+require_once('Tweet/TwitterAPIExchange.php');
 
 class CavTools_Model_IMOBot extends XenForo_Model {
 
@@ -18,7 +18,7 @@ class CavTools_Model_IMOBot extends XenForo_Model {
         $requestMethod = 'POST';
 
         $postfields = array(
-            'status' => $text . $hashtag,
+            'status' => $text . " " . $hashtag,
             'possibly_sensitive' => false,
             'lat' => 37.235,
             'long' => -115.811111,
@@ -26,7 +26,7 @@ class CavTools_Model_IMOBot extends XenForo_Model {
         );
 
         $twitter = new TwitterAPIExchange($settings);
-        echo $twitter->buildOauth($url, $requestMethod)
+        $twitter->buildOauth($url, $requestMethod)
             ->setPostfields($postfields)
             ->performRequest();
     }

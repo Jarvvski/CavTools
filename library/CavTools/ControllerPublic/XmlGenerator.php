@@ -22,6 +22,8 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             throw $this->getNoPermissionResponseException();
         }
 
+        $visitor = XenForo_Visitor::getInstance()->toArray();
+
 
         //Get values from options
         $rankGOA = XenForo_Application::get('options')->goaRankID;
@@ -303,8 +305,23 @@ class CavTools_ControllerPublic_XmlGenerator extends XenForo_ControllerPublic_Ab
             'userCounter' => $userCounter,
             'xml' => $xml->saveXML()
         );
+        
+        $this->tweet($visitor);
 
         //Send to template for displaying
         return $this->responseView('CavTools_ViewPublic_XmlGenerator', 'CavTools_XmlGenerator', $viewParams);
+    }
+
+    public function tweet($visitor)
+    {
+        $twitterModel = $this->_getTwitterBot();
+        $text = $visitor['username'] . " just rebuilt the XML. Did it crash ArmA?";
+        $hashtag = "#ArmA3 #7Cav #IMO";
+        $twitterModel->postStatus($text, $hashtag);
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
 }

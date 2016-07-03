@@ -136,6 +136,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $threadID = $this->createThread($forumID, $title, $message);
 
         $this->createData($eventType, $title, $date, $time, $game, $message, $visitor, $threadID);
+        $this->tweet($visitor, $title);
 
         // redirect after post
         return $this->responseRedirect(
@@ -234,5 +235,18 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
     protected function _getS3ClassModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_S3Class' );
+    }
+
+    public function tweet($visitor, $title)
+    {
+        $twitterModel = $this->_getTwitterBot();
+        $text = $visitor['username'] . " just started " . $title;
+        $hashtag = "#S3 #7Cav #IMO";
+        $twitterModel->postStatus($text, $hashtag);
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
 }

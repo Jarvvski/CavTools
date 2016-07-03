@@ -261,6 +261,8 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
                 break;
             
         }
+        
+        $this->tweet($visitor, $awolOption);
 
         // redirect back to the normal scratchpad index page
         return $this->responseRedirect(
@@ -441,5 +443,27 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
     protected function _getAwolModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_Awol' );
+    }
+
+    public function tweet($visitor, $response)
+    {
+        switch ($response) {
+            case '2':
+                $text = $visitor['username'] . " made the AWOL reminder! Make sure your name isn't on it!";
+                $hashtag = "#AWOL #7Cav #IMO";
+                break;
+            case '3':
+                $text = $visitor['username'] . " made the AWOL DISCH post! Make sure your name isn't on it!";
+                $hashtag = "#AWOL #7Cav #IMO";
+                break;
+        }
+        
+        $twitterModel = $this->_getTwitterBot();
+        $twitterModel->postStatus($text, $hashtag);
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
 }

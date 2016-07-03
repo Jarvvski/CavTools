@@ -218,6 +218,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $this->createPost($query['thread_id'], $message);
         }
 
+        $this->tweet($visitor);
+
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
             XenForo_Link::buildPublicLink('enlistments'),
@@ -581,5 +583,19 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     protected function _getEnlistmentModel()
     {
         return $this->getModelFromCache ( 'CavTools_Model_Enlistment' );
+    }
+
+    public function tweet($visitor)
+    {
+        $text = $visitor['username'] . " handing the enlistments like a pro!";
+        $hashtag = "#Proud #7Cav #IMO";
+
+        $twitterModel = $this->_getTwitterBot();
+        $twitterModel->postStatus($text, $hashtag);
+    }
+
+    protected function _getTwitterBot()
+    {
+        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
 }
