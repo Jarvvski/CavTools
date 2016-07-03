@@ -57,8 +57,14 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         $games = explode(',', $games);
 
+        $visitor  = XenForo_Visitor::getInstance()->toArray();
+        $model = $this->_getEnlistmentModel();
+        $hasMilpac = $model->checkMilpac($visitor['user_id']);
+        var_dump($hasMilpac);
+        
         //View Parameters
         $viewParams = array(
+            'hasMilpac' => $hasMilpac,
             'steamID_thread' => $steamID_thread,
             'minRequire_thread' => $minRequire_thread,
             'games' => $games

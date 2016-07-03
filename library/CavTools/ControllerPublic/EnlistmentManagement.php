@@ -16,7 +16,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             throw $this->getNoPermissionResponseException();
         }
 
-        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canSubmitEnlistment'))
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canMajorActionEnlistment'))
+        {
+            $canMajorAction = true;
+        } else {
+            $canMajorAction = false;
+        }
+
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canActionEnlistment'))
         {
             $canAction = true;
         } else {
@@ -114,6 +121,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $viewParams = array(
             'normalEnlistments' => $normalEnlistments,
             'reEnlistments' => $reEnlistments,
+            'canMajorAction' => $canMajorAction,
             'canAction' => $canAction,
         );
 
@@ -147,18 +155,21 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $message = '[B]Please select a different name. Your name has been already taken.[/B]';
                     $action = 'Name Change - taken';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '2':
                     // Name Change - inappropriate
                     $message = '[B]Please select a different name. Your name is inappropriate.[/B]';
                     $action = 'Name Change - inappropriate';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '3':
                     // Steam ID
                     $message = '[B]Please provide your steam ID for checking.[/B]';
                     $action = 'Steam ID';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '4':
                     // Approved
@@ -175,6 +186,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     }
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Approved');
                     break;
                 case '5':
                     // Denied - Timed out
@@ -184,6 +196,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied - Timed out';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Denied');
                     break;
                 case '6':
                     // Denied
@@ -193,18 +206,22 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
                     $action = 'Denied';
                     $this->writeLog($enlistmentID, $action);
+                    $phrase = new XenForo_Phrase('Application Denied');
                     break;
                 case '7':
                     // Moved
                     $message = '[B]Application sorted[/B]';
                     $this->sortApplication($enlistmentID, $query['thread_id'], $query['current_status']);
+                    $phrase = new XenForo_Phrase('Application Sorted');
+                    break;
             }
             $this->createPost($query['thread_id'], $message);
         }
 
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('enlistments')
+            XenForo_Link::buildPublicLink('enlistments'),
+            $phrase
         );
     }
 

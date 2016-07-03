@@ -38,10 +38,15 @@
         <br />
         <br />
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Are you re-enlisting?</label></dt>
-            <dd><input type="radio" name="reenlistment" value="Yes" required> Yes
-                <br /><br />
-            <input type="radio" name="reenlistment" value="No"> No<br></dd>
+            <xen:if is="{$hasMilpac} == 1">
+                <dt><label for="ctrl_message">You are re-enlisting</label></dt>
+                <dd><input type="radio" name="reenlistment" value="Yes" checked hidden></dd>
+            <xen:else />
+                <dt><label for="ctrl_message">Are you re-enlisting?</label></dt>
+                <dd><input type="radio" name="reenlistment" value="Yes" required> Yes
+                    <br /><br />
+                    <input type="radio" name="reenlistment" value="No"> No<br></dd>
+            </xen:if>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_recipients">Recruiter(s)</label></dt>
