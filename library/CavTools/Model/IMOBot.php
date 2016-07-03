@@ -26,7 +26,7 @@ class CavTools_Model_IMOBot extends XenForo_Model {
         );
 
         $twitter = new TwitterAPIExchange($settings);
-        echo $twitter->buildOauth($url, $requestMethod)
+        $twitter->buildOauth($url, $requestMethod)
             ->setPostfields($postfields)
             ->performRequest();
     }

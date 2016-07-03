@@ -80,7 +80,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         
         if($canBeUpdated && $enlistmentExists) {
             $this->updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
-                                    $game, $timezone);
+                                    $game, $timezone, $steamID);
             $response = new XenForo_Phrase('Enlistment Updated');
         } else if (!$enlistmentExists) {
             $response = new XenForo_Phrase('Enlistment does not exist');
@@ -99,7 +99,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     }
     
     public function updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
-                                     $game, $timezone)
+                                     $game, $timezone, $steamID)
     {
         // get the user_id from the user
         $visitor  = XenForo_Visitor::getInstance()->toArray();

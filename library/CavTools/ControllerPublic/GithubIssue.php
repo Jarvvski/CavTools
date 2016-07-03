@@ -75,7 +75,7 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
 
         $visitor = XenForo_Visitor::getInstance()->toArray();
         $this->callAPI($content);
-        $this->tweet($visitor);
+        $this->tweet($visitor, $title);
 
         // redirect back to the normal scratchpad index page
         return $this->responseRedirect(
@@ -125,10 +125,10 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         curl_exec($ch);
     }
 
-    public function tweet($visitor)
+    public function tweet($visitor, $title)
     {
         $twitterModel = $this->_getTwitterBot();
-        $text = $visitor['username'] . " sent my creator another feature request. Hopefully it's a good one!";
+        $text = $visitor['username'] . " sent my creator another feature request called '" . $title ."' Hopefully it's a good one!";
         $hashtag = "#Github #7Cav #IMO";
         $twitterModel->postStatus($text, $hashtag);
     }
