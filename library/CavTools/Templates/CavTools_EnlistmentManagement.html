@@ -5,14 +5,25 @@
 <xen:require js="js/CavTools/enlistmentManagement.js" />
 
 <div class="section">
-    <dl class="ctrlUnit">
-        <h5>Statistics</h5>
-        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    </dl>
-    <br />
-    <br />
-    <br />
     <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
+        <dl class="ctrlUnit rrdActions">
+            <dd>
+                <SELECT id="list" class="textCtrl">
+                    <OPTION VALUE="A">Quarterly comparison</option>
+                    <OPTION VALUE="B">Yearly comparison</option>
+                    <OPTION VALUE="C">Yearly in-depth</option>
+                </SELECT>
+            </dd>
+        </dl>
+        <br />
+        <dl class="ctrlUnit">
+            <dd>
+                <h5>Statistics</h5>
+                <div id="container" style="height: 400px"></div>
+            </dd>
+        </dl>
+    <br />
+    <br />
         <table id="quarterlyData" style="display:none;">
             <thead>
                 <tr>
@@ -26,19 +37,54 @@
                 <tr>
                     <th>Previous Quarter</th>
                     <xen:foreach loop="$totalGameData" value="$gameData">
-                        <td>{xen:raw $gameData.prev_enlist}</td>
+                        <td>{xen:raw $gameData.prev_quart_enlist}</td>
                     </xen:foreach>
                 </tr>
                 <tr>
                     <th>Current Quarter</th>
                     <xen:foreach loop="$totalGameData" value="$gameData">
-                        <td>{xen:raw $gameData.curr_enlist}</td>
+                        <td>{xen:raw $gameData.curr_quart_enlist}</td>
                     </xen:foreach>
                 </tr>
             </tbody>
         </table>
-        <br />
-        <br />
+        <table id="yearlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Previous Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.prev_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            <tr>
+                <th>Current Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.curr_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            </tbody>
+        </table>
+        <table id="monthlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                {xen:raw $tableBody}
+            </tbody>
+        </table>
         <xen:if is="{$normalEnlistments}">
             <h5>Enlistments</h5>
             <table>

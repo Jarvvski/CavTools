@@ -1,16 +1,14 @@
-$(function () {
-    $('#container').highcharts({
+window.onload = function() {
+    var options = {
+        chart: {
+            renderTo: 'container',
+            defaultSeriesType: 'column'
+        },
         credits: {
             enabled: false
         },
-        data: {
-            table: 'quarterlyData'
-        },
-        chart: {
-            type: 'column'
-        },
         title: {
-            text: 'Recruitment statistics'
+            text: ''
         },
         yAxis: {
             min: 0,
@@ -19,22 +17,36 @@ $(function () {
                 text: 'Total Users'
             }
         },
-        tooltip: {
-            headerFormat: '<span style="font-size:15px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y} </b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
         plotOptions: {
             column: {
                 pointPadding: 0.2,
                 borderWidth: 0
             }
+        },
+        data: {
+            table: 'quarterlyData'
         }
+    };
+    var chart = new Highcharts.Chart(options);
+
+    $("#list").on('change', function () {
+        //alert('f')
+        var selVal = $("#list").val();
+        if (selVal == "A" || selVal == '') {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+            options.data = {table: 'quarterlyData'};
+        }
+        else if (selVal == "B") {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+            options.data = {table: 'yearlyData'};
+        }
+        else if (selVal == "C") {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
+            options.data = {table: 'monthlyData'};
+        }
+        var chart = new Highcharts.Chart(options);
     });
-});
+}
 
 /**
  * Dark theme for Highcharts JS
@@ -64,7 +76,8 @@ Highcharts.theme = {
         gridLineColor: '#707073',
         labels: {
             style: {
-                color: '#E0E0E3'
+                color: '#E0E0E3',
+                fontSize: '15px'
             }
         },
         lineColor: '#707073',
@@ -90,7 +103,8 @@ Highcharts.theme = {
         tickWidth: 1,
         title: {
             style: {
-                color: '#A0A0A3'
+                color: '#A0A0A3',
+                fontSize: '15px'
             }
         }
     },

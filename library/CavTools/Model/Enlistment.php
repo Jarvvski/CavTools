@@ -149,7 +149,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         }
     }
 
-    public function getEnlistmentsForQuarter($start, $end, $game)
+    public function getEnlistmentsForPeriod($start, $end, $game)
     {
         $query = $this->_getDb()->fetchRow("
         SELECT count(enlistment_id)
