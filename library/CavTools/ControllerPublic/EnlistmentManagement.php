@@ -121,9 +121,12 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $prevQuarter = $this->getDatesOfQuarter('previous');
         $year = $this->getDatesOfYear();
         $prevYear = $this->getDatesOfYear('previous');
+
         $games = XenForo_Application::get('options')->games;
-        
+        $recruiterIDs = XenForo_Application::get('options')->recruiterIDs;
         $games = explode(',', $games);
+        $recruiterIDs = explode(',', $recruiterIDs);
+        $recruiters = $enlistModel->getAllRecruiters($recruiterIDs);
         $gameData = array();
         foreach ($games as $game) {
             
@@ -140,7 +143,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 $monthName = $dateObj->format('F');
 
                 $monthTime = $this->getDatesOfMonth($monthName);
-                $short = $dateObj->format('M');
 
                 $count = $enlistModel->getEnlistmentsForPeriod($monthTime['start'], $monthTime['end'], $game);
                 array_push($monthlyData, $count);
@@ -157,21 +159,37 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             array_push($gameData, $data);
         }
 
-        $monthlist = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+        $totalRecruiterData = array();
+        foreach ($recruiters as $recruiter) {
+            $monthName  = date('F');
+            $monthTime = $this->getDatesOfMonth($monthName);
+
+            $recruitedThisYear = $enlistModel->getRecruitingForPeriod($monthTime['start'], $monthTime['end'], $recruiter);
+            $recruiterData = array(
+                'username' => $recruiter,
+                'count' => $recruitedThisYear
+            );
+            array_push($totalRecruiterData, $recruiterData);
+        }
 
 
-            $body = "";
-            for ($i=0;$i<count($monthlist);$i++) {
-                $body .= "<tr>";
-                $body .= "<th>".$monthlist[$i]."</th>";
-                foreach ($gameData as $game) {
-                    $body .= "<td>".$game['monthly'][$i]."</td>"; 
-                }
-                $body .= "</tr>";
+
+        $monthList = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+
+        $body = "";
+        for ($i=0;$i<count($monthList);$i++) {
+            $body .= "<tr>";
+            $body .= "<th>".$monthList[$i]."</th>";
+            foreach ($gameData as $game) {
+                $body .= "<td>".$game['monthly'][$i]."</td>";
             }
+            $body .= "</tr>";
+        }
         
         //View Parameters
         $viewParams = array(
+            'totalRecruiterData' => $totalRecruiterData,
             'totalGameData' => $gameData,
             'tableBody' => $body,
             'normalEnlistments' => $normalEnlistments,

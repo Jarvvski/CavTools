@@ -14,7 +14,7 @@ window.onload = function() {
             min: 0,
             allowDecimals: false,
             title: {
-                text: 'Total Users'
+                text: 'Total Enlistments'
             }
         },
         plotOptions: {
@@ -43,6 +43,10 @@ window.onload = function() {
         else if (selVal == "C") {
             options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
             options.data = {table: 'monthlyData'};
+        }
+        else if (selVal == "D") {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+            options.data = {table: 'recruiterData'};
         }
         var chart = new Highcharts.Chart(options);
     });

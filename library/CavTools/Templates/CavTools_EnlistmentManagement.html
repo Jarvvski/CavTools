@@ -12,6 +12,7 @@
                     <OPTION VALUE="A">Quarterly comparison</option>
                     <OPTION VALUE="B">Yearly comparison</option>
                     <OPTION VALUE="C">Yearly in-depth</option>
+                    <OPTION VALUE="D">Recruiter monthly tracker</option>
                 </SELECT>
             </dd>
         </dl>
@@ -83,6 +84,24 @@
             </thead>
             <tbody>
                 {xen:raw $tableBody}
+            </tbody>
+        </table>
+        <table id="recruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
+                    <th>{xen:raw $recruiterData.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
+                        <td>{xen:raw $recruiterData.count}</td>
+                    </xen:foreach>
+                </tr>
             </tbody>
         </table>
         <xen:if is="{$normalEnlistments}">
