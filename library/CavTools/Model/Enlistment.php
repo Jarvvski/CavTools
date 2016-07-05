@@ -148,4 +148,59 @@ class CavTools_Model_Enlistment extends XenForo_Model {
             return true;
         }
     }
+
+    public function getEnlistmentsForPeriod($start, $end, $game)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT count(enlistment_id)
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_date < '$end'
+        AND enlistment_date > '$start'
+        AND current_status != '1'
+        AND game = '$game'
+        ");
+        
+        if ($query['count(enlistment_id)'] == null)
+        {
+            return 0;
+        } else {
+            return $query['count(enlistment_id)'];
+        }
+    }
+
+    public function getRecruitingForPeriod($start, $end, $recruiter)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT count(enlistment_id)
+        FROM xf_ct_rrd_enlistments
+        WHERE enlistment_date < '$end'
+        AND enlistment_date > '$start'
+        AND recruiter LIKE '%{$recruiter}%'
+        AND current_status != '1'
+        ");
+
+        if ($query['count(enlistment_id)'] == null)
+        {
+            return 0;
+        } else {
+            return $query['count(enlistment_id)'];
+        }
+    }
+
+    public function getAllRecruiters($ids)
+    {
+        $usernames = array();
+        foreach ($ids as $id) {
+            $query = $this->_getDb()->fetchAll("
+            SELECT username
+            FROM xf_pe_roster_user_relation
+            WHERE CAST(secondary_position_ids AS CHAR(100)) LIKE '%{$id}%'
+            ");
+            foreach ($query as $member) {
+                array_push($usernames, $member['username']);
+            }
+        }
+        return $usernames;
+    }
+
 }

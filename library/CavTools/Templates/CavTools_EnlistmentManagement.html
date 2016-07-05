@@ -1,6 +1,109 @@
 <xen:require css="CavTools_EnlistmentManagement.css" />
+<xen:require js="https://code.highcharts.com/highcharts.js" />
+<xen:require js="https://code.highcharts.com/modules/data.js" />
+<xen:require js="https://code.highcharts.com/modules/exporting.js" />
+<xen:require js="js/CavTools/enlistmentManagement.js" />
+
 <div class="section">
     <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
+        <dl class="ctrlUnit rrdActions">
+            <dd>
+                <SELECT id="list" class="textCtrl">
+                    <OPTION VALUE="A">Quarterly comparison</option>
+                    <OPTION VALUE="B">Yearly comparison</option>
+                    <OPTION VALUE="C">Yearly in-depth</option>
+                    <OPTION VALUE="D">Recruiter monthly tracker</option>
+                </SELECT>
+            </dd>
+        </dl>
+        <br />
+        <dl class="ctrlUnit">
+            <dd>
+                <h5>Statistics</h5>
+                <div id="container" style="height: 400px"></div>
+            </dd>
+        </dl>
+    <br />
+    <br />
+        <table id="quarterlyData" style="display:none;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <th>{xen:raw $gameData.title}</th>
+                    </xen:foreach>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Previous Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.prev_quart_enlist}</td>
+                    </xen:foreach>
+                </tr>
+                <tr>
+                    <th>Current Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.curr_quart_enlist}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="yearlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Previous Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.prev_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            <tr>
+                <th>Current Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.curr_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            </tbody>
+        </table>
+        <table id="monthlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                {xen:raw $tableBody}
+            </tbody>
+        </table>
+        <table id="recruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
+                    <th>{xen:raw $recruiterData.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
+                        <td>{xen:raw $recruiterData.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
         <xen:if is="{$normalEnlistments}">
             <h5>Enlistments</h5>
             <table>

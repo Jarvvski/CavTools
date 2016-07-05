@@ -116,9 +116,82 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 }
             }
         }
+        
+        $quarter = $this->getDatesOfQuarter();
+        $prevQuarter = $this->getDatesOfQuarter('previous');
+        $year = $this->getDatesOfYear();
+        $prevYear = $this->getDatesOfYear('previous');
 
+        $games = XenForo_Application::get('options')->games;
+        $recruiterIDs = XenForo_Application::get('options')->recruiterIDs;
+        $games = explode(',', $games);
+        $recruiterIDs = explode(',', $recruiterIDs);
+        $recruiters = $enlistModel->getAllRecruiters($recruiterIDs);
+        $gameData = array();
+        foreach ($games as $game) {
+            
+            $currQuarter = $enlistModel->getEnlistmentsForPeriod($quarter['start'], $quarter['end'], $game);
+            $prevQuarter = $enlistModel->getEnlistmentsForPeriod($prevQuarter['start'], $prevQuarter['end'], $game);
+            $currYear = $enlistModel->getEnlistmentsForPeriod($year['start'], $year['end'], $game);
+            $prevYear = $enlistModel->getEnlistmentsForPeriod($prevYear['start'], $prevYear['end'], $game);
+
+            $monthlyData =array();
+            for($i=1;$i<13;$i++)
+            {
+                $monthNum  = $i;
+                $dateObj   = DateTime::createFromFormat('!m', $monthNum);
+                $monthName = $dateObj->format('F');
+
+                $monthTime = $this->getDatesOfMonth($monthName);
+
+                $count = $enlistModel->getEnlistmentsForPeriod($monthTime['start'], $monthTime['end'], $game);
+                array_push($monthlyData, $count);
+            }
+            
+            $data = array(
+                'title' => $game,
+                'prev_quart_enlist' => $prevQuarter,
+                'curr_quart_enlist' => $currQuarter,
+                'prev_year_enlist' => $prevYear,
+                'curr_year_enlist' => $currYear,
+                'monthly' => $monthlyData
+            );
+            array_push($gameData, $data);
+        }
+
+        $totalRecruiterData = array();
+        foreach ($recruiters as $recruiter) {
+            $monthName  = date('F');
+            $monthTime = $this->getDatesOfMonth($monthName);
+
+            $recruitedThisYear = $enlistModel->getRecruitingForPeriod($monthTime['start'], $monthTime['end'], $recruiter);
+            $recruiterData = array(
+                'username' => $recruiter,
+                'count' => $recruitedThisYear
+            );
+            array_push($totalRecruiterData, $recruiterData);
+        }
+
+
+
+        $monthList = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+
+        $body = "";
+        for ($i=0;$i<count($monthList);$i++) {
+            $body .= "<tr>";
+            $body .= "<th>".$monthList[$i]."</th>";
+            foreach ($gameData as $game) {
+                $body .= "<td>".$game['monthly'][$i]."</td>";
+            }
+            $body .= "</tr>";
+        }
+        
         //View Parameters
         $viewParams = array(
+            'totalRecruiterData' => $totalRecruiterData,
+            'totalGameData' => $gameData,
+            'tableBody' => $body,
             'normalEnlistments' => $normalEnlistments,
             'reEnlistments' => $reEnlistments,
             'canMajorAction' => $canMajorAction,
@@ -127,6 +200,111 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         //Send to template to display
         return $this->responseView('CavTools_ViewPublic_EnlistmentManagement', 'CavTools_EnlistmentManagement', $viewParams);
+    }
+
+    /**
+     * Compute the start and end date of some fixed o relative quarter in a specific year.
+     * @param mixed $quarter  Integer from 1 to 4 or relative string value:
+     *                        'this', 'current', 'previous', 'first' or 'last'.
+     *                        'this' is equivalent to 'current'. Any other value
+     *                        will be ignored and instead current quarter will be used.
+     *                        Default value 'current'. Particularly, 'previous' value
+     *                        only make sense with current year so if you use it with
+     *                        other year like: get_dates_of_quarter('previous', 1990)
+     *                        the year will be ignored and instead the current year
+     *                        will be used.
+     * @param int $year       Year of the quarter. Any wrong value will be ignored and
+     *                        instead the current year will be used.
+     *                        Default value null (current year).
+     * @param string $format  String to format returned dates
+     * @return array          Array with two elements (keys): start and end date.
+     */
+    public static function getDatesOfQuarter($quarter = 'current', $year = null, $format = 'U')
+    {
+        if ( !is_int($year) ) {
+            $year = (new DateTime)->format('Y');
+        }
+        $current_quarter = ceil((new DateTime)->format('n') / 3);
+        switch (  strtolower($quarter) ) {
+            case 'this':
+            case 'current':
+                $quarter = ceil((new DateTime)->format('n') / 3);
+                break;
+
+            case 'previous':
+                $year = (new DateTime)->format('Y');
+                if ($current_quarter == 1) {
+                    $quarter = 4;
+                    $year--;
+                } else {
+                    $quarter =  $current_quarter - 1;
+                }
+                break;
+
+            case 'first':
+                $quarter = 1;
+                break;
+
+            case 'last':
+                $quarter = 4;
+                break;
+
+            default:
+                $quarter = (!is_int($quarter) || $quarter < 1 || $quarter > 4) ? $current_quarter : $quarter;
+                break;
+        }
+        if ( $quarter === 'this' ) {
+            $quarter = ceil((new DateTime)->format('n') / 3);
+        }
+        $start = new DateTime($year.'-'.(3*$quarter-2).'-1 00:00:00');
+        $end = new DateTime($year.'-'.(3*$quarter).'-'.($quarter == 1 || $quarter == 4 ? 31 : 30) .' 23:59:59');
+
+        return array(
+            'start' => $format ? $start->format($format) : $start,
+            'end' => $format ? $end->format($format) : $end
+        );
+    }
+
+    public function getDatesOfYear($year = null, $format = null)
+    {
+        if (!is_int($format)) {
+            $format = 'U';
+        }
+
+        if ( !is_string($year)) {
+            $year = (new DateTime)->format('Y');
+        } else {
+            switch ($year) {
+                case 'current':
+                    $year = (new DateTime)->format('Y');
+                    break;
+                case 'previous':
+                    $year = (new DateTime)->format('Y');
+                    $year--;
+                    break;
+            }
+        }
+
+        $start = new DateTime('first day of January '.$year.' 00:00:00');
+        $end = new DateTime('last day of December '.$year.' 23:59:59');
+
+        return array(
+            'start' => $format ? $start->format($format) : $start,
+            'end' => $format ? $end->format($format) : $end
+        );
+    }
+
+    public function getDatesOfMonth($month)
+    {
+        $year = (new DateTime)->format('Y');
+        $format = 'U';
+        $start = new DateTime('first day of '.$month .' '.$year.' 00:00:00');
+        $end = new DateTime('last day of '.$month.' '.$year.' 23:59:59');
+
+        return array(
+            'start' => $format ? $start->format($format) : $start,
+            'end' => $format ? $end->format($format) : $end
+        );
     }
 
     public function actionPost()
