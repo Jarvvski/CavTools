@@ -68,7 +68,16 @@ class CavTools_Install {
                 PRIMARY KEY (`class_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
-        'dropS3Classes' => 'DROP TABLE IF EXISTS `xf_ct_s3_classes`'
+        'dropS3Classes' => 'DROP TABLE IF EXISTS `xf_ct_s3_classes`',
+
+        'createADRstore' => 'CREATE TABLE IF NOT EXISTS `xf_ct_adr` (
+                `adr_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `text` LONGTEXT NOT NULL,
+                PRIMARY KEY (`adr_id`)
+                )
+            ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
+        'dropADRstore' => 'DROP TABLE IF EXISTS `xf_ct_adr`'
+
     );
 
     // This is the function to create a table in the database so our addon will work.
@@ -79,6 +88,7 @@ class CavTools_Install {
         $db->query(self::$table['createRRDLogs']);
         $db->query(self::$table['createS3Events']);
         $db->query(self::$table['createS3Classes']);
+        $db->query(self::$table['createADRstore']);
     }
 
     // This is the function to DELETE the table of our addon in the database.
@@ -89,6 +99,7 @@ class CavTools_Install {
         $db->query(self::$table['dropRRDLogs']);
         $db->query(self::$table['dropS3Events']);
         $db->query(self::$table['dropS3Classes']);
+        $db->query(self::$table['dropADRstore']);
     }
 }
 

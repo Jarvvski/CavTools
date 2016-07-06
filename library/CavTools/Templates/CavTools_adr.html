@@ -1,0 +1,19 @@
+<xen:require css="CavTools_adr.css" />
+<xen:title>{xen:phrase Active_Duty_Roster}</xen:title>
+<div class="section">
+    <form action="{xen:link adr/post}" method="post" class="xenForm AutoValidator" data-redirect="on">
+    <xen:title>Active Duty Roster</xen:title>
+    <xen:if is="{$data}">
+    <div id="data">
+        {xen:raw $data}
+    </div>
+    </xen:if>
+    <xen:if is="{$canAction}">
+        <dl class="ctrlUnit submitUnit">
+            <input type="text" name="reenlistment" value="Test" hidden>
+            <dd><input type="submit" value="Rebuild ADR" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </xen:if>
+    </form>
+</div>
+<br />
