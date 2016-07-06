@@ -53,7 +53,8 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         // redirect after post
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('adr')
+            XenForo_Link::buildPublicLink('adr'),
+            new XenForo_Phrase('ADR_rebuilding')
         );
     }
 
@@ -110,48 +111,86 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
 
         // Begin headings
         $hqData = "<br><h3>Regimental Headquarters</h3><hr><br>";
-        $bat1HQData = "<br><h3>1-7 Command</h3><hr><br>";
+        $bat1HQData = "<br><h4>1-7 Command</h4><hr><br>";
         $suptData = "<br><h3>Support Departments</h3><hr><br>";
-        $alpha1Data = "<br><h3>Alpha Company</h3><hr><br>";
-        $bravo1Data = "<br><h3>Bravo Company</h3><hr><br>";
-        $charlie1Data = "<br><h3>Charlie Company</h3><hr><br>";
-        $training1Data = "<br><h3>Training Company</h3><hr><br>";
-        $bat2HQData = "<br><h3>2-7 Command</h3><hr><br>";
-        $bravo2Data = "<br><h3>Bravo Company</h3><hr><br>";
-        $alpha2Data = "<br><h3>Alpha Company</h3><hr><br>";
-        $charlie2Data = "<br><h3>Charlie Company</h3><hr><br>";
-        $newRecruitsData = "<br><h3>New Recruits</h3><hr><br>";
-        $starterData = "<br><h3>Starter Company</h3><hr><br>";
+        $alpha1Data = "<br><h4>Alpha Company 1-7</h4><hr><br>";
+        $bravo1Data = "<br><h4>Bravo Company 1-7</h4><hr><br>";
+        $charlie1Data = "<br><h4>Charlie Company 1-7</h4><hr><br>";
+        $training1Data = "<br><h4>Training Unit 1-7</h4><hr><br>";
+        $bat2HQData = "<br><h4>2-7 Command</h4><hr><br>";
+        $bravo2Data = "<br><h4>Bravo Company 2-7</h4><hr><br>";
+        $alpha2Data = "<br><h4>Alpha Company 2-7</h4><hr><br>";
+        $charlie2Data = "<br><h4>Charlie Company 2-7</h4><hr><br>";
+        $newRecruitsData = "<br><h4>New Recruits</h4><hr><br>";
+        $starterData = "<br><h4>Starter Company</h4><hr><br>";
 
         // Begin Support headings
-        $jagData = "<br><h3>Judge Advocate General's Office (JAG)</h3><hr><br>";
-        $s1Data = "<br><h3>S1 Department</h3><hr><br>";
-        $s2Data = "<br><h3>S2 Military Intelligence Department</h3><hr><br>";
-        $mpData = "<br><h3>Military Police</h3><hr><br>";
-        $s3Data = "<br><h3>S3 Department</h3><hr><br>";
-        $s5Data = "<br><h3>S5 Public Relations Department</h3><hr><br>";
-        $rrdData = "<br><h3>Regimental Recruiting Department (RRD)</h3><hr><br>";
-        $rtcData = "<br><h3>Recruit Training Command (RTC)</h3><hr><br>";
-        $ncoData = "<br><h3>NCO Academy</h3><hr><br>";
-        $s6Data = "<br><h3>S6 - Regimental IMO (Information Management Office)</h3><hr><br>";
-        $cagData = "<br><h3>CAG (Combat Applications Group)</h3><hr><br>";
+        $jagData = "<br><h4>Judge Advocate General's Office (JAG)</h4><hr><br>";
+        $s1Data = "<br><h4>S1 Department</h4><hr><br>";
+        $s2Data = "<br><h4>S2 Military Intelligence Department</h4><hr><br>";
+        $mpData = "<br><h4>Military Police</h4><hr><br>";
+        $s3Data = "<br><h4>S3 Department</h4><hr><br>";
+        $s5Data = "<br><h4>S5 Public Relations Department</h4><hr><br>";
+        $rrdData = "<br><h4>Regimental Recruiting Department (RRD)</h4><hr><br>";
+        $rtcData = "<br><h4>Recruit Training Command (RTC)</h4><hr><br>";
+        $ncoData = "<br><h4>NCO Academy</h4><hr><br>";
+        $s6Data = "<br><h4>S6 - Regimental IMO (Information Management Office)</h4><hr><br>";
+        $cagData = "<br><h4>CAG (Combat Applications Group)</h4><hr><br>";
+
+        // Begin 1BN headings
+        $alpha11PLData = "<br><h5>1st Platoon (Rotary Transport)</h5><hr><br>";
+        $alpha21PLData = "<br><h5>2nd Platoon (Rotary & Fixed Attack)</h5><hr><br>";
+        $bravo11PLData = "<br><h5>1st Platoon (Armor)</h5><hr><br>";
+        $bravo21PLData = "<br><h5>2nd Platoon (Mechanized Infantry)</h5><hr><br>";
+        $bravo31PLData = "<br><h5>3rd Platoon (Mechanized Infantry)</h5><hr><br>";
+        $charlie11PLData = "<br><h5>1st Platoon (Airborne Infantry)</h5><hr><br>";
+        $charlie21PLData = "<br><h5>2nd Platoon (Airborne Infantry)</h5><hr><br>";
+        $charlie31PLData = "<br><h5>3rd Platoon (Combat Engineers)</h5><hr><br>";
+        $charlie41PLData = "<br><h5>4th Platoon (ACV)</h5><hr><br>";
+        $trainingUnitData = "<br><h5>In Training</h5><hr><br>";
+
+        // Begin 2BN headings
+        $bravo12PLData = "<br><h5>1st Platoon: (Squad)</h5><hr><br>";
+        $bravo22PLData = "<br><h5>2nd Platoon: (Squad)</h5><hr><br>";
+        $bravo32PLData = "<br><h5>3rd Platoon: (Squad)</h5><hr><br>";
+        $bravo52PLData = "<br><h5>5th Platoon (Insurgency)</h5><hr><br>";
+        $charlie12PLData = "<br><h5>1st Platoon (CS:GO)</h5><hr><br>";
 
         // Main pos IDs
         $posGrpIDs = XenForo_Application::get('options')->posGrpIDs;
         $posGrpIDs = explode(',',$posGrpIDs);
+        
+        // 1BN
+        $alpha11PLIDs = explode(',',XenForo_Application::get('options')->alpha11PLID);
+        $alpha21PLIDs = explode(',',XenForo_Application::get('options')->alpha21PLID);
+        $bravo11PLIDs = explode(',',XenForo_Application::get('options')->bravo11PLID);
+        $bravo21PLIDs = explode(',',XenForo_Application::get('options')->bravo21PLID);
+        $bravo31PLIDs = explode(',',XenForo_Application::get('options')->bravo31PLID);
+        $charlie11PLIDs = explode(',',XenForo_Application::get('options')->charlie11PLID);
+        $charlie21PLIDs = explode(',',XenForo_Application::get('options')->charlie21PLID);
+        $charlie31PLIDs = explode(',',XenForo_Application::get('options')->charlie31PLID);
+        $charlie41PLIDs = explode(',',XenForo_Application::get('options')->charlie41PLID);
+        $trainingUnitIDs = explode(',',XenForo_Application::get('options')->trainingUnitID);
+
+        // 2BN
+        $bravo12PLIDs = explode(',',XenForo_Application::get('options')->bravo12PLID);
+        $bravo22PLIDs = explode(',',XenForo_Application::get('options')->bravo22PLID);
+        $bravo32PLIDs = explode(',',XenForo_Application::get('options')->bravo32PLID);
+        $bravo52PLIDs = explode(',',XenForo_Application::get('options')->bravo52PLID);
+        $charlie12PLIDs = explode(',',XenForo_Application::get('options')->charlie12PLID);
 
         // Support department IDs
-        $s1PosID = XenForo_Application::get('options')->s1PosID;
-        $s2PosID = XenForo_Application::get('options')->s2PosID;
-        $s3PosID = XenForo_Application::get('options')->s3PosID;
-        $s5PosID = XenForo_Application::get('options')->s5PosID;
-        $s6PosID = XenForo_Application::get('options')->s6PosID;
-        $rtcPosID = XenForo_Application::get('options')->rtcPosID;
-        $rrdPosID = XenForo_Application::get('options')->rrdPosID;
-        $jagPosID = XenForo_Application::get('options')->jagPosID;
-        $mpPosID = XenForo_Application::get('options')->mpPosID;
-        $ncoPosID = XenForo_Application::get('options')->ncoPosID;
-        $cagPosID = XenForo_Application::get('options')->cagPosID;
+        $s1PosID = explode(',',XenForo_Application::get('options')->s1PosID);
+        $s2PosID = explode(',',XenForo_Application::get('options')->s2PosID);
+        $s3PosID = explode(',',XenForo_Application::get('options')->s3PosID);
+        $s5PosID = explode(',',XenForo_Application::get('options')->s5PosID);
+        $s6PosID = explode(',',XenForo_Application::get('options')->s6PosID);
+        $rtcPosID = explode(',',XenForo_Application::get('options')->rtcPosID);
+        $rrdPosID = explode(',',XenForo_Application::get('options')->rrdPosID);
+        $jagPosID = explode(',',XenForo_Application::get('options')->jagPosID);
+        $mpPosID = explode(',',XenForo_Application::get('options')->mpPosID);
+        $ncoPosID = explode(',',XenForo_Application::get('options')->ncoPosID);
+        $cagPosID = explode(',',XenForo_Application::get('options')->cagPosID);
 
         // Create data entry for each member
         foreach ($members as $member) {
@@ -172,52 +211,98 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which department via position ID
                     switch($member['position_id'])
                     {
-                        case (strpos($s1PosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $s1PosID)):
                             $s1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($s2PosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $s2PosID)):
                             $s2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($s3PosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $s3PosID)):
                             $s3Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($s5PosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $s5PosID)):
                             $s5Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($s6PosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $s6PosID)):
                             $s6Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($rtcPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $rtcPosID)):
                             $rtcData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($rrdPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $rrdPosID)):
                             $rrdData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($jagPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $jagPosID)):
                             $jagData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($mpPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $mpPosID)):
                             $mpData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($ncoPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $ncoPosID)):
                             $ncoData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case (strpos($cagPosID, $member['position_id']) !== false):
+                        case (in_array($member['position_id'], $cagPosID)):
                             $cagData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
                     }
                     break;
                 case $posGrpIDs[3]:
-                    $alpha1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Alpha company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $alpha11PLIDs)):
+                            $alpha11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $alpha21PLIDs)):
+                            $alpha21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $alpha1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[4]:
-                    $bravo1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Bravo company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $bravo11PLIDs)):
+                            $bravo11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $bravo21PLIDs)):
+                            $bravo21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $bravo31PLIDs)):
+                            $bravo31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $bravo1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[5]:
-                    $charlie1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Charlie company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $charlie11PLIDs)):
+                            $charlie11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $charlie21PLIDs)):
+                            $charlie21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $charlie31PLIDs)):
+                            $charlie31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $charlie41PLIDs)):
+                            $charlie41PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $charlie1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[6]:
-                    $training1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Training Unit
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $trainingUnitIDs)):
+                            $trainingUnitData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $training1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[7]:
                     $bat2HQData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
@@ -226,10 +311,33 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     $alpha2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
                 case $posGrpIDs[9]:
-                    $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Bravo company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $bravo12PLIDs)):
+                            $bravo12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $bravo22PLIDs)):
+                            $bravo22PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $bravo32PLIDs)):
+                            $bravo32PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        case (in_array($member['position_id'], $bravo52PLIDs)):
+                            $bravo52PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[10]:
-                    $charlie2Data .= "<p>". $member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    // All Charlie company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $charlie12PLIDs)):
+                            $charlie12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            break;
+                        default: $charlie2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
                     break;
                 case $posGrpIDs[11]:
                     $newRecruitsData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
@@ -239,22 +347,29 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     break;
             }
         }
+        
+        // Build Company Data
+        $alpha1Data .= $alpha11PLData . $alpha21PLData;
+        $bravo1Data .= $bravo11PLData . $bravo21PLData . $bravo31PLData;
+        $charlie1Data .= $charlie11PLData . $charlie21PLData . $charlie31PLData . $charlie41PLData;
+        $training1Data .= $trainingUnitData;
+        $bravo2Data .= $bravo12PLData . $bravo22PLData . $bravo32PLData . $bravo52PLData;
+        $charlie2Data .= $charlie12PLData;
+        
 
         // Build Battalion Data
-        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $alpha1Data . $bravo1Data . $charlie1Data . $training1Data;
+        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $alpha1Data . $bravo1Data . $charlie1Data . $training1Data. $starterData;
         $bat2Total = "<h3>2nd Battalion</h3><hr><br>" . $bat2HQData . $alpha2Data . $bravo2Data . $charlie2Data;
+        $recruitTotal = $newRecruitsData;
 
         // Build Support Data
-        $supportTotal = $jagData . $newLine . $s1Data . $newLine . $s2Data . $newLine .
-            $mpData . $newLine . $s3Data . $newLine . $s5Data . $newLine .
-            $rrdData . $newLine .$rtcData . $newLine .$ncoData . $newLine .
-            $s6Data  . $newLine;
+        $suptData  .=  $s1Data . $newLine . $s2Data . $newLine . $s3Data . $newLine .
+            $s5Data . $newLine . $s6Data .$newLine . $mpData . $newLine . $jagData . 
+            $newLine .$rrdData . $newLine .$rtcData . $newLine .$ncoData . $newLine . 
+            $cagData. $newLine;
 
         // Combine data sets
-        $data .= $newLine . $hqData . $supportTotal . $bat1Total .$newLine . $newLine. $bat2Total;
-
-        // Give our data some breathing space
-        $data .= $newLine. $newLine . $newLine;
+        $data .= $newLine . $hqData . $suptData . $bat1Total .$newLine . $newLine. $bat2Total . $newLine . $recruitTotal;
 
         // Return new ADR
         return $data;
