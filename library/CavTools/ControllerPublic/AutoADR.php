@@ -134,6 +134,24 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $rtcData = "<br><h3>Recruit Training Command (RTC)</h3><hr><br>";
         $ncoData = "<br><h3>NCO Academy</h3><hr><br>";
         $s6Data = "<br><h3>S6 - Regimental IMO (Information Management Office)</h3><hr><br>";
+        $cagData = "<br><h3>CAG (Combat Applications Group)</h3><hr><br>";
+
+        // Main pos IDs
+        $posGrpIDs = XenForo_Application::get('options')->posGrpIDs;
+        $posGrpIDs = explode(',',$posGrpIDs);
+
+        // Support department IDs
+        $s1PosID = XenForo_Application::get('options')->s1PosID;
+        $s2PosID = XenForo_Application::get('options')->s2PosID;
+        $s3PosID = XenForo_Application::get('options')->s3PosID;
+        $s5PosID = XenForo_Application::get('options')->s5PosID;
+        $s6PosID = XenForo_Application::get('options')->s6PosID;
+        $rtcPosID = XenForo_Application::get('options')->rtcPosID;
+        $rrdPosID = XenForo_Application::get('options')->rrdPosID;
+        $jagPosID = XenForo_Application::get('options')->jagPosID;
+        $mpPosID = XenForo_Application::get('options')->mpPosID;
+        $ncoPosID = XenForo_Application::get('options')->ncoPosID;
+        $cagPosID = XenForo_Application::get('options')->cagPosID;
 
         // Create data entry for each member
         foreach ($members as $member) {
@@ -141,80 +159,82 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
             $userURL = '<a href="/members/'.$member['user_id'].'">'.$member['title']." ".$member['username'].'</a>';
 
             // Decide which data group to assign
-            // TODO - change from magic numbers to Xen options
             switch ($member['position_group_id'])
             {
-                case '1':
+                case $posGrpIDs[0]:
                     $hqData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '3':
+                case $posGrpIDs[1]:
                     $bat1HQData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '4':
+                case $posGrpIDs[2]:
                     // All support department
                     // Decide on which department via position ID
                     switch($member['position_id'])
                     {
-                        case ($member['position_id'] == '15' || $member['position_id'] == '16' || $member['position_id'] == '17' || $member['position_id'] == '219'):
+                        case (strpos($s1PosID, $member['position_id']) !== false):
                             $s1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '18' || $member['position_id'] == '19' || $member['position_id'] == '20'):
+                        case (strpos($s2PosID, $member['position_id']) !== false):
                             $s2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '21' || $member['position_id'] == '22' || $member['position_id'] == '23'):
+                        case (strpos($s3PosID, $member['position_id']) !== false):
                             $s3Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '24' || $member['position_id'] == '25' || $member['position_id'] == '26'):
+                        case (strpos($s5PosID, $member['position_id']) !== false):
                             $s5Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] =='3' || $member['position_id'] == '27' || $member['position_id'] == '28'):
+                        case (strpos($s6PosID, $member['position_id']) !== false):
                             $s6Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '29' || $member['position_id'] == '30' || $member['position_id'] == '220' || $member['position_id'] == '198' || $member['position_id'] == '228'):
+                        case (strpos($rtcPosID, $member['position_id']) !== false):
                             $rtcData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '31' || $member['position_id'] == '32' || $member['position_id'] == '203' || $member['position_id'] == '227'):
+                        case (strpos($rrdPosID, $member['position_id']) !== false):
                             $rrdData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] =='33' || $member['position_id'] == '34'):
+                        case (strpos($jagPosID, $member['position_id']) !== false):
                             $jagData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '35' || $member['position_id'] == '36' || $member['position_id'] == '201' || $member['position_id'] == '229'):
+                        case (strpos($mpPosID, $member['position_id']) !== false):
                             $mpData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
-                        case ($member['position_id'] == '37' || $member['position_id'] == '38'):
+                        case (strpos($ncoPosID, $member['position_id']) !== false):
                             $ncoData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                            break;
+                        case (strpos($cagPosID, $member['position_id']) !== false):
+                            $cagData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                             break;
                     }
                     break;
-                case '5':
+                case $posGrpIDs[3]:
                     $alpha1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '6':
+                case $posGrpIDs[4]:
                     $bravo1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '7':
+                case $posGrpIDs[5]:
                     $charlie1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '8':
+                case $posGrpIDs[6]:
                     $training1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '9':
+                case $posGrpIDs[7]:
                     $bat2HQData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '10':
-                    $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
-                    break;
-                case '11':
+                case $posGrpIDs[8]:
                     $alpha2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '12':
+                case $posGrpIDs[9]:
+                    $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    break;
+                case $posGrpIDs[10]:
                     $charlie2Data .= "<p>". $member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '13':
+                case $posGrpIDs[11]:
                     $newRecruitsData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case '15':
+                case $posGrpIDs[12]:
                     $starterData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
             }
