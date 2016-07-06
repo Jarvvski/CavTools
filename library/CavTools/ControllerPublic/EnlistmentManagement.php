@@ -351,7 +351,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     break;
                 case '4':
                     // Approved
-                    $message = '[B]Application approved.[/B]';
+                    $message = $this->approvalMessage($enlistmentID);
                     $currentStatus = 2;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
@@ -638,9 +638,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         curl_close($ch);
 
         $reply = json_decode($reply, true);
-
-        $name = $reply['response']['players'][0]['personaname'];
-        $profile = $reply['response']['players'][0]['profileurl'];
+        
+        try {
+            $name = $reply['response']['players'][0]['personaname'];
+            $profile = $reply['response']['players'][0]['profileurl'];
+        } catch (Exception $e) {
+            $name = "Incorrect SteamID given";
+            $profile = "Incorrect SteamID given";
+        }
 
         try {
             if ($reply['response']['players'][0]['communityvisibilitystate'] == 1) {
@@ -756,6 +761,35 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $writer->preSave();
         $writer->save();
         return $writer->getDiscussionId();
+    }
+
+    public function approvalMessage($enlistmentID)
+    {
+        $enlistModel = $this->_getEnlistmentModel();
+        $query = $enlistModel->getEnlistmentById($enlistmentID);
+        $firstName = ucwords($query['first_name']);
+        $lastName = ucwords($query['last_name']);
+        $cavName = '';
+        $cavName = $lastName . "." . $firstName[0];
+        $newLine = "\n";
+
+        $header = "Please change your dog tags to [B]=7Cav=RCT.".$cavName."[/B] and TeamSpeak to [B]".$cavName."[/B]".$newLine.
+            "A Drill Instructor will contact you shortly.".$newLine.$newLine."[B]Welcome to the Brotherhood of the Yellow and Black;
+            battle tested and forged in the fires of hell itself![/B]";
+
+        $quote = "[COLOR=#FF0000]“As a new trooper we will forge you into that individual. We will give more than gamemanship. We will develop people skills, 
+        positive interaction with others. Guide you into giving of yourself for the good of others and putting yourself second. We will calm your 
+        tempers, give you purpose that will develop you into an individual that will be an asset in your daily life outside the Cavalry. 
+        There are many here that have advanced age that has dealt with life's many challenges. All will help with advice and encouragement, 
+        if you will put forth a contact. No one lives alone and can only grow in stature as a human being with positive reaction with others of equal 
+        nobility and honor in what they do.“".$newLine."CSM.Cold.R[/COLOR]";
+
+        $teamspeak = "TeamSpeak IP: ts3.7Cav.us".$newLine."TeamSpeak PW: 7thCavalry";
+
+        $notes = "[B]**NOTE**[/B]".$newLine."S1 and DI's please note".$newLine.$newLine."First Name: ".$firstName.$newLine."Last Name: ".$lastName.
+            $newLine.$newLine;
+
+        return $message = $header.$newLine.$newLine.$quote.$newLine.$newLine.$teamspeak.$newLine.$newLine.$notes.$newLine.$newLine;
     }
 
     protected function _getEnlistmentModel()
