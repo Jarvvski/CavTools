@@ -35,7 +35,7 @@ class CavTools_Install {
                 `user_id` INT ( 10 ) NOT NULL ,
                 `username` VARCHAR (50) NOT NULL ,
                 `log_date` BIGINT ( 20 ) NOT NULL,
-                `action_taken` VARCHAR (50) NOT NULL,
+                `action_taken` VARCHAR (250) NOT NULL,
                 PRIMARY KEY (`log_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
