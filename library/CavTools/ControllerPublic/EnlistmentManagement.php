@@ -578,7 +578,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         $dateApproved = "[B]Date Approved:[/B] " . date('dMy', XenForo_Application::$time);
         $home = XenForo_Application::get('options')->homeURL;
-        $threadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
+        $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steamID = "[B]Steam 64-bit ID:[/B] " . $query['steamID'];
         $bootCamp = "[B]Boot Camp Class Assigned[/B]: " . date('W/m/o');
@@ -692,7 +692,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
-        $rtcThreadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'RTC Folder'.'[/URL]';
+        $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
