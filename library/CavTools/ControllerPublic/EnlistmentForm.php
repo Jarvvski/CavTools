@@ -208,7 +208,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $checkName = $this->checkName($cavName);
         $checkAge = $this->checkAge($age);
         
-        if($reenlistment = false)
+        if($reenlistment == true)
         {
             $reenlisting = "yes";
             $heading = '[Re-Enlistment] - ';
