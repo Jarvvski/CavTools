@@ -1,8 +1,9 @@
+<xen:require js="js/CavTools/enlistmentForm.js" />
 <div class="section">
     <h1 class="heading">Enlistment Application</h1>
     <br />
     <br />
-    <form action="{xen:link enlist/post}" method="post" class="xenForm AutoValidator enlistmentForm" data-redirect="on">
+    <form action="{xen:link enlist/post}" method="post" class="xenForm AutoValidator enlistmentForm" onsubmit="return validateForm()" data-redirect="on" name="enlistment">
         <h2 class="subHeading">Choosing your name</h2>
         <br />
         <br />
@@ -38,15 +39,10 @@
         <br />
         <br />
         <dl class="ctrlUnit">
-            <xen:if is="{$hasMilpac} == 1">
-                <dt><label for="ctrl_message">You are re-enlisting</label></dt>
-                <dd><input type="radio" name="reenlistment" value="Yes" checked hidden></dd>
-            <xen:else />
                 <dt><label for="ctrl_message">Are you re-enlisting?</label></dt>
                 <dd><input type="radio" name="reenlistment" value="Yes" required> Yes
                     <br /><br />
                     <input type="radio" name="reenlistment" value="No"> No<br></dd>
-            </xen:if>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_recipients">Recruiter(s)</label></dt>
@@ -57,7 +53,7 @@
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Age</label></dt>
-            <dd><textarea name="age" id="ctrl_message" class="textCtrl" rows="1" cols="50" required></textarea>
+            <dd><input type="text" name="age" class="textCtrl number SpinBox" min="1" max="115" step="1" onclick="javascript:validateForm()" required>
                 <p class="explain">18+ requirement</p>
             </dd>
         </dl>

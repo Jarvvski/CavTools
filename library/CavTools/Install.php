@@ -11,7 +11,7 @@ class CavTools_Install {
                 `age` INT( 10 ) UNSIGNED NOT NULL,
                 `timezone` VARCHAR( 10 ) NOT NULL,
                 `enlistment_date` BIGINT ( 20 ) NOT NULL,
-                `steamID` BIGINT ( 50 ) UNSIGNED NOT NULL,
+                `steamID` VARCHAR ( 200 ) NOT NULL,
                 `in_clan` VARCHAR ( 10 ) NOT NULL,
                 `past_clans` VARCHAR( 50 ),
                 `game` VARCHAR( 50 ) NOT NULL,

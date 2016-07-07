@@ -191,7 +191,10 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $mpPosID = explode(',',XenForo_Application::get('options')->mpPosID);
         $ncoPosID = explode(',',XenForo_Application::get('options')->ncoPosID);
         $cagPosID = explode(',',XenForo_Application::get('options')->cagPosID);
-
+        
+        // Squad leader POS IDs
+        $slPosID = explode(',',XenForo_Application::get('options')->slPosID);
+        
         // Create data entry for each member
         foreach ($members as $member) {
             // Build Profile link
@@ -251,10 +254,18 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
                         case (in_array($member['position_id'], $alpha11PLIDs)):
-                            $alpha11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $alpha11PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $alpha11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $alpha21PLIDs)):
-                            $alpha21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $alpha21PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $alpha21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         default: $alpha1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
@@ -264,13 +275,25 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
                         case (in_array($member['position_id'], $bravo11PLIDs)):
-                            $bravo11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo11PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $bravo21PLIDs)):
-                            $bravo21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo21PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $bravo31PLIDs)):
-                            $bravo31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo31PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         default: $bravo1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
@@ -280,16 +303,32 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
                         case (in_array($member['position_id'], $charlie11PLIDs)):
-                            $charlie11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $charlie11PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $charlie11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $charlie21PLIDs)):
-                            $charlie21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $charlie21PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $charlie21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $charlie31PLIDs)):
-                            $charlie31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $charlie31PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $charlie31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $charlie41PLIDs)):
-                            $charlie41PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $charlie41PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $charlie41PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         default: $charlie1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
@@ -315,16 +354,32 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
                         case (in_array($member['position_id'], $bravo12PLIDs)):
-                            $bravo12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo12PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $bravo22PLIDs)):
-                            $bravo22PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo22PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo22PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $bravo32PLIDs)):
-                            $bravo32PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo32PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo32PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         case (in_array($member['position_id'], $bravo52PLIDs)):
-                            $bravo52PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $bravo52PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $bravo52PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         default: $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
@@ -334,7 +389,11 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
                         case (in_array($member['position_id'], $charlie12PLIDs)):
-                            $charlie12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $charlie12PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $charlie12PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
                             break;
                         default: $charlie2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
