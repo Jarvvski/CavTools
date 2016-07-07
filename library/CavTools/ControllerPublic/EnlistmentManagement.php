@@ -692,7 +692,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
-        $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'RTC Folder'.'[/URL]';
+        $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['rtc_thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
