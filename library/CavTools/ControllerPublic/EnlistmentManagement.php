@@ -557,7 +557,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->getEnlistmentById($enlistmentID);
-        $rank = "RTC";
+        $rank = "RCT";
         return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED | " . $query['game'];
     }
 
@@ -697,13 +697,13 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steam = "[Size=6][B]Steam Review-Cleared/Hold[/B][/Size]";
-        $steamName = "[B]Username:[/B] " . $steamContent['name'];
+        $steamName = "[B]Username:[/B] '" . $steamContent['name'] . "'";
 
-        if ($steamContent['status'] = 1) {
+        if ($steamContent['status'] == 1) {
             $steamStatus = "[B]Status:[/B] [Color=red]Private[/Color]";
-        } else if ($steamContent['status'] = 2) {
+        } else if ($steamContent['status'] == 2) {
             $steamStatus = "[B]Status:[/B] [Color=green]Public[/Color]";
-        } else if ($steamContent['status'] = 3) {
+        } else if ($steamContent['status'] == 3) {
             $steamStatus = "[B]Status:[/B] [Color=yellow]Unknown[/Color]";
         }
 
