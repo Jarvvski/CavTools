@@ -8,7 +8,8 @@ class CavTools_ControllerPublic_S3Events extends XenForo_ControllerPublic_Abstra
         //Get values from options
         $enable = XenForo_Application::get('options')->enableS3Events;
 
-        if(!$enable) {
+        if(!$enable) 
+        {
             throw $this->getNoPermissionResponseException();
         }
 

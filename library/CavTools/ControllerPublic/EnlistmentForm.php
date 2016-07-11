@@ -52,7 +52,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         //Get values from options
         $steamID_thread = XenForo_Application::get('options')->steamIDthread;
+        $steamID_thread = "threads/".$steamID_thread;
         $minRequire_thread = XenForo_Application::get('options')->minRequireThread;
+        $minRequire_thread = "threads/".$minRequire_thread;
         $games = XenForo_Application::get('options')->games;
 
         $games = explode(',', $games);
@@ -208,7 +210,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $checkName = $this->checkName($cavName);
         $checkAge = $this->checkAge($age);
         
-        if($reenlistment = false)
+        if($reenlistment == true)
         {
             $reenlisting = "yes";
             $heading = '[Re-Enlistment] - ';

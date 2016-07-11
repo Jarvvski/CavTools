@@ -60,57 +60,57 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 
                 switch ($enlistment['current_status'])
                 {
-                    case 1: $status = '<td style="color:red;">Denied</td>';break;
-                    case 2: $status = '<td style="color:green;">Approved</td>';break;
-                    case 3: $status = '<td style="color:yellow;">Open</td>';break;
+                    case 1: $status = '<td><div id="red">Denied</div></td>';break;
+                    case 2: $status = '<td><div id="green">Approved</div></td>';break;
+                    case 3: $status = '<td><div id="yellow">Open</div></td>';break;
                 }
                 
                 
                 if ($daysSince > 7) {
-                    $dayStatus = '<td style="color:red;">';
+                    $dayStatus = '<td><div id="red">';
                 } else {
-                    $dayStatus = '<td>';
+                    $dayStatus = '<td><div>';
                 }
 
                 switch($nameCheck)
                 {
-                    case 1: $nameStatus = '<td style="color:red;">';break;
-                    case 2: $nameStatus = '<td style="color:green;">';break;
+                    case 1: $nameStatus = '<td><div id="red">';break;
+                    case 2: $nameStatus = '<td><div id="green">';break;
                 }
                 
                 switch ($enlistment['vac_ban']) {
-                    case 1: $banStatus = '<td style="color:red;">';break;
-                    case 2: $banStatus = '<td style="color:green;">';break;
-                    case 3: $banStatus = '<td style="color:yellow;">';break;
+                    case 1: $banStatus = '<td nowrap><div id="red">';break;
+                    case 2: $banStatus = '<td nowrap><div id="green">';break;
+                    case 3: $banStatus = '<td nowrap><div id="yellow">';break;
                 }
 
                 if ($underage) {
-                    $ageStatus = '<td style="color:red;">';
+                    $ageStatus = '<td><div id="red">';
                 } else {
-                    $ageStatus = '<td>';
+                    $ageStatus = '<td><div>';
                 }
                 if ($canAction) {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</div></td>$nameStatus" . htmlspecialchars($cavName) . "</div></td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</div></td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</div></td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</div></td>$nameStatus" . htmlspecialchars($cavName) . "</div></td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</div></td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</div></td>$status<td><input type=\"checkbox\" name=\"enlistments[]\" value=" . $enlistment['enlistment_id'] . "></td></tr>" . PHP_EOL;
                         }
                     }
                 } else {
                     if (!$reenlistment) {
                         if (count($enlistments) != 0) {
-                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status</tr>" . PHP_EOL;
+                            $normalEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</div></td>$nameStatus" . htmlspecialchars($cavName) . "</div></td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus " . htmlspecialchars($enlistment['steamID']) . "</div></td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</div></td>$status</tr>" . PHP_EOL;
                         }
                     }
 
                     if ($reenlistment) {
                         if (count($enlistments) != 0) {
-                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</td>$nameStatus" . htmlspecialchars($cavName) . "</td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</td>$status</tr>" . PHP_EOL;
+                            $reEnlistments .= "<tr><td><a href=" . $thread . "><b>" . $enlistment['enlistment_id'] . "</b></a></td><td>" . date('m-d-y', $enlistment['enlistment_date']) . "</td>$dayStatus" . $daysSince . "</div></td>$nameStatus" . htmlspecialchars($cavName) . "</div></td><td>". htmlspecialchars($enlistment['first_name']) . "</td><td>" . htmlspecialchars($enlistment['recruiter']) . "</td>$banStatus" . htmlspecialchars($enlistment['steamID']) . "</div></td>$ageStatus" . htmlspecialchars($enlistment['age']) . "</div></td>$status</tr>" . PHP_EOL;
                         }
                     }
                 }
@@ -557,7 +557,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->getEnlistmentById($enlistmentID);
-        $rank = "RTC";
+        $rank = "RCT";
         return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED | " . $query['game'];
     }
 
@@ -578,7 +578,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         $dateApproved = "[B]Date Approved:[/B] " . date('dMy', XenForo_Application::$time);
         $home = XenForo_Application::get('options')->homeURL;
-        $threadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
+        $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id'].'[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steamID = "[B]Steam 64-bit ID:[/B] " . $query['steamID'];
         $bootCamp = "[B]Boot Camp Class Assigned[/B]: " . date('W/m/o');
@@ -692,18 +692,18 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
-        $rtcThreadURL = '[URL="http://' .$home.'/thread/'.$query['thread_id'].'"]'. 'RTC Folder'.'[/URL]';
+        $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['rtc_thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
         $steam = "[Size=6][B]Steam Review-Cleared/Hold[/B][/Size]";
-        $steamName = "[B]Username:[/B] " . $steamContent['name'];
+        $steamName = "[B]Username:[/B] '" . $steamContent['name'] . "'";
 
-        if ($steamContent['status'] = 1) {
+        if ($steamContent['status'] == 1) {
             $steamStatus = "[B]Status:[/B] [Color=red]Private[/Color]";
-        } else if ($steamContent['status'] = 2) {
+        } else if ($steamContent['status'] == 2) {
             $steamStatus = "[B]Status:[/B] [Color=green]Public[/Color]";
-        } else if ($steamContent['status'] = 3) {
+        } else if ($steamContent['status'] == 3) {
             $steamStatus = "[B]Status:[/B] [Color=yellow]Unknown[/Color]";
         }
 

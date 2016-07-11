@@ -121,6 +121,10 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
         $nameUpdated = false;
         $banUpdated = false;
+        $timeZoneUpdated = false;
+        $inClanUpdated = false;
+        $gameUpdated = false;
+        $reenlistingUpdated = false;
 
         // write the enlistee details to the db
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
@@ -136,6 +140,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         }
         if ($timezone) {
             $dw->set('timezone', $timezone);
+            $timeZoneUpdated = true;
         }
         if ($steamID) {
             $dw->set('steamID', $steamID);
@@ -155,12 +160,15 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             if ($pastClans) {
                 $dw->set('past_clans', $pastClans);
             }
+            $inClanUpdated = true;
         }
         if ($game) {
             $dw->set('game', $game);
+            $gameUpdated = true;
         }
         if ($reenlisting) {
             $dw->set('reenlistment', $reenlistment);
+            $reenlistingUpdated = true;
         }
         $dw->set('last_update', XenForo_Application::$time);
 
@@ -176,18 +184,42 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $submittedBy = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
 
         $postContent = '';
+        $action = 'Updates: ';
         if ($nameUpdated) {
             $postContent .= "[B]Name updated[/B]" . $newline . $newline;
-            $postContent .= $this->createNamePostContent($cavName);
-        }
-        if ($nameUpdated && $banUpdated) {
-            $postContent .= $newline;
+            $postContent .= $this->createNamePostContent($cavName) .$newline .$newline .$newline;
+            $action .= "Name, ";
         }
         if ($banUpdated) {
             $postContent .= "[B]Steam ID updated[/B]" . $newline . $newline;
-            $postContent .= $this->createVacPostContent($steamID);
+            $postContent .= $this->createVacPostContent($steamID) .$newline .$newline .$newline;
+            $action .= "SteamID, ";
+        }
+        if ($reenlistingUpdated) {
+            $postContent .= "[B]Re-enlistment Updated[/B]" . $newline ."Re-enlistment Status: " .$reenlisting.
+                $newline . $newline . $newline;
+            $action .= "enlistment type, ";
+        }
+        if ($timeZoneUpdated) {
+            $postContent .= "[B]Time Zone Updated[/B]" . $newline ."Clan Status: " .$timezone.
+                $newline . $newline . $newline;
+            $action .= "Timezone, ";
+        }
+        if ($inClanUpdated) {
+            $postContent .= "[B]Clan status Updated[/B]" . $newline ."Clan Status: " .$inClan.
+                $newline . $newline .$newline;
+            $action .= "Clan status, ";
+        }
+        if ($gameUpdated) {
+            $postContent .= "[B]Game Updated[/B]" . $newline ."Clan Status: " .$game.
+                $newline . $newline . $newline;
+            $action .= "Game, ";
+        }
+        if ($recruiter) {
+            $action .= "Recruiter, ";
         }
 
+        $this->writeLog($enlistmentID, $action);
         $this->actionCreatePost($query['thread_id'], $postContent, $submittedBy);
         $this->updateThread($query['thread_id'],$this->rebuildTitle($enlistmentID));
 
@@ -443,6 +475,19 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             default:
                 return "[Size=6][COLOR=yellow][B]NAME CHECK FAILED[/B][/COLOR][/SIZE]";
         }
+    }
+
+    public function writeLog($enlistmentID, $action)
+    {
+        $visitor  = XenForo_Visitor::getInstance()->toArray();
+
+        $dw = XenForo_DataWriter::create('CavTools_DataWriter_EnlistmentLogs');
+        $dw->set('enlistment_id',$enlistmentID);
+        $dw->set('user_id', $visitor['user_id']);
+        $dw->set('username', $visitor['username']);
+        $dw->set('log_date', time());
+        $dw->set('action_taken', $action);
+        $dw->save();
     }
 
     protected function _getEnlistmentModel()

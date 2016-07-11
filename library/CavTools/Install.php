@@ -11,9 +11,9 @@ class CavTools_Install {
                 `age` INT( 10 ) UNSIGNED NOT NULL,
                 `timezone` VARCHAR( 10 ) NOT NULL,
                 `enlistment_date` BIGINT ( 20 ) NOT NULL,
-                `steamID` BIGINT ( 50 ) UNSIGNED NOT NULL,
+                `steamID` VARCHAR ( 200 ) NOT NULL,
                 `in_clan` VARCHAR ( 10 ) NOT NULL,
-                `past_clans` VARCHAR( 50 ),
+                `past_clans` TINYTEXT,
                 `game` VARCHAR( 50 ) NOT NULL,
                 `reenlistment` TINYINT ( 1 ) NOT NULL,
                 `hidden` TINYINT( 1 ) NOT NULL,
@@ -35,7 +35,7 @@ class CavTools_Install {
                 `user_id` INT ( 10 ) NOT NULL ,
                 `username` VARCHAR (50) NOT NULL ,
                 `log_date` BIGINT ( 20 ) NOT NULL,
-                `action_taken` VARCHAR (50) NOT NULL,
+                `action_taken` VARCHAR (250) NOT NULL,
                 PRIMARY KEY (`log_id`)
                 )
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',

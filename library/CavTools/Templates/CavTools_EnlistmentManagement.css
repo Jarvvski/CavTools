@@ -55,3 +55,12 @@ input[type="checkbox"]
     display: inline-block;
     margin-left: 25px;
 }
+#green {
+    color: @cavtoolsApproved;
+}
+#yellow {
+    color: @cavtoolsWarning;
+}
+#red {
+    color: @cavtoolsDenied;
+}
