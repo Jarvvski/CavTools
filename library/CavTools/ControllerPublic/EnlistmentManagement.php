@@ -76,6 +76,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 {
                     case 1: $nameStatus = '<td><div id="red">';break;
                     case 2: $nameStatus = '<td><div id="green">';break;
+                    case 3: $nameStatus = '<td><div id="yellow">';break;
                 }
                 
                 switch ($enlistment['vac_ban']) {
@@ -503,14 +504,12 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->checkNameDupe($cavName);
 
-        $count = 0;
-        //$queryType = gettype($query['username']);
-        try {
-            if ($cavName === $query[0]["username"] || $cavName === $query) {
-                $count = 1;
-            }
-        } catch (Exception $e) {
+        if ($query == null) {
             $count = 2;
+        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+            $count = 1;
+        } else {
+            $count = 3;
         }
         return $count;
     }

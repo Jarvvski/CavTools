@@ -449,15 +449,13 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->checkNameDupe($cavName);
-
-        $count = 0;
-        //$queryType = gettype($query['username']);
-        try {
-            if ($cavName === $query[0]["username"] || $cavName === $query) {
-                $count = 1;
-            }
-        } catch (Exception $e) {
+        
+        if ($query == null) {
             $count = 2;
+        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+            $count = 1;
+        } else {
+            $count = 3;
         }
         return $count;
     }

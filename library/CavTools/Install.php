@@ -13,7 +13,7 @@ class CavTools_Install {
                 `enlistment_date` BIGINT ( 20 ) NOT NULL,
                 `steamID` VARCHAR ( 200 ) NOT NULL,
                 `in_clan` VARCHAR ( 10 ) NOT NULL,
-                `past_clans` TINYTEXT,
+                `past_clans` TEXT,
                 `game` VARCHAR( 50 ) NOT NULL,
                 `reenlistment` TINYINT ( 1 ) NOT NULL,
                 `hidden` TINYINT( 1 ) NOT NULL,
