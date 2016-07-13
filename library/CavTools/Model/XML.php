@@ -31,16 +31,5 @@ class CavTools_Model_XML extends XenForo_Model {
 				  AND xf_user_field_value.user_id = '$userID'
         ");
     }
-    
-    public function getBillets($userID)
-    {
-        return $this->_getDb()->fetchRow("
-              SELECT xf_user_field_value.field_value
-              FROM xf_user_field_value
-              WHERE field_id = 'Billets'
-              AND user_id = '$userID'
-        ");
-    }
-
 
 }

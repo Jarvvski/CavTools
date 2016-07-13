@@ -33,9 +33,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         //Set Time Zone to UTC
         date_default_timezone_set("UTC");
 
-        //Get DB
-        $db = XenForo_Application::get('db');
-
         $normalEnlistments = " ";
         $reEnlistments = " ";
         $threadURL = '/threads/';
@@ -54,7 +51,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 // capitalise the first letters of the first and last name, even if uppercase already
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
-                $cavName = "";
                 $cavName = $lastName . "." . $firstName[0];
                 $nameCheck = $this->checkName($cavName);
                 
@@ -313,7 +309,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         // get the user_id from the user
         $visitor  = XenForo_Visitor::getInstance()->toArray();
-        $userID   = $visitor['user_id'];
 
         // get form values
         $rrdOption = $this->_input->filterSingle('rrd_option', XenForo_Input::STRING);
