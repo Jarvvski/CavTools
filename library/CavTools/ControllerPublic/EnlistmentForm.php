@@ -432,12 +432,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         curl_close($ch);
 
         $reply = json_decode($reply, true);
-        $banned = 0;
         try {
             if ($reply['players'][0]['VACBanned'] == true) {
                 $banned = 1;
-            } else if ($reply['players'][0]['VACBanned'] == null){
-                $banned = 3;
             } else if ($reply['players'][0]['VACBanned'] == false) {
                 $banned = 2;
             }
