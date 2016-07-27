@@ -66,22 +66,24 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         $title    = $this->_input->filterSingle('title', XenForo_Input::STRING);
         $problem  = $this->_input->filterSingle('problem', XenForo_Input::STRING);
         $reason   = $this->_input->filterSingle('reason', XenForo_Input::STRING);
+        $type = $this->_input->filterSingle('type', XenForo_Input::STRING);
         
         $content = array(
                         'title' => $title,
                         'problem' => $problem,
-                        'reason' => $reason
+                        'reason' => $reason,
+                        'type' => $type
                         );
 
         $visitor = XenForo_Visitor::getInstance()->toArray();
         $this->callAPI($content);
         $this->tweet($visitor, $title);
 
-        // redirect back to the normal scratchpad index page
+        // redirect back to the normal index page
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('forums'),
-            new XenForo_Phrase('Request sent')
+            XenForo_Link::buildPublicLink('featurerequest'),
+            new XenForo_Phrase('Submission recieved')
         );
     }
 
@@ -93,13 +95,12 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         $githubToken  = XenForo_Application::get('options')->githubToken;
         $githubRepo      = XenForo_Application::get('options')->githubRepo;
         $githubRepoOwner = XenForo_Application::get('options')->githubRepoOwner;
-        $githubIssueLabel = XenForo_Application::get('options')->githubIssueLabel;
 
         //Set variables
         $token = $githubToken;
         $repo = $githubRepo;
         $repoOwner = $githubRepoOwner;
-        $label = $githubIssueLabel;
+
         $username = $this->getUsername();
         $rank     = $this->getRank();
         
@@ -108,7 +109,7 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
         $header = array("Authorization:" . $headerValue);
         $title = $content['title'];
         $body  = sprintf("<h2>Problem</h2><br />%s<br /><hr><h2>Reason</h2><br />%s<br><br>-%s %s", $content['problem'], $content['reason'], $rank, $username);
-        $data = array("title" => $title, "body" => $body, "labels" => array($label));
+        $data = array("title" => $title, "body" => $body, "labels" => array($content['type']));
         $data_string = json_encode($data);
         $url   = sprintf("https://api.github.com/repos/%s/%s/issues", $repoOwner, $repo);
 
@@ -128,7 +129,7 @@ class CavTools_ControllerPublic_GithubIssue extends XenForo_ControllerPublic_Abs
     public function tweet($visitor, $title)
     {
         $twitterModel = $this->_getTwitterBot();
-        $text = $visitor['username'] . " sent my creator another feature request called '" . $title ."' Hopefully it's a good one!";
+        $text = $visitor['username'] . " submitted another issue called '" . $title ."'. Hopefully it's a good one!";
         $hashtag = "#Github #7Cav #IMO";
         $twitterModel->postStatus($text, $hashtag);
     }

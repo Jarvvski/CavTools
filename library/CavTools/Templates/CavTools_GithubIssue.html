@@ -1,16 +1,13 @@
-<xen:require js="js/CavTools/githubIssue.js" />
 <div class="section">
     <xen:title>Submit a Feature Request</xen:title>
     <br />
     <br />
-    <form action="{xen:link featurerequest/post-note}" method="post" class="xenForm AutoValidator submitIssue" data-redirect="on">
+    <form action="{xen:link featurerequest/post-note}" method="post" class="xenForm AutoValidator" data-redirect="on">
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Rank</label></dt>
-            <dd><textarea name="rank" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="{$rank}"></textarea></dd>
-        </dl>
-        <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Username</label></dt>
-            <dd><textarea name="username" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="{$username}"></textarea></dd>
+            <dt><label for="ctrl_message">Type</label></dt>
+            <dd><input type="radio" name="type" value="Bug" required> Bug
+                <br /><br />
+                <input type="radio" name="type" value="Request"> Request<br></dd>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Title</label></dt>
