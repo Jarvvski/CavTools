@@ -753,6 +753,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $postWriter = $writer->getFirstMessageDw();
         $postWriter->set('message', $message);
         $writer->set('node_id', $forumID);
+        $writer->set('sticky', true);
         $writer->preSave();
         $writer->save();
         return $writer->getDiscussionId();
