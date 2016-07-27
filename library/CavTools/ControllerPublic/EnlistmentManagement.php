@@ -686,6 +686,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
+        $age = "[B]Age:[/b] " . $query['age'];
         $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['rtc_thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
@@ -714,9 +715,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $echelonID = "[B]Client ID:[/B]";
         $echelonCons = "[B]Connections:[/B]";
         $echelonWarn = "[B]# of Warnings:[/B]";
-        $echelonWarnFor = "Warnings for:[/B]";
+        $echelonWarnFor = "Warnings for:";
         $echelonBans = "[B]# of Temp Bans:[/B]";
-        $echelonBansFor = "Temp Bans for:[/B]";
+        $echelonBansFor = "Temp Bans for:";
         $echelonAdd = "[B]Additional Information[/B]";
         $echelonContent = $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
@@ -725,7 +726,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $summary = "[B]Summary -[/B]";
 
         return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
-            $email . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName . 
+            $email . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName .
             $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine .
             $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
             $newLine . $summary;
