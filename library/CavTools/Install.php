@@ -83,24 +83,17 @@ class CavTools_Install {
     // This is the function to create a table in the database so our addon will work.
     public static function install($addon)
     {
-        if ($addon['version_id'] < 575) {
+        if ($addon['version_id'] <= 575) {
             $db = XenForo_Application::getDb();
             $db->query(self::$table['createEnlistments']);
             $db->query(self::$table['createRRDLogs']);
             $db->query(self::$table['createS3Events']);
             $db->query(self::$table['createS3Classes']);
             $db->query(self::$table['createADRstore']);
-        } else if ($addon['version_id'] == 575) {
+        } else if ($addon['version_id'] <= 575) {
             $db = XenForo_Application::getDb();
             $db->query(self::$table['dropEnlistments']);
             $db->query(self::$table['createEnlistments']);
-        } else {
-            $db = XenForo_Application::getDb();
-            $db->query(self::$table['createEnlistments']);
-            $db->query(self::$table['createRRDLogs']);
-            $db->query(self::$table['createS3Events']);
-            $db->query(self::$table['createS3Classes']);
-            $db->query(self::$table['createADRstore']);
         }
     }
 
