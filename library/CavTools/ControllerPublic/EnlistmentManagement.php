@@ -659,7 +659,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->getEnlistmentById($enlistmentID);
-        $rank = "RTC";
+        $rank = "RCT";
         return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED";
     }
 
