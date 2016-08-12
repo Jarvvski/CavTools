@@ -228,6 +228,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $postWriter = $writer->getFirstMessageDw();
         $postWriter->set('message', $message);
         $writer->set('node_id', $forumID);
+        $writer->set('sticky', true);
         $writer->preSave();
         $writer->save();
         return $writer->getDiscussionId();

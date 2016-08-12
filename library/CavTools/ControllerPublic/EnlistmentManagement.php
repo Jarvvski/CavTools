@@ -33,9 +33,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         //Set Time Zone to UTC
         date_default_timezone_set("UTC");
 
-        //Get DB
-        $db = XenForo_Application::get('db');
-
         $normalEnlistments = " ";
         $reEnlistments = " ";
         $threadURL = '/threads/';
@@ -54,7 +51,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 // capitalise the first letters of the first and last name, even if uppercase already
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
-                $cavName = "";
                 $cavName = $lastName . "." . $firstName[0];
                 $nameCheck = $this->checkName($cavName);
                 
@@ -76,6 +72,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 {
                     case 1: $nameStatus = '<td><div id="red">';break;
                     case 2: $nameStatus = '<td><div id="green">';break;
+                    case 3: $nameStatus = '<td><div id="yellow">';break;
                 }
                 
                 switch ($enlistment['vac_ban']) {
@@ -312,7 +309,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         // get the user_id from the user
         $visitor  = XenForo_Visitor::getInstance()->toArray();
-        $userID   = $visitor['user_id'];
 
         // get form values
         $rrdOption = $this->_input->filterSingle('rrd_option', XenForo_Input::STRING);
@@ -355,12 +351,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $currentStatus = 2;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
-                    if($folderCreation) {
-                        $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
-                        $this->setRTCThreadID($enlistmentID,$rtcThreadID);
-                        $steamContent = $this->getSteamContent($query['steamID']);
-                        $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
-                        $this->setS2ThreadID($enlistmentID,$s2ThreadID);
+                    if ($query['reenlistment'] === 0) {
+                        if ($folderCreation) {
+                            $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
+                            $this->setRTCThreadID($enlistmentID, $rtcThreadID);
+                            $steamContent = $this->getSteamContent($query['steamID']);
+                            $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
+                            $this->setS2ThreadID($enlistmentID, $s2ThreadID);
+                        }
                     }
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
@@ -503,14 +501,12 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->checkNameDupe($cavName);
 
-        $count = 0;
-        //$queryType = gettype($query['username']);
-        try {
-            if ($cavName === $query[0]["username"] || $cavName === $query) {
-                $count = 1;
-            }
-        } catch (Exception $e) {
+        if ($query == null) {
             $count = 2;
+        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+            $count = 1;
+        } else {
+            $count = 3;
         }
         return $count;
     }
@@ -665,7 +661,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->getEnlistmentById($enlistmentID);
-        $rank = "RTC";
+        $rank = "RCT";
         return $title = $rank . " " . $query['last_name'] . "." . $query['first_name'] . " | UNASSIGNED";
     }
 
@@ -692,6 +688,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
+        $age = "[B]Age:[/b] " . $query['age'];
         $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['rtc_thread_id'].'"]'. 'RTC Folder'.'[/URL]';
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
@@ -720,9 +717,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $echelonID = "[B]Client ID:[/B]";
         $echelonCons = "[B]Connections:[/B]";
         $echelonWarn = "[B]# of Warnings:[/B]";
-        $echelonWarnFor = "Warnings for:[/B]";
+        $echelonWarnFor = "Warnings for:";
         $echelonBans = "[B]# of Temp Bans:[/B]";
-        $echelonBansFor = "Temp Bans for:[/B]";
+        $echelonBansFor = "Temp Bans for:";
         $echelonAdd = "[B]Additional Information[/B]";
         $echelonContent = $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
@@ -731,7 +728,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $summary = "[B]Summary -[/B]";
 
         return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
-            $email . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName . 
+            $email . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam . $newLine .  $steamName .
             $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine .
             $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
             $newLine . $summary;
@@ -758,6 +755,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $postWriter = $writer->getFirstMessageDw();
         $postWriter->set('message', $message);
         $writer->set('node_id', $forumID);
+        $writer->set('sticky', true);
         $writer->preSave();
         $writer->save();
         return $writer->getDiscussionId();

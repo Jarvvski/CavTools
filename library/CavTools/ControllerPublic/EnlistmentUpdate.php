@@ -201,7 +201,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $action .= "enlistment type, ";
         }
         if ($timeZoneUpdated) {
-            $postContent .= "[B]Time Zone Updated[/B]" . $newline ."Clan Status: " .$timezone.
+            $postContent .= "[B]Time Zone Updated[/B]" . $newline ."TimeZone: " .$timezone.
                 $newline . $newline . $newline;
             $action .= "Timezone, ";
         }
@@ -211,11 +211,13 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $action .= "Clan status, ";
         }
         if ($gameUpdated) {
-            $postContent .= "[B]Game Updated[/B]" . $newline ."Clan Status: " .$game.
+            $postContent .= "[B]Game Updated[/B]" . $newline ."Game applied for: " .$game.
                 $newline . $newline . $newline;
             $action .= "Game, ";
         }
         if ($recruiter) {
+            $postContent .= "[B]Recruiter Updated[/B]" . $newline ."Recruiter: " .$game.
+                $newline . $newline . $newline;
             $action .= "Recruiter, ";
         }
 

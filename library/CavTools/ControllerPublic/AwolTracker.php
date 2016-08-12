@@ -448,6 +448,10 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
     public function tweet($visitor, $response)
     {
         switch ($response) {
+            case '1':
+                $text = $visitor['username'] . " sent out AWOL PMs. Check if you have one!";
+                $hashtag = "#AWOL #7Cav #IMO";
+                break;
             case '2':
                 $text = $visitor['username'] . " made the AWOL reminder! Make sure your name isn't on it!";
                 $hashtag = "#AWOL #7Cav #IMO";

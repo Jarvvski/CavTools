@@ -1,17 +1,10 @@
 <?php
 
 class CavTools_CronJobs_XmlGenerator {
-
-    protected function _getXMLModel()
-    {
-        return $this->getModelFromCache ( 'CavTools_Model_XML' );
-    }
-
-    public function createXML() {
+    public static function createXML() {
 
         //Get values from options
         $enable  = XenForo_Application::get('options')->enableXmlGenerator;
-        $model = $this->_getXMLModel();
 
         if($enable) {
 
@@ -137,8 +130,11 @@ class CavTools_CronJobs_XmlGenerator {
                 }
 
                 //Basic user query
-                $userIDs = $model->getMemberList();
-
+                $userIDs = $db->fetchAll("
+                    SELECT user_id
+                    FROM xf_user
+                    ORDER BY user_id ASC
+                ");
 
                 //Renumber Array
                 $userIDs = array_values($userIDs);
@@ -147,10 +143,14 @@ class CavTools_CronJobs_XmlGenerator {
                 foreach($userIDs as $user) {
 
                     //Get primary billet
-                    $milpac = $model->getMilpac($user['user_id']);
+                    $checkingDischarged = $db->fetchRow("
+                      SELECT position_id
+                      FROM xf_pe_roster_user_relation
+                      WHERE user_id = ".$user['user_id']."
+                    ");
 
                     $discharged = false;
-                    if ($milpac['position_id'] == $disDischPos || $milpac['position_id'] == $dischPos) {
+                    if ($checkingDischarged['position_id'] == $disDischPos || $checkingDischarged['position_id'] == $dischPos) {
                         $discharged = true;
                     }
                     if (!$discharged) {
@@ -160,76 +160,103 @@ class CavTools_CronJobs_XmlGenerator {
                         $nco = false;
                         $enlisted = false;
 
+                        //Get user rank ID
+                        $usernameID = $db->fetchRow("
+                            SELECT rank_ID
+                            FROM xf_pe_roster_user_relation
+                            WHERE user_id = ".$user['user_id']."
+                        ");
 
-                        if ($milpac['rank_ID'] != null) {
+                        if ($usernameID['rank_ID'] != null) {
 
-                            if (in_array($milpac['rank_ID'], $officerRanks)) {
+                            if (in_array($usernameID['rank_ID'], $officerRanks)) {
                                 $officer = true;
-                            } else if (in_array($milpac['rank_ID'], $ncoRanks)) {
+                            } else if (in_array($usernameID['rank_ID'], $ncoRanks)) {
                                 $nco = true;
-                            } else if (in_array($milpac['rank_ID'], $enlistedRanks)) {
+                            } else if (in_array($usernameID['rank_ID'], $enlistedRanks)) {
                                 $enlisted = true;
                             } else
 
 
                                 //Start our prefix
                                 $nickPrefix = "";
-                            switch ($milpac['rank_ID']) {
-                                case $rankGOA: $nickPrefix = "=7Cav=GOA."; $nameTitle = "General of the Army "; break;
-                                case $rankGEN: $nickPrefix = "=7Cav=GEN."; $nameTitle = "General ";break;
-                                case $rankLTG: $nickPrefix = "=7Cav=LTG."; $nameTitle = "Lieutenant General ";break;
-                                case $rankMG : $nickPrefix = "=7Cav=MG."; $nameTitle = "Major General "; break;
-                                case $rankBG : $nickPrefix = "=7Cav=BG."; $nameTitle = "Brigadier General "; break;
-                                case $rankCOL: $nickPrefix = "=7Cav=COL."; $nameTitle = "Colonel "; break;
-                                case $rankLTC: $nickPrefix = "=7Cav=LTC."; $nameTitle = "Lieutenant Colonel "; break;
-                                case $rankMAJ: $nickPrefix = "=7Cav=MAJ."; $nameTitle = "Major "; break;
-                                case $rankCPT: $nickPrefix = "=7Cav=CPT."; $nameTitle = "Captain "; break;
-                                case $rank1LT: $nickPrefix = "=7Cav=1LT."; $nameTitle = "First Lieutenant "; break;
-                                case $rank2LT: $nickPrefix = "=7Cav=2LT."; $nameTitle = "Second Lieutenant "; break;
-                                case $rankCW5: $nickPrefix = "=7Cav=CW5."; $nameTitle = "Chief Warrant Officer 5 "; break;
-                                case $rankCW4: $nickPrefix = "=7Cav=CW4."; $nameTitle = "Chief Warrant Officer 4 "; break;
-                                case $rankCW3: $nickPrefix = "=7Cav=CS3."; $nameTitle = "Chief Warrant Officer 3 "; break;
-                                case $rankCW2: $nickPrefix = "=7Cav=CW2."; $nameTitle = "Chief Warrant Officer 2 "; break;
-                                case $rankWO1: $nickPrefix = "=7Cav=WO1."; $nameTitle = "Warrant Officer 1 "; break;
-                                case $rankWOC: $nickPrefix = "=7Cav=WOC" ; $nameTitle = "Warrant Officer Candidate "; break;
-                                case $rankCSM: $nickPrefix = "=7Cav=CSM."; $nameTitle = "Command Sergeant Major "; break;
-                                case $rankSGM: $nickPrefix = "=7Cav=SGM."; $nameTitle = "Sergeant Major "; break;
-                                case $rank1SG: $nickPrefix = "=7Cav=1SG."; $nameTitle = "First Sergeant "; break;
-                                case $rankMSG: $nickPrefix = "=7Cav=MSG."; $nameTitle = "Master Sergeant "; break;
-                                case $rankSFC: $nickPrefix = "=7Cav=SFC."; $nameTitle = "Sergeant First Class "; break;
-                                case $rankSSG: $nickPrefix = "=7Cav=SSG."; $nameTitle = "Staff Sergeant "; break;
-                                case $rankSGT: $nickPrefix = "=7Cav=SGT."; $nameTitle = "Sergeant "; break;
-                                case $rankCPL: $nickPrefix = "=7Cav=CPL."; $nameTitle = "Corporal "; break;
-                                case $rankSPC: $nickPrefix = "=7Cav=SPC."; $nameTitle = "Specialist "; break;
-                                case $rankPFC: $nickPrefix = "=7Cav=PFC."; $nameTitle = "Private First Class "; break;
-                                case $rankPVT: $nickPrefix = "=7Cav=PVT."; $nameTitle = "Private "; break;
-                                case $rankRCT: $nickPrefix = "=7Cav=RCT."; $nameTitle = "Recruit "; break;
+                                switch ($usernameID['rank_ID']) {
+                                    case $rankGOA: $nickPrefix = "GOA."; $nameTitle = "General of the Army "; break;
+                                    case $rankGEN: $nickPrefix = "GEN."; $nameTitle = "General ";break;
+                                    case $rankLTG: $nickPrefix = "LTG."; $nameTitle = "Lieutenant General ";break;
+                                    case $rankMG : $nickPrefix = "MG."; $nameTitle = "Major General "; break;
+                                    case $rankBG : $nickPrefix = "BG."; $nameTitle = "Brigadier General "; break;
+                                    case $rankCOL: $nickPrefix = "COL."; $nameTitle = "Colonel "; break;
+                                    case $rankLTC: $nickPrefix = "LTC."; $nameTitle = "Lieutenant Colonel "; break;
+                                    case $rankMAJ: $nickPrefix = "MAJ."; $nameTitle = "Major "; break;
+                                    case $rankCPT: $nickPrefix = "CPT."; $nameTitle = "Captain "; break;
+                                    case $rank1LT: $nickPrefix = "1LT."; $nameTitle = "First Lieutenant "; break;
+                                    case $rank2LT: $nickPrefix = "2LT."; $nameTitle = "Second Lieutenant "; break;
+                                    case $rankCW5: $nickPrefix = "CW5."; $nameTitle = "Chief Warrant Officer 5 "; break;
+                                    case $rankCW4: $nickPrefix = "CW4."; $nameTitle = "Chief Warrant Officer 4 "; break;
+                                    case $rankCW3: $nickPrefix = "CS3."; $nameTitle = "Chief Warrant Officer 3 "; break;
+                                    case $rankCW2: $nickPrefix = "CW2."; $nameTitle = "Chief Warrant Officer 2 "; break;
+                                    case $rankWO1: $nickPrefix = "WO1."; $nameTitle = "Warrant Officer 1 "; break;
+                                    case $rankWOC: $nickPrefix = "WOC" ; $nameTitle = "Warrant Officer Candidate "; break;
+                                    case $rankCSM: $nickPrefix = "CSM."; $nameTitle = "Command Sergeant Major "; break;
+                                    case $rankSGM: $nickPrefix = "SGM."; $nameTitle = "Sergeant Major "; break;
+                                    case $rank1SG: $nickPrefix = "1SG."; $nameTitle = "First Sergeant "; break;
+                                    case $rankMSG: $nickPrefix = "MSG."; $nameTitle = "Master Sergeant "; break;
+                                    case $rankSFC: $nickPrefix = "SFC."; $nameTitle = "Sergeant First Class "; break;
+                                    case $rankSSG: $nickPrefix = "SSG."; $nameTitle = "Staff Sergeant "; break;
+                                    case $rankSGT: $nickPrefix = "SGT."; $nameTitle = "Sergeant "; break;
+                                    case $rankCPL: $nickPrefix = "CPL."; $nameTitle = "Corporal "; break;
+                                    case $rankSPC: $nickPrefix = "SPC."; $nameTitle = "Specialist "; break;
+                                    case $rankPFC: $nickPrefix = "PFC."; $nameTitle = "Private First Class "; break;
+                                    case $rankPVT: $nickPrefix = "PVT."; $nameTitle = "Private "; break;
+                                    case $rankRCT: $nickPrefix = "RCT."; $nameTitle = "Recruit "; break;
                                 default:       $nickPrefix = "Failed::";   break;
                             }
 
+                            //Get username
+                            $detailsUsername = $db->fetchRow("
+                              SELECT username
+                              FROM xf_user
+                              WHERE xf_user.user_id = ".$user['user_id']."
+                            ");
+
+                            //Get Real name
+                            $detailsRealname = $db->fetchRow("
+                              SELECT real_name
+                              FROM xf_pe_roster_user_relation
+                              WHERE user_id = ".$user['user_id']."
+                            ");
 
                             //Get arma GUID
-                            $armaGUID = $model->getGUID($user['user_id']);
+                            $armaGUID = $db->fetchRow("
+                              SELECT field_value
+                              FROM xf_user_field_value
+                              WHERE xf_user_field_value.field_id='armaGUID'
+                              AND xf_user_field_value.user_id = ".$user['user_id']."
+                            ");
 
-                            //Get secondary billets
-                            $secondaryBillets = $model->getBillets($user['user_id']);
+                            //Get primary billet
+                            $primaryBillet = $db->fetchRow("
+                              SELECT xf_pe_roster_position.position_title
+                              FROM xf_pe_roster_position
+                              INNER JOIN xf_pe_roster_user_relation
+                              ON xf_pe_roster_position.position_id=xf_pe_roster_user_relation.position_id
+                              WHERE xf_pe_roster_user_relation.user_id = ".$user['user_id']."
+                            ");
+
 
                             //Form user variables from queries
                             $nick = $nickPrefix;
-                            $nick .= $milpac['username'];
+                            $nick .= $detailsUsername['username'];
                             $GUID = "";
                             if ($armaGUID['field_value'] != null) {
                                 $GUID   = $armaGUID['field_value'];
                             }
                             $name   = $nameTitle;
-                            $name  .= $milpac['real_name'];
-                            $email  = $milpac['username'];
+                            $name  .= $detailsRealname['real_name'];
+                            $email  = $detailsUsername['username'];
                             $email .= "@7cav.us";
-                            $remark = $milpac['position_title'];
-                            if ($secondaryBillets['field_value'] != null) {
-                                $remark .= ", ";
-                                $remark .= $secondaryBillets['field_value'];
-                            }
+                            $remark = $primaryBillet['position_title'];
 
                             //Generate our members
                             //If rank type is officer

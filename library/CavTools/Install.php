@@ -13,7 +13,7 @@ class CavTools_Install {
                 `enlistment_date` BIGINT ( 20 ) NOT NULL,
                 `steamID` VARCHAR ( 200 ) NOT NULL,
                 `in_clan` VARCHAR ( 10 ) NOT NULL,
-                `past_clans` TINYTEXT,
+                `past_clans` TEXT,
                 `game` VARCHAR( 50 ) NOT NULL,
                 `reenlistment` TINYINT ( 1 ) NOT NULL,
                 `hidden` TINYINT( 1 ) NOT NULL,
@@ -81,14 +81,23 @@ class CavTools_Install {
     );
 
     // This is the function to create a table in the database so our addon will work.
-    public static function install()
+    public static function install($addon)
     {
-        $db = XenForo_Application::getDb();
-        $db->query(self::$table['createEnlistments']);
-        $db->query(self::$table['createRRDLogs']);
-        $db->query(self::$table['createS3Events']);
-        $db->query(self::$table['createS3Classes']);
-        $db->query(self::$table['createADRstore']);
+        if ($addon['version_id'] <= 575) {
+            $db = XenForo_Application::getDb();
+            $db->query(self::$table['createEnlistments']);
+            $db->query(self::$table['createRRDLogs']);
+            $db->query(self::$table['createS3Events']);
+            $db->query(self::$table['createS3Classes']);
+            $db->query(self::$table['createADRstore']);
+        } else if ($addon['version_id'] <= 575) {
+            $db = XenForo_Application::getDb();
+            $db->query(self::$table['dropEnlistments']);
+            $db->query(self::$table['createEnlistments']);
+        } else if ($addon['version_id'] <= 578) {
+            $db = XenForo_Application::getDb();
+            $db->query(self::$table['dropADRstore']);
+        }
     }
 
     // This is the function to DELETE the table of our addon in the database.

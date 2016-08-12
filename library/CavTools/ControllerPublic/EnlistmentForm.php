@@ -89,29 +89,29 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $userID   = $visitor['user_id'];
 
         // get form values
-        $lastName  = $this->_input->filterSingle('last_name', XenForo_Input::STRING);
-        $firstName = $this->_input->filterSingle('first_name', XenForo_Input::STRING);
-        $recruiter  = $this->_input->filterSingle('recruiter', XenForo_Input::STRING);
-        $age       = $this->_input->filterSingle('age', XenForo_Input::STRING);
-        $timezone  = $this->_input->filterSingle('timezone', XenForo_Input::STRING);
-        $date      = XenForo_Application::$time;
-        $steamID   = $this->_input->filterSingle('steamID', XenForo_Input::STRING);
-        $inClan     = $this->_input->filterSingle('in_clan', XenForo_Input::STRING);
-        $pastClans = $this->_input->filterSingle('past_clans', XenForo_Input::STRING);
-        $game      = $this->_input->filterSingle('game', XenForo_Input::STRING);
+        $lastName     = $this->_input->filterSingle('last_name', XenForo_Input::STRING);
+        $firstName    = $this->_input->filterSingle('first_name', XenForo_Input::STRING);
+        $recruiter    = $this->_input->filterSingle('recruiter', XenForo_Input::STRING);
+        $age          = $this->_input->filterSingle('age', XenForo_Input::STRING);
+        $timezone     = $this->_input->filterSingle('timezone', XenForo_Input::STRING);
+        $date         = XenForo_Application::$time;
+        $steamID      = $this->_input->filterSingle('steamID', XenForo_Input::STRING);
+        $inClan       = $this->_input->filterSingle('in_clan', XenForo_Input::STRING);
+        $pastClans    = $this->_input->filterSingle('past_clans', XenForo_Input::STRING);
+        $game         = $this->_input->filterSingle('game', XenForo_Input::STRING);
         $reenlisting  = $this->_input->filterSingle('reenlistment', XenForo_Input::STRING);
         $militaryExp  = $this->_input->filterSingle('miltary_exp', XenForo_Input::STRING);
-        $branchDur  = $this->_input->filterSingle('branch_dur', XenForo_Input::STRING);
+        $branchDur    = $this->_input->filterSingle('branch_dur', XenForo_Input::STRING);
         $militaryMOS  = $this->_input->filterSingle('military_mos', XenForo_Input::STRING);
 
         // capitalise the first letters of the first and last name, even if uppercase already
         $firstName = ucwords($firstName);
-        $lastName = ucwords($lastName);
-        $cavName = '';
-        $cavName = $lastName . "." . $firstName[0];
-        $vacValue = $this->checkVac($steamID);
-        $ageValue = $this->checkAge($age);
-        $denied = false;
+        $lastName  = ucwords($lastName);
+        $cavName   = '';
+        $cavName   = $lastName . "." . $firstName[0];
+        $vacValue  = $this->checkVac($steamID);
+        $ageValue  = $this->checkAge($age);
+        $denied    = false;
         $currentStatus = 3;
 
         if ($reenlisting == "Yes") {
@@ -173,10 +173,10 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         if ($denied)
         {
-            $text = "Sorry " . $visitor['username'] . ", your enlistment is denied!";
+            $text    = "Sorry " . $visitor['username'] . ", your enlistment is denied!";
             $hashtag = "#Denied #7Cav #IMO";
         } else {
-            $text = "Hey " . $visitor['username'] . ", your enlistment is under review!";
+            $text    = "Hey " . $visitor['username'] . ", your enlistment is under review!";
             $hashtag = "#maybe? #7Cav #IMO";
         }
 
@@ -199,24 +199,24 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                                         $game, $inClan, $pastClans, $steamID, $age, $military,
                                         $branchDur, $militaryMOS, $cavName, $visitor)
     {
-        $status = "";
+        $status  = "";
         $newLine = "\n";
-        $denied = false;
-        $home = XenForo_Application::get('options')->homeURL;
+        $denied  = false;
+        $home    = XenForo_Application::get('options')->homeURL;
 
-        $checks = "";
+        $checks  = "";
 
-        $checkVac = $this->checkVac($steamID);
+        $checkVac  = $this->checkVac($steamID);
         $checkName = $this->checkName($cavName);
-        $checkAge = $this->checkAge($age);
+        $checkAge  = $this->checkAge($age);
         
         if($reenlistment == true)
         {
             $reenlisting = "yes";
-            $heading = '[Re-Enlistment] - ';
+            $heading     = '[Re-Enlistment] - ';
         } else {
             $reenlisting = "no";
-            $heading = '[Enlistment] - ';
+            $heading     = '[Enlistment] - ';
         }
 
         if($military) {
@@ -228,7 +228,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             
         
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
-        $submittedBy = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
+        $submittedBy  = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
 
         if (!$this->checkDenied($checkVac, $checkAge)) {
             $title = $heading . $cavName . ' - ' . $game;
@@ -331,7 +331,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $checks = $banText . $newLine . $nameText;
 
 
-            $message = '[Size=7][B]Welcome back[/B][/Size]'. $newLine . $newLine . $pmText . $newLine . $newLine .  '[Size=6][B]STAFF NOTE[/B][/Size]'.
+        $message = '[Size=7][B]Welcome back[/B][/Size]'. $newLine . $newLine . $pmText . $newLine . $newLine .  '[Size=6][B]STAFF NOTE[/B][/Size]'.
                 $newLine . $milpacsLink . $newLine . date("m.d.y",$lastRecord['record_date']) . ' - ' .$lastRecord['details'] . $newLine . $newLine .$checks;
 
         return $pm = array('title' => $title, 'message' => $message);
@@ -432,7 +432,6 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         curl_close($ch);
 
         $reply = json_decode($reply, true);
-        $banned = 0;
         try {
             if ($reply['players'][0]['VACBanned'] == true) {
                 $banned = 1;
@@ -449,15 +448,13 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->checkNameDupe($cavName);
-
-        $count = 0;
-        //$queryType = gettype($query['username']);
-        try {
-            if ($cavName === $query[0]["username"] || $cavName === $query) {
-                $count = 1;
-            }
-        } catch (Exception $e) {
+        
+        if ($query == null) {
             $count = 2;
+        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+            $count = 1;
+        } else {
+            $count = 3;
         }
         return $count;
     }

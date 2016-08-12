@@ -20,23 +20,12 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
             throw $this->getNoPermissionResponseException();
         }
 
-        // If cannot action, don't display the button to rebuild
-        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canUpdateADR'))
-        {
-            $canAction = true;
-        } else {
-            $canAction = false;
-        }
-
         // Get the latest ADR construct
-        $model = $this->_getADRModel();
-        $data = $model->getLatestADR();
-
+        $data = $this->createList();
 
         // View Parameters
         $viewParams = array(
-            'data' => $data['text'],
-            'canAction' => $canAction
+            'data' => $data,
         );
 
         // Send to template to display
@@ -461,14 +450,6 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         if ($sort_ascending) $array = array_reverse($temp_array);
 
         else $array = $temp_array;
-    }
-
-    // Calls DataWriter
-    public function createData($data)
-    {
-        $dw = XenForo_DataWriter::create('CavTools_DataWriter_ADR');
-        $dw->set('text', $data);
-        $dw->save();
     }
 
     // Gets ADR data model
