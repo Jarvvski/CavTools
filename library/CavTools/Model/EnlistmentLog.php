@@ -16,7 +16,7 @@ class CavTools_Model_EnlistmentLog extends XenForo_Model {
         return $this->_getDb()->fetchAll('
         SELECT *
         FROM xf_ct_rrd_logs
-        ORDER BY log_id ASC
+        ORDER BY log_id DESC
         ');
     }
     
@@ -26,7 +26,7 @@ class CavTools_Model_EnlistmentLog extends XenForo_Model {
         SELECT *
         FROM xf_ct_rrd_logs
         WHERE user_id = '$userID'
-        ORDER BY log_id ASC
+        ORDER BY log_id DESC
         ");
     }
 }

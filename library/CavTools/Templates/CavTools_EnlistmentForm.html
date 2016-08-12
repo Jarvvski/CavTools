@@ -16,18 +16,18 @@
                 <li>- Cartoon Names</li>
                 <li>- Names of importance from novels, television, movies, etc</li>
                 <li>- Religious names</li>
-            </ul>
+            </ul>sl
         <br />
         <p>You are only allowed to change your name within the first 30 days of enlistment. No Exceptions. The 7th Cavalry does not delete records.
                 If you choose to use your real name, be prepared for it to be on record for as long as this website exists.</p>
         <br />
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Last Name</label></dt>
-            <dd><textarea name="last_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="Doe" style="text-transform: capitalize;" required></textarea></dd>
+            <dd><textarea name="last_name" maxlength="50" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="Doe" style="text-transform: capitalize;" required></textarea></dd>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">First Name</label></dt>
-            <dd><textarea name="first_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="John" style="text-transform: capitalize;" required></textarea></dd>
+            <dd><textarea name="first_name" maxlength="50" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="John" style="text-transform: capitalize;" required></textarea></dd>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Name Agreement</label></dt>
@@ -47,13 +47,13 @@
         <dl class="ctrlUnit">
             <dt><label for="ctrl_recipients">Recruiter(s)</label></dt>
             <dd>
-                <textarea name="recruiter" id="ctrl_recipients" rows="1" cols="20" class="textCtrl AutoComplete {xen:if '{$remaining} == 1', AcSingle}"></textarea>
+                <textarea name="recruiter" maxlength="50" id="ctrl_recipients" rows="1" cols="20" class="textCtrl AutoComplete {xen:if '{$remaining} == 1', AcSingle}"></textarea>
                 <p class="explain">Separate names with a comma.</p>
             </dd>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Age</label></dt>
-            <dd><input type="text" name="age" class="textCtrl number SpinBox" min="1" max="115" step="1" onclick="javascript:validateForm()" required>
+            <dd><input type="text" name="age" class="textCtrl number SpinBox" min="0" max="115" step="1" onclick="javascript:validateForm()" required>
                 <p class="explain">18+ requirement</p>
             </dd>
         </dl>

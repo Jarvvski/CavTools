@@ -351,12 +351,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $currentStatus = 2;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
-                    if($folderCreation) {
-                        $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
-                        $this->setRTCThreadID($enlistmentID,$rtcThreadID);
-                        $steamContent = $this->getSteamContent($query['steamID']);
-                        $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
-                        $this->setS2ThreadID($enlistmentID,$s2ThreadID);
+                    if ($query['reenlistment'] === 0) {
+                        if ($folderCreation) {
+                            $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
+                            $this->setRTCThreadID($enlistmentID, $rtcThreadID);
+                            $steamContent = $this->getSteamContent($query['steamID']);
+                            $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
+                            $this->setS2ThreadID($enlistmentID, $s2ThreadID);
+                        }
                     }
                     $action = 'Approved';
                     $this->writeLog($enlistmentID, $action);
