@@ -94,6 +94,9 @@ class CavTools_Install {
             $db = XenForo_Application::getDb();
             $db->query(self::$table['dropEnlistments']);
             $db->query(self::$table['createEnlistments']);
+        } else if ($addon['version_id'] <= 578) {
+            $db = XenForo_Application::getDb();
+            $db->query(self::$table['dropADRstore']);
         }
     }
 
