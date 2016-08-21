@@ -14,7 +14,6 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
 
 
         $model = $this->_getRegiModel();
-        $regiTotal = $model->getSectionStats();
         $bat1Total = 0;
         $bat2Total = 0;
         $regiStats = array();
