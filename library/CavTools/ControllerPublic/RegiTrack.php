@@ -5,6 +5,22 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
 
     public function actionIndex()
     {
+
+        // Get enable value
+        $enable = XenForo_Application::get('options')->enableRegiTrack;
+
+        // If not enabled, escape
+        if(!$enable)
+        {
+            throw $this->getNoPermissionResponseException();
+        }
+
+        // If cannot view, escape
+        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'viewRegiTrack'))
+        {
+            throw $this->getNoPermissionResponseException();
+        }
+
         $regiPosGrps = XenForo_Application::get('options')->regiPosGrps;
         $regiPosGrps = explode(',',$regiPosGrps);
         $bat1PosGrps = XenForo_Application::get('options')->bat1PosGrps;
