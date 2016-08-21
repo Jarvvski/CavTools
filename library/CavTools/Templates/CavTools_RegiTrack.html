@@ -1,0 +1,84 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<xen:require js="https://code.highcharts.com/highcharts.js" />
+<xen:require js="https://code.highcharts.com/modules/data.js" />
+<xen:require js="https://code.highcharts.com/modules/exporting.js" />
+<xen:require js="js/CavTools/RegiTrack.js" />
+
+<div class="section">
+    <h5>Statistics</h5>
+    <br />
+    <br />
+    <br />
+    <dl class="ctrlUnit rrdActions">
+        <dd>
+            <SELECT id="list" class="textCtrl">
+                <OPTION VALUE="A">Regi</option>
+                <OPTION VALUE="B">1st Bat</option>
+                <OPTION VALUE="C">2nd Bat</option>
+            </SELECT>
+        </dd>
+    </dl>
+    <dl class="ctrlUnit">
+        <dd>
+            <div id="container" style="height: 400px"></div>
+        </dd>
+    </dl>
+    <br />
+    <br />
+    <table id="RegiDatatable" style="display:none;">
+        <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$RegiData" value="$Regi">
+                    <th>{xen:raw $Regi.title}</th>
+                </xen:foreach>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Numbers</th>
+                <xen:foreach loop="$RegiData" value="$Regi">
+                    <td>{xen:raw $Regi.number}</td>
+                </xen:foreach>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <table id="bat1Datatable" style="display:none;">
+        <thead>
+        <tr>
+            <th></th>
+            <xen:foreach loop="$bat1Data" value="$bat1">
+                <th>{xen:raw $bat1.title}</th>
+            </xen:foreach>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Numbers</th>
+            <xen:foreach loop="$bat1Data" value="$bat1">
+                <td>{xen:raw $bat1.number}</td>
+            </xen:foreach>
+        </tr>
+        </tbody>
+    </table>
+    <br />
+    <table id="bat2Datatable" style="display:none;">
+        <thead>
+        <tr>
+            <th></th>
+            <xen:foreach loop="$bat2Data" value="$bat2">
+                <th>{xen:raw $bat2.title}</th>
+            </xen:foreach>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Numbers</th>
+            <xen:foreach loop="$bat2Data" value="$bat2">
+                <td>{xen:raw $bat2.number}</td>
+            </xen:foreach>
+        </tr>
+        </tbody>
+    </table>
+</div>
