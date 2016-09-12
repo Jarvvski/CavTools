@@ -5,7 +5,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
     public function getEnlistmentById($enlistmentID)
     {
         return $this->_getDb()->fetchRow("
-            SELECT * 
+            SELECT *
             FROM xf_ct_rrd_enlistments
             WHERE enlistment_id = '$enlistmentID'
         ");
@@ -16,7 +16,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         return $this->_getDb()->fetchAll('
         SELECT *
         FROM xf_ct_rrd_enlistments
-        WHERE hidden = FALSE 
+        WHERE hidden = FALSE
         ORDER BY enlistment_id ASC
         ');
     }
@@ -29,7 +29,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ORDER BY enlistment_date DESC
         ');
     }
-    
+
     public function getAllHiddenEnlistment()
     {
         return $this->_getDb()->fetchAll('
@@ -42,11 +42,11 @@ class CavTools_Model_Enlistment extends XenForo_Model {
 
     public function checkNameDupe($cavName)
     {
-        $query = $this->_getDb()->fetchAll("
+        $query = $this->_getDb()->fetchAll('
         SELECT username
         FROM xf_pe_roster_user_relation
-        WHERE username LIKE '$cavName'
-        ");
+        WHERE username LIKE "$cavName"
+        ');
 
         if ($query == null) {
             return null;
@@ -54,7 +54,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
             return $query;
         }
     }
-    
+
     public function getLastRecord($relationID)
     {
         return $this->_getDb()->fetchRow("
@@ -97,7 +97,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         return $this->_getDb()->fetchRow("
         SELECT current_status
         FROM xf_ct_rrd_enlistments
-        WHERE enlistment_id = '$enlistmentID' 
+        WHERE enlistment_id = '$enlistmentID'
         ");
     }
 
@@ -106,7 +106,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         return $this->_getDb()->fetchRow("
         SELECT *
         FROM xf_user
-        WHERE user_id = '$userID' 
+        WHERE user_id = '$userID'
         ");
     }
 
@@ -117,7 +117,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         FROM xf_pe_roster_user_relation
         WHERE user_id = '$userID'
         ");
-        
+
         if ($query['count(relation_id)'] == 0) {
             return false;
         } else {
@@ -165,7 +165,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         AND current_status != '1'
         AND game = '$game'
         ");
-        
+
         if ($query['count(enlistment_id)'] == null)
         {
             return 0;
