@@ -42,11 +42,11 @@ class CavTools_Model_Enlistment extends XenForo_Model {
 
     public function checkNameDupe($cavName)
     {
-        $query = $this->_getDb()->fetchAll('
+        $query = $this->_getDb()->fetchAll("
         SELECT username
         FROM xf_pe_roster_user_relation
-        WHERE username LIKE "$cavName"
-        ');
+        WHERE username LIKE '$cavName'
+        ");
 
         if ($query == null) {
             return null;
