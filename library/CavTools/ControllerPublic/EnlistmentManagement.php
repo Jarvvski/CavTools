@@ -771,7 +771,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $cavName = $lastName . "." . $firstName[0];
         $newLine = "\n";
 
-        $header = "Please change your dog tags to [B]=7Cav=RCT.".$cavName."[/B] and TeamSpeak to [B]".$cavName."[/B]".$newLine.
+        $header = "Please change your dog tags to [B]RCT.".$cavName."[/B] and TeamSpeak to [B]".$cavName."[/B]".$newLine.
             "A Drill Instructor will contact you shortly.".$newLine.$newLine."[B]Welcome to the Brotherhood of the Yellow and Black;
             battle tested and forged in the fires of hell itself![/B]";
 
