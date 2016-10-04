@@ -14,10 +14,10 @@ class CavTools_Model_IMOBot extends XenForo_Model {
             // https://github.com/J7mbo/twitter-api-php
 
             $settings = array(
-                'oauth_access_token' => "749728771662569472-fasR8QyyEG1xEebJl2zz2wnsEA7CbDk",
-                'oauth_access_token_secret' => "xWDnkePFjDsTytTvVJTkqTCJvIuIRQFq7fCXdsgHtJ33T",
-                'consumer_key' => "al1Hl25XPPNwhhlONL4rWHSQZ",
-                'consumer_secret' => "70fnTEeTxoHt2nBN8buztXgHvPZzWOl554jxydPmzMaYjraK7a"
+                'oauth_access_token' => XenForo_Application::get('options')->twitterOauthToken,
+                'oauth_access_token_secret' => XenForo_Application::get('options')->twitterOauthTokenSecret,
+                'consumer_key' => XenForo_Application::get('options')->twitterConsumerKey,
+                'consumer_secret' => XenForo_Application::get('options')->twitterConsumerSecret,
             );
 
             $url = 'https://api.twitter.com/1.1/statuses/update.json';
