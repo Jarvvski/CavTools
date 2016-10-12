@@ -2,7 +2,7 @@ window.onload = function() {
     var options = {
         chart: {
             renderTo: 'container',
-            defaultSeriesType: 'column'
+            defaultSeriesType: 'spline'
         },
         credits: {
             enabled: false
@@ -24,7 +24,7 @@ window.onload = function() {
             }
         },
         data: {
-            table: 'quarterlyData'
+            table: 'monthlyData'
         }
     };
     var chart = new Highcharts.Chart(options);
@@ -33,16 +33,16 @@ window.onload = function() {
         //alert('f')
         var selVal = $("#list").val();
         if (selVal == "A" || selVal == '') {
-            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
-            options.data = {table: 'quarterlyData'};
+            options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
+            options.data = {table: 'monthlyData'};
         }
         else if (selVal == "B") {
             options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
             options.data = {table: 'yearlyData'};
         }
         else if (selVal == "C") {
-            options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
-            options.data = {table: 'monthlyData'};
+            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+            options.data = {table: 'quarterlyData'};
         }
         else if (selVal == "D") {
             options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
