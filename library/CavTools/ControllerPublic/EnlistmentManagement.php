@@ -42,26 +42,26 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         if (count($enlistments) != 0) {
             foreach ($enlistments as $enlistment) {
-                
+
                 $thread = $threadURL . $enlistment['thread_id'];
                 $underage = $enlistment['under_age'];
                 $reenlistment = $enlistment['reenlistment'];
                 $daysSince = "" . round((time() - $enlistment['last_update']) / 86400) . " day(s)";
-               
+
                 // capitalise the first letters of the first and last name, even if uppercase already
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
                 $cavName = $lastName . "." . $firstName[0];
                 $nameCheck = $this->checkName($cavName);
-                
+
                 switch ($enlistment['current_status'])
                 {
                     case 1: $status = '<td><div id="red">Denied</div></td>';break;
                     case 2: $status = '<td><div id="green">Approved</div></td>';break;
                     case 3: $status = '<td><div id="yellow">Open</div></td>';break;
                 }
-                
-                
+
+
                 if ($daysSince > 7) {
                     $dayStatus = '<td><div id="red">';
                 } else {
@@ -74,7 +74,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     case 2: $nameStatus = '<td><div id="green">';break;
                     case 3: $nameStatus = '<td><div id="yellow">';break;
                 }
-                
+
                 switch ($enlistment['vac_ban']) {
                     case 1: $banStatus = '<td nowrap><div id="red">';break;
                     case 2: $banStatus = '<td nowrap><div id="green">';break;
@@ -113,7 +113,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 }
             }
         }
-        
+
         $quarter = $this->getDatesOfQuarter();
         $prevQuarter = $this->getDatesOfQuarter('previous');
         $year = $this->getDatesOfYear();
@@ -125,12 +125,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $recruiterIDs = explode(',', $recruiterIDs);
         $recruiters = $enlistModel->getAllRecruiters($recruiterIDs);
         $gameData = array();
+
         foreach ($games as $game) {
-            
-            $currQuarter = $enlistModel->getEnlistmentsForPeriod($quarter['start'], $quarter['end'], $game);
-            $prevQuarter = $enlistModel->getEnlistmentsForPeriod($prevQuarter['start'], $prevQuarter['end'], $game);
-            $currYear = $enlistModel->getEnlistmentsForPeriod($year['start'], $year['end'], $game);
-            $prevYear = $enlistModel->getEnlistmentsForPeriod($prevYear['start'], $prevYear['end'], $game);
+
+            $currQuarterData = $enlistModel->getEnlistmentsForPeriod($quarter['start'], $quarter['end'], $game);
+            $prevQuarterData = $enlistModel->getEnlistmentsForPeriod($prevQuarter['start'], $prevQuarter['end'], $game);
+
+            $currYearData = $enlistModel->getEnlistmentsForPeriod($year['start'], $year['end'], $game);
+            $prevYearData = $enlistModel->getEnlistmentsForPeriod($prevYear['start'], $prevYear['end'], $game);
 
             $monthlyData =array();
             for($i=1;$i<13;$i++)
@@ -144,13 +146,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 $count = $enlistModel->getEnlistmentsForPeriod($monthTime['start'], $monthTime['end'], $game);
                 array_push($monthlyData, $count);
             }
-            
+
+
             $data = array(
                 'title' => $game,
-                'prev_quart_enlist' => $prevQuarter,
-                'curr_quart_enlist' => $currQuarter,
-                'prev_year_enlist' => $prevYear,
-                'curr_year_enlist' => $currYear,
+                'prev_quart_enlist' => $prevQuarterData,
+                'curr_quart_enlist' => $currQuarterData,
+                'prev_year_enlist' => $prevYearData,
+                'curr_year_enlist' => $currYearData,
                 'monthly' => $monthlyData
             );
             array_push($gameData, $data);
@@ -183,7 +186,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             }
             $body .= "</tr>";
         }
-        
+
         //View Parameters
         $viewParams = array(
             'totalRecruiterData' => $totalRecruiterData,
@@ -316,12 +319,12 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         foreach($enlistments as $enlistmentID)
         {
-            
+
             $enlistModel = $this->_getEnlistmentModel();
             $query = $enlistModel->getEnlistmentById($enlistmentID);
             $folderCreation = XenForo_Application::get('options')->enableFolderCreation;
             $message = "";
-            
+
             switch($rrdOption)
             {
                 case '1':
@@ -449,7 +452,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     }
 
     public function updateThread($threadID, $title)
-    {   
+    {
         // update the thread
         //Get values from options
         $dw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
@@ -510,7 +513,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         }
         return $count;
     }
-    
+
     public function sortApplication($enlistmentID, $threadID, $status)
     {
         //Get values from options
@@ -563,7 +566,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $query = $enlistModel->getEnlistmentById($enlistmentID);
         $content = "";
         $newLine = "\n";
-        
+
         $generalInformation = "[Size=6][B]General Information[/B][/Size]";
         if ($query['reenlistment'])
         {
@@ -634,7 +637,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         curl_close($ch);
 
         $reply = json_decode($reply, true);
-        
+
         try {
             $name = $reply['response']['players'][0]['personaname'];
             $profile = $reply['response']['players'][0]['profileurl'];
@@ -653,7 +656,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $status = 3;
         }
 
-        return array('id' => $steamID, 'name' => $name, 
+        return array('id' => $steamID, 'name' => $name,
             'status' => $status, 'profile_url' => $profile);
     }
 
@@ -673,7 +676,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $newLine = "\n";
         $userDetails = $enlistModel->userDetails($query['user_id']);
         $home = XenForo_Application::get('options')->homeURL;
-        
+
         $general = "[Size=6][B]General Information[/B][/Size]";
         $username = "[b]Username: [/b]" . '[URL="http://' .$home.'/members/'.$query['user_id'].'"]'. $userDetails['username']. '[/URL]';
         $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . ", ". $query['last_name'];
@@ -684,7 +687,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         } else {
             $reenlistment = "[B]Re-enlistment:[/B] No";
         }
-        
+
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
         $email = "[B]Email address:[/B] " . $userDetails['email'];
@@ -775,11 +778,11 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             "A Drill Instructor will contact you shortly.".$newLine.$newLine."[B]Welcome to the Brotherhood of the Yellow and Black;
             battle tested and forged in the fires of hell itself![/B]";
 
-        $quote = "[COLOR=#FF0000]“As a new trooper we will forge you into that individual. We will give more than gamemanship. We will develop people skills, 
-        positive interaction with others. Guide you into giving of yourself for the good of others and putting yourself second. We will calm your 
-        tempers, give you purpose that will develop you into an individual that will be an asset in your daily life outside the Cavalry. 
-        There are many here that have advanced age that has dealt with life's many challenges. All will help with advice and encouragement, 
-        if you will put forth a contact. No one lives alone and can only grow in stature as a human being with positive reaction with others of equal 
+        $quote = "[COLOR=#FF0000]“As a new trooper we will forge you into that individual. We will give more than gamemanship. We will develop people skills,
+        positive interaction with others. Guide you into giving of yourself for the good of others and putting yourself second. We will calm your
+        tempers, give you purpose that will develop you into an individual that will be an asset in your daily life outside the Cavalry.
+        There are many here that have advanced age that has dealt with life's many challenges. All will help with advice and encouragement,
+        if you will put forth a contact. No one lives alone and can only grow in stature as a human being with positive reaction with others of equal
         nobility and honor in what they do.“".$newLine."CSM.Cold.R[/COLOR]";
 
         $teamspeak = "TeamSpeak IP: ts3.7Cav.us".$newLine."TeamSpeak PW: 7thCavalry";
