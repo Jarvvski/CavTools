@@ -53,7 +53,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $games = explode(',', $games);
 
         $timeOptions = $this->createTimeOptions();
-        
+
         //Set Time Zone to UTC
         date_default_timezone_set("UTC");
 
@@ -85,11 +85,12 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
                 $timeValue = $i . "00";
             }
             // 00:00, 01:00
-            array_push($timeOptions, $timeValue);   
+            array_push($timeOptions, $timeValue);
         }
+        array_push($timeOptions, "2359");
         return $timeOptions;
     }
-    
+
     public function actionPost()
     {
 
@@ -98,7 +99,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
 
         // Get poster info
         $visitor = XenForo_Visitor::getInstance()->toArray();
-        
+
         // Get form values
         $type = $this->_input->filterSingle('type', XenForo_Input::STRING);
         $customTitle = $this->_input->filterSingle('title', XenForo_Input::STRING);
@@ -194,7 +195,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         {
             array_push($classNames, $item['class_name']);
         }
-        
+
 
         foreach ($classNames as $class)
         {
@@ -212,10 +213,10 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
 
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
         $submittedBy = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
-        
+
         return $message .= $newLine . $submittedBy;
     }
-    
+
     public function createThread($forumID, $title, $message)
     {
         // get rrd bot values
@@ -233,7 +234,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $writer->save();
         return $writer->getDiscussionId();
     }
-    
+
     public function createData($type, $title, $date, $time, $game, $text, $visitor, $threadID)
     {
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Event');
