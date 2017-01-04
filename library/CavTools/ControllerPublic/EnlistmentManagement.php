@@ -52,7 +52,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
                 $cavName = $lastName . "." . $firstName[0];
-                $nameCheck = $this->checkName($cavName);
+                $nameCheck = $this->checkName($cavName,$enlistment['user_id']);
 
                 switch ($enlistment['current_status'])
                 {
@@ -499,17 +499,23 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $dw->save();
     }
 
-    public function checkName($cavName)
+    public function checkName($cavName, $userID)
     {
         $enlistModel = $this->_getEnlistmentModel();
-        $query = $enlistModel->checkNameDupe($cavName);
+        $check = $enlistModel->checkEnlisted($userID);
 
-        if ($query == null) {
-            $count = 2;
-        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
-            $count = 1;
+        if (!$check) {
+            $query = $enlistModel->checkNameDupe($cavName);
+
+            if ($query == null) {
+                $count = 2;
+            } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+                $count = 1;
+            } else {
+                $count = 3;
+            }
         } else {
-            $count = 3;
+            $count = 2;
         }
         return $count;
     }
