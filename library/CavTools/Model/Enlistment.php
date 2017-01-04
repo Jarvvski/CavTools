@@ -55,6 +55,21 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         }
     }
 
+    public function checkEnlisted($userID)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT user_id
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = ?
+        ", $userID);
+
+        if ($query == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function getLastRecord($relationID)
     {
         return $this->_getDb()->fetchRow("
