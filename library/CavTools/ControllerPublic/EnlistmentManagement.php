@@ -51,6 +51,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 // capitalise the first letters of the first and last name, even if uppercase already
                 $firstName = ucwords($enlistment['first_name']);
                 $lastName = ucwords($enlistment['last_name']);
+                $cavname = "";
                 $cavName = $lastName . "." . $firstName[0];
                 $nameCheck = $this->checkName($cavName,$enlistment['user_id']);
 

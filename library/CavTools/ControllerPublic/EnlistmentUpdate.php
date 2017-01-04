@@ -72,12 +72,12 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         } else {
             $timezone = false;
         }
-        
+
         // Check if already completed
         $model = $this->_getEnlistmentModel();
         $canBeUpdated = $model->canUpdate($enlistmentID);
         $enlistmentExists = $model->checkEnlistment($enlistmentID);
-        
+
         if($canBeUpdated && $enlistmentExists) {
             $this->updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
                                     $game, $timezone, $steamID);
@@ -87,7 +87,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         } else {
             $response = new XenForo_Phrase('Enlistment already completed');
         }
-        
+
         $this->tweet($visitor, $enlistmentID);
 
         // redirect after post
@@ -97,7 +97,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $response
         );
     }
-    
+
     public function updateEnlistment($enlistmentID, $lastName, $firstName, $recruiter, $inClan, $pastClans, $reenlisting,
                                      $game, $timezone, $steamID)
     {
@@ -131,9 +131,11 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $dw->setExistingData($enlistmentID);
         if ($lastName || $firstName) {
             if ($lastName) {
+                $lastName = ucwords($lastName);
                 $dw->set('last_name', $lastName);
             }
             if ($firstName) {
+                $firstName = ucwords($firstName);
                 $dw->set('first_name', $firstName);
             }
             $nameUpdated = true;
@@ -174,8 +176,8 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->getEnlistmentById($enlistmentID);
-        $firstName = ucwords($query['first_name']);
-        $lastName = ucwords($query['last_name']);
+        $firstName = ucwords($firstName);
+        $lastName = ucwords($lastName);
         $cavName = '';
         $cavName = $lastName . "." . $firstName[0];
         $newline = "\n";
@@ -373,7 +375,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $messageReply = $checks;
         if ($checkVac == 1) {
             $messageReply .= $newLine . $newLine. '[B]Vac ban on record. Application denied.[/B]';
-        } 
+        }
 
         return $messageReply;
     }
@@ -393,7 +395,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     }
 
     public function actionCreatePost($threadId, $postContent, $submittedBy)
-    {       
+    {
         $newline = "\n";
         $message = $postContent . $newline .$newline .$submittedBy;
         // write the first reply post
@@ -501,7 +503,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     {
         $text = $visitor['username'] . " just used the recruitment updater, helping out enlistee #" . $enlistmentID . " join the Cav!";
         $hashtag = "#RRD #7Cav #IMO";
-        
+
         $twitterModel = $this->_getTwitterBot();
         $twitterModel->postStatus($text, $hashtag);
     }
@@ -510,5 +512,5 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
     {
         return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
     }
-    
+
 }
