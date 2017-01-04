@@ -1,11 +1,11 @@
 <?php
 
 class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_Abstract {
-    
+
     /**
      * GET RRD
      * BOT VALUES
-     * 
+     *
      * @return array of userID => INT, username => STRING
      */
     public function getRRDBot()
@@ -28,8 +28,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     /**
      * GET RRD
      * BOT VALUES
-     * 
-     * @throws 
+     *
+     * @throws
      * @return array of View, route, array $viewParams
      */
 
@@ -62,7 +62,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $visitor  = XenForo_Visitor::getInstance()->toArray();
         $model = $this->_getEnlistmentModel();
         $hasMilpac = $model->checkMilpac($visitor['user_id']);
-        
+
         //View Parameters
         $viewParams = array(
             'hasMilpac' => $hasMilpac,
@@ -92,6 +92,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $lastName     = $this->_input->filterSingle('last_name', XenForo_Input::STRING);
         $firstName    = $this->_input->filterSingle('first_name', XenForo_Input::STRING);
         $recruiter    = $this->_input->filterSingle('recruiter', XenForo_Input::STRING);
+        $recruiter    = substr($recruiter,0,50);
         $age          = $this->_input->filterSingle('age', XenForo_Input::STRING);
         $timezone     = $this->_input->filterSingle('timezone', XenForo_Input::STRING);
         $date         = XenForo_Application::$time;
@@ -147,7 +148,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         $threadID = $this->actionCreateThread($forumID, $thread['title'], $thread['message']);
         $post     = $this->actionCreatePost($threadID, $this->createPostContent($steamID, $cavName, $age, $reenlistment));
-        
+
         if (!$denied) {
             if ($reenlistment == true) {
                 // Get values from options
@@ -163,7 +164,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                     $noInvites = false, $conversationClosed = false, $markReadForSender = true);
             }
         }
-        
+
         // write data into db
         $this->actionWrite($userID, $recruiter, $lastName, $firstName, $age,
             $timezone, $date, $steamID, $clanStatus, $pastClans,
@@ -189,7 +190,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             new XenForo_Phrase('application_received')
         );
     }
-    
+
     /*
      * CREATE THE
      * ENLISTMENT THREAD
@@ -209,7 +210,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $checkVac  = $this->checkVac($steamID);
         $checkName = $this->checkName($cavName);
         $checkAge  = $this->checkAge($age);
-        
+
         if($reenlistment == true)
         {
             $reenlisting = "yes";
@@ -225,8 +226,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         } else {
             $militaryText = $newLine . 'None';
         }
-            
-        
+
+
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
         $submittedBy  = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
 
@@ -245,7 +246,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         return array('title' => $title, 'message' => $message);
 
     }
-    
+
     public function actionCreateThread($forumID, $title, $message)
     {
         // get rrd bot values
@@ -263,7 +264,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $writer->save();
         return $writer->getDiscussionId();
     }
-    
+
     /*
      * CREATE THE
      * ENLISTMENT REPLY
@@ -370,7 +371,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     }
 
 
-    
+
     /*
      * WRITE TO
      * ENLISTMENT TABLE
@@ -380,13 +381,13 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                                     $timezone, $date, $steamID, $inClan, $pastClans,
                                     $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus)
     {
-        
+
         if ($ageValue == 1) {
             $ageStatus = true;
         } else {
             $ageStatus = false;
         }
-        
+
         // write the enlistee details to the db
         $dwEnlistment = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
         $dwEnlistment->set('user_id', $userID);
@@ -408,7 +409,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $dwEnlistment->set('last_update', $date);
         $dwEnlistment->save();
     }
-    
+
     /*
      * CHECK FORM
      * VALUES OUTPUT
@@ -448,7 +449,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
     {
         $enlistModel = $this->_getEnlistmentModel();
         $query = $enlistModel->checkNameDupe($cavName);
-        
+
         if ($query == null) {
             $count = 2;
         } else if ($cavName === $query[0]["username"] || $cavName === $query) {
@@ -473,18 +474,18 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             return 3;
         }
     }
-    
+
     public function checkDenied($checkVac, $checkAge)
-    {   
+    {
         $denied = false;
-        
+
         if ($checkAge == 1 || $checkVac == 1)
         {
             $denied = true;
         }
         return $denied;
     }
-    
+
     /*
      * TEXT CREATION
      * FOR CHECKS
@@ -534,7 +535,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 return "[Size=6][COLOR=yellow][B]REQUIREMENTS CHECK FAILED[/B][/COLOR][/SIZE]";
         }
     }
-    
+
     /*
      * GET THE
      * ENLISTMENT MODEL
