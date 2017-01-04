@@ -23,12 +23,14 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
         $db = XenForo_Application::get('db');
 
         //View Parameters
-        $viewParams = array();
+        $viewParams = array(
+            'defaultMessage' => ""
+        );
 
         //Send to template to display
-        return $this->responseView('CavTools_ViewPublic_CreateClass', 'CavTools_S3ClassCreation', $viewParams);
+        return $this->responseView('CavTools_ViewPublic_ClassEdit', 'CavTools_S3ClassCreation', $viewParams);
     }
-    
+
     public function actionPost()
     {
 
@@ -40,7 +42,7 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
 
         // Get form values
         $className = $this->_input->filterSingle('className', XenForo_Input::STRING);
-        $classText = $this->_input->filterSingle('classText', XenForo_Input::STRING);
+        $classText = $this->getHelper('Editor')->getMessageText('message', $this->_input);
 
         $className = htmlspecialchars($className);
         $classText = htmlspecialchars($classText);
@@ -54,7 +56,7 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
             new XenForo_Phrase('class_created')
         );
     }
-    
+
     public function createData($className, $classText, $visitor)
     {
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Class');

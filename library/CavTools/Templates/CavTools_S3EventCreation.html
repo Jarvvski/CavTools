@@ -24,7 +24,7 @@
                 </xen:foreach>
             </select></dd>
         </dl>
-        <div id="game_selection" style="display:none;">
+        <div id="game_selection" style="display:block;">
             <dl class="ctrlUnit">
                 <dt><label for="ctrl_message">Game selection</label></dt>
                 <dd><select name="game" class="textCtrl" required>
@@ -34,12 +34,7 @@
                 </select></dd>
             </dl>
         </div>
-        <div id="operation_title" style="display:none">
-            <dl class="ctrlUnit">
-                <dt><label for="ctrl_message">Operation Name</label></dt>
-                <dd><textarea name="title" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
-            </dl>
-        </div>
+
         <div id="class_selection" style="display:none">
             <dl class="ctrlUnit">
                 <dt><label for="ctrl_message">Class selection</label></dt>
@@ -50,10 +45,14 @@
                 </select></dd>
             </dl>
         </div>
-        <div id="custom_text" style="display:none">
-            <dl class="ctrlUnit">
-                <dt><label for="ctrl_message">Custom Text</label></dt>
-                <dd><textarea name="text" id="ctrl_message" class="textCtrl" rows="10" cols="50"></textarea></dd>
+        <div id="operation_title" style="display:none">
+            <dl class="ctrlUnit fullWidth surplusLabel">
+                <dd><input type="text" name="title" class="textCtrl titleCtrl" id="ctrl_title_thread_create" maxlength="100" autofocus="true"
+                    placeholder="Operation name..."</dd>
+            </dl>
+            <dl class="ctrlUnit fullWidth">
+                <dt></dt>
+                <dd>{xen:raw $editorTemplate}</dd>
             </dl>
         </div>
         <dl class="ctrlUnit submitUnit">

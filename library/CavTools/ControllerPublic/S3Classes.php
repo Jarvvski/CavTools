@@ -37,7 +37,7 @@ class CavTools_ControllerPublic_S3Classes extends XenForo_ControllerPublic_Abstr
 
         if(count($classes) != 0) {
             foreach ($classes as $class) {
-                
+
                 $member = $memberURL . $class['user_id'];
                 $poster = $class['username'];
 

@@ -64,11 +64,12 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $viewParams = array(
             'timeOptions' => $timeOptions,
             'classNames' => $classNames,
-            'games' => $games
+            'games' => $games,
+            'defaultMessage' => ""
         );
 
         //Send to template to display
-        return $this->responseView('CavTools_ViewPublic_CreateEvent', 'CavTools_S3EventCreation', $viewParams);
+        return $this->responseView('CavTools_ViewPublic_EventEdit', 'CavTools_S3EventCreation', $viewParams);
     }
 
     // Get time options 0000 - 2300
@@ -107,7 +108,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $date = $this->_input->filterSingle('event_date', XenForo_Input::STRING);
         $time = $this->_input->filterSingle('event_time', XenForo_Input::STRING);
         $game = $this->_input->filterSingle('game', XenForo_Input::STRING);
-        $text = $this->_input->filterSingle('text', XenForo_Input::STRING);
+        $text = $this->getHelper('Editor')->getMessageText('message', $this->_input);
 
         $customTitle = htmlspecialchars($customTitle);
         $time = htmlspecialchars($time);
@@ -174,8 +175,8 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
             case 2: $title .= "[Class]"; break;
             case 0: $title .= "[Unknown Type]";
         }
-        if ($eventType != 2) {
-            return $title .= " " . $game . " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
+        if ($eventType == 1 || $eventType == 2) {
+            return $title .= " [" . $game . "] " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
         } else {
             return $title .= " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
         }
