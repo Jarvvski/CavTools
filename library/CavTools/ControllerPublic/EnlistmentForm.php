@@ -97,6 +97,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $timezone     = $this->_input->filterSingle('timezone', XenForo_Input::STRING);
         $date         = XenForo_Application::$time;
         $steamID      = $this->_input->filterSingle('steamID', XenForo_Input::STRING);
+        $origin       = $this->_input->filterSingle('origin', XenForo_Input::STRING);
         $inClan       = $this->_input->filterSingle('in_clan', XenForo_Input::STRING);
         $pastClans    = $this->_input->filterSingle('past_clans', XenForo_Input::STRING);
         $game         = $this->_input->filterSingle('game', XenForo_Input::STRING);
@@ -168,7 +169,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         // write data into db
         $this->actionWrite($userID, $recruiter, $lastName, $firstName, $age,
             $timezone, $date, $steamID, $clanStatus, $pastClans,
-            $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus);
+            $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus, $origin);
 
         $twitterModel = $this->_getTwitterBot();
 
@@ -379,7 +380,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
     public static function actionWrite($userID, $recruiter, $lastName, $firstName, $age,
                                     $timezone, $date, $steamID, $inClan, $pastClans,
-                                    $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus)
+                                    $game, $reenlistment, $threadID, $vacValue, $ageValue, $currentStatus, $origin)
     {
 
         if ($ageValue == 1) {
@@ -407,6 +408,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $dwEnlistment->set('under_age', $ageStatus);
         $dwEnlistment->set('current_status', $currentStatus);
         $dwEnlistment->set('last_update', $date);
+        $dwEnlistment->set('origin', $origin);
         $dwEnlistment->save();
     }
 

@@ -20,6 +20,7 @@ class CavTools_DataWriter_Enlistments extends XenForo_DataWriter {
                 'timezone' => array('type' => self::TYPE_STRING),
                 'enlistment_date' => array('type' => self::TYPE_FLOAT),
                 'steamID' => array('type' => self::TYPE_FLOAT),
+                'origin' => array('type' => self::TYPE_STRING),
                 'in_clan' => array('type' => self::TYPE_BOOLEAN),
                 'past_clans' => array('type' => self::TYPE_STRING),
                 'game' => array('type' => self::TYPE_STRING),

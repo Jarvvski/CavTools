@@ -27,13 +27,14 @@
             <li>- Cartoon Names</li>
             <li>- Names of importance from novels, television, movies, etc</li>
             <li>- Religious names</li>
+            <li>- Names of political significance</li>
         </ul>
         <br />
         <p>You are only allowed to change your name within the first 30 days of enlistment. No Exceptions. The 7th Cavalry does not delete records.
             If you choose to use your real name, be prepared for it to be on record for as long as this website exists.</p>
         <br />
         <dl class="ctrlUnit">
-            <dt><label for="ctrl_message">Last Name</label></dt>
+            <dt><label for="ctrl_message"><b>Last Name</b></label></dt>
             <dd><textarea name="last_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="Doe" style="text-transform: capitalize;" required></textarea></dd>
         </dl>
         <dl class="ctrlUnit">
@@ -173,6 +174,12 @@
             </dd>
         </dl>
         <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Origin ID (Origin username)</label></dt>
+            <dd><input name="origin" id="ctrl_message" class="textCtrl" rows="1" cols="50" maxlength="15">
+                <p class="explain">Specifically for BF1</p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Policy agreement</label></dt>
             <dd><input type="checkbox" name="orders" value="agreement" required>  Read: <a href="{xen:link wiki/Wiki-Pages/Code-of-Conduct}">Code of Conduct</a> ,
                 <a href="{$minRequire_thread}">Minimum Requirements</a> ,
@@ -189,8 +196,9 @@
                 <xen:foreach loop="$games" value="$game">
                     <option value="{xen:raw $game}">{xen:raw $game}</option>
                 </xen:foreach>
-            </select></dd>
-
+            </select>
+            <p class="explain"><em>Note: All respective games are PC only.<em></p>
+            </dd>
         </dl>
         <dl class="ctrlUnit">
             <dt><label for="ctrl_message">Are you currently in a clan?</label></dt>

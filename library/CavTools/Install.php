@@ -2,7 +2,7 @@
 class CavTools_Install {
 
     protected static $table = array(
-        'createEnlistments' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_enlistments` (             
+        'createEnlistments' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_enlistments` (
                 `enlistment_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `user_id` INT( 10 ) UNSIGNED NOT NULL,
                 `recruiter` VARCHAR( 50 ),
@@ -12,6 +12,7 @@ class CavTools_Install {
                 `timezone` VARCHAR( 10 ) NOT NULL,
                 `enlistment_date` BIGINT ( 20 ) NOT NULL,
                 `steamID` VARCHAR ( 200 ) NOT NULL,
+                `origin` VARCHAR ( 50 ) NOT NULL,
                 `in_clan` VARCHAR ( 10 ) NOT NULL,
                 `past_clans` TEXT,
                 `game` VARCHAR( 50 ) NOT NULL,
@@ -29,7 +30,7 @@ class CavTools_Install {
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
         'dropEnlistments' => 'DROP TABLE IF EXISTS `xf_ct_rrd_enlistments`',
 
-        'createRRDLogs' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_logs` (             
+        'createRRDLogs' => 'CREATE TABLE IF NOT EXISTS `xf_ct_rrd_logs` (
                 `log_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `enlistment_id` INT( 10 ) UNSIGNED NOT NULL,
                 `user_id` INT ( 10 ) NOT NULL ,
@@ -41,7 +42,7 @@ class CavTools_Install {
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
         'dropRRDLogs' => 'DROP TABLE IF EXISTS `xf_ct_rrd_logs`',
 
-        'createS3Events' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_events` (             
+        'createS3Events' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_events` (
                 `event_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `event_type` INT( 10 ) UNSIGNED NOT NULL,
                 `event_title` VARCHAR( 200 ) NOT NULL ,
@@ -58,7 +59,7 @@ class CavTools_Install {
             ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;',
         'dropS3Events' => 'DROP TABLE IF EXISTS `xf_ct_s3_events`',
 
-        'createS3Classes' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_classes` (             
+        'createS3Classes' => 'CREATE TABLE IF NOT EXISTS `xf_ct_s3_classes` (
                 `class_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `class_name` VARCHAR ( 50 ) NOT NULL,
                 `class_text` LONGTEXT NOT NULL ,
@@ -97,6 +98,7 @@ class CavTools_Install {
         } else if ($addon['version_id'] <= 578) {
             $db = XenForo_Application::getDb();
             $db->query(self::$table['dropADRstore']);
+
         }
     }
 
