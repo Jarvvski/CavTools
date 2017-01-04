@@ -23,7 +23,9 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
         $db = XenForo_Application::get('db');
 
         //View Parameters
-        $viewParams = array();
+        $viewParams = array(
+            'defaultMessage' => ""
+        );
 
         //Send to template to display
         return $this->responseView('CavTools_ViewPublic_ClassEdit', 'CavTools_S3ClassCreation', $viewParams);

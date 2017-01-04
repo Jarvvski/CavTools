@@ -64,7 +64,8 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $viewParams = array(
             'timeOptions' => $timeOptions,
             'classNames' => $classNames,
-            'games' => $games
+            'games' => $games,
+            'defaultMessage' => ""
         );
 
         //Send to template to display
