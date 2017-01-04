@@ -174,8 +174,8 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
             case 2: $title .= "[Class]"; break;
             case 0: $title .= "[Unknown Type]";
         }
-        if ($eventType != 2) {
-            return $title .= " " . $game . " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
+        if ($eventType == 1 || $eventType == 2) {
+            return $title .= " [" . $game . "] " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
         } else {
             return $title .= " " . $eventTitle . " " . $eventDate . " " . $zuluTime . "Z";
         }
