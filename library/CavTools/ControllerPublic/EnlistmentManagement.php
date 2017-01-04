@@ -654,9 +654,10 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         }
 
         try {
-            if ($reply['response']['players'][0]['communityvisibilitystate'] == 1) {
+            $visability = $reply['response']['players'][0]['communityvisibilitystate'];
+            if ($visability == 1 || $visability == 2) {
                 $status = 1;
-            } else if ($reply['response']['players'][0]['communityvisibilitystate'] == 3) {
+            } else if ($visability == 3) {
                 $status = 2;
             }
         }catch (Exception $e) {
