@@ -8,14 +8,29 @@
     <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
         <dl class="ctrlUnit rrdActions">
             <dd>
-                <SELECT id="list" class="textCtrl">
+                <SELECT id="list" class="textCtrl" onchange="report(this.value)" style="margin-right:1.5em;">
                     <OPTION VALUE="A">Yearly in-depth</option>
                     <OPTION VALUE="B">Yearly comparison</option>
                     <OPTION VALUE="C">Quarterly comparison</option>
                     <OPTION VALUE="D">Recruiter monthly tracker</option>
                 </SELECT>
+                <SELECT id="month" class="textCtrl" style="display:none;">
+                    <OPTION VALUE="jan">Jan</option>
+                    <OPTION VALUE="feb">Feb</option>
+                    <OPTION VALUE="mar">Mar</option>
+                    <OPTION VALUE="apr">Apr</option>
+                    <OPTION VALUE="may">May</option>
+                    <OPTION VALUE="jun">Jun</option>
+                    <OPTION VALUE="jul">Jul</option>
+                    <OPTION VALUE="aug">Aug</option>
+                    <OPTION VALUE="sep">Sep</option>
+                    <OPTION VALUE="oct">Oct</option>
+                    <OPTION VALUE="nov">Nov</option>
+                    <OPTION VALUE="dev">Dec</option>
+                </SELECT>
             </dd>
         </dl>
+
         <br />
         <dl class="ctrlUnit">
             <dd>
@@ -86,24 +101,243 @@
                 {xen:raw $tableBody}
             </tbody>
         </table>
-        <table id="recruiterData" style="display:none;">
+        <table id="janRecruiterData" style="display:none;">
             <thead>
             <tr>
                 <th></th>
-                <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
-                    <th>{xen:raw $recruiterData.username}</th>
+                <xen:foreach loop="$janRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
                 </xen:foreach>
             </tr>
             </thead>
             <tbody>
                 <tr>
                     <th>Recruiters</th>
-                    <xen:foreach loop="$totalRecruiterData" value="$recruiterData">
-                        <td>{xen:raw $recruiterData.count}</td>
+                    <xen:foreach loop="$janRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
                     </xen:foreach>
                 </tr>
             </tbody>
         </table>
+        <table id="febRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$febRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$febRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="marRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$marRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$marRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="marRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$marRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$marRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="aprRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$aprRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$aprRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="mayRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$mayRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$mayRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="octRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$junRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$junRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="julRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$julRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$julRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="augRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$augRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$augRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="sepRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$sepRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$sepRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="octRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$octRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$octRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="novRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$novRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$novRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="decRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$decRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$decRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+
+
+
         <xen:if is="{$normalEnlistments}">
             <h5>Enlistments</h5>
             <table>

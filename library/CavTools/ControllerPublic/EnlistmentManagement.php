@@ -160,22 +160,39 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             array_push($gameData, $data);
         }
 
-        $totalRecruiterData = array();
-        foreach ($recruiters as $recruiter) {
-            $monthName  = date('F');
-            $monthTime = $this->getDatesOfMonth($monthName);
+        $monthList = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 
-            $recruitedThisYear = $enlistModel->getRecruitingForPeriod($monthTime['start'], $monthTime['end'], $recruiter);
-            $recruiterData = array(
-                'username' => $recruiter,
-                'count' => $recruitedThisYear
-            );
-            array_push($totalRecruiterData, $recruiterData);
+        $totalRecruiterData = array();
+
+        foreach ($monthList as $mon) {
+            $arrData = array();
+            foreach ($recruiters as $recruiter) {
+                $monthName  = $mon;
+                $monthTime = $this->getDatesOfMonth($monthName);
+
+                $recruitedThisYear = $enlistModel->getRecruitingForPeriod($monthTime['start'], $monthTime['end'], $recruiter);
+                $recruiterData = array(
+                    'username' => $recruiter,
+                    'count' => $recruitedThisYear
+                );
+                array_push($arrData, $recruiterData);
+            }
+            array_push($totalRecruiterData, $arrData);
         }
 
+        $janRecruiterData = $totalRecruiterData[0];
+        $febRecruiterData = $totalRecruiterData[1];
+        $marRecruiterData = $totalRecruiterData[2];
+        $aprRecruiterData = $totalRecruiterData[3];
+        $mayRecruiterData = $totalRecruiterData[4];
+        $junRecruiterData = $totalRecruiterData[5];
+        $julRecruiterData = $totalRecruiterData[6];
+        $augRecruiterData = $totalRecruiterData[7];
+        $sepRecruiterData = $totalRecruiterData[8];
+        $octRecruiterData = $totalRecruiterData[9];
+        $novRecruiterData = $totalRecruiterData[10];
+        $decRecruiterData = $totalRecruiterData[11];
 
-
-        $monthList = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 
 
         $body = "";
@@ -190,13 +207,24 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         //View Parameters
         $viewParams = array(
-            'totalRecruiterData' => $totalRecruiterData,
+            'janRecruiterData' => $janRecruiterData,
+            'febRecruiterData' => $febRecruiterData,
+            'marRecruiterData' => $marRecruiterData,
+            'aprRecruiterData' => $aprRecruiterData,
+            'mayRecruiterData' => $mayRecruiterData,
+            'junRecruiterData' => $junRecruiterData,
+            'julRecruiterData' => $julRecruiterData,
+            'augRecruiterData' => $augRecruiterData,
+            'sepRecruiterData' => $sepRecruiterData,
+            'octRecruiterData' => $octRecruiterData,
+            'novRecruiterData' => $novRecruiterData,
+            'decRecruiterData' => $decRecruiterData,
             'totalGameData' => $gameData,
             'tableBody' => $body,
             'normalEnlistments' => $normalEnlistments,
             'reEnlistments' => $reEnlistments,
             'canMajorAction' => $canMajorAction,
-            'canAction' => $canAction,
+            'canAction' => $canAction
         );
 
         //Send to template to display

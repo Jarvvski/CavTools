@@ -1,3 +1,11 @@
+function report(period) {
+    if (period == "D") {
+        document.getElementById('month').style.display = 'inline-block';
+    } else {
+        document.getElementById('month').style.display = 'none';
+    }
+}
+
 window.onload = function() {
     var options = {
         chart: {
@@ -32,6 +40,7 @@ window.onload = function() {
     $("#list").on('change', function () {
         //alert('f')
         var selVal = $("#list").val();
+        var monVal = $("#month").val();
         if (selVal == "A" || selVal == '') {
             options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
             options.data = {table: 'monthlyData'};
@@ -45,8 +54,101 @@ window.onload = function() {
             options.data = {table: 'quarterlyData'};
         }
         else if (selVal == "D") {
+            if (monVal == "jan" || monVal == "") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'janRecruiterData'};
+            } else if (monVal == "feb") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'febRecruiterData'};
+            } else if (monVal == "mar") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'marRecruiterData'};
+            } else if (monVal == "apr") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'aprRecruiterData'};
+            } else if (monVal == "may") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'mayRecruiterData'};
+            } else if (monVal == "jun") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'junRecruiterData'};
+            } else if (monVal == "jul") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'julRecruiterData'};
+            } else if (monVal == "aug") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'augRecruiterData'};
+            } else if (monVal == "sep") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'sepRecruiterData'};
+            } else if (monVal == "oct") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'octRecruiterData'};
+            } else if (monVal == "nov") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'novRecruiterData'};
+            } else if (monVal == "dec") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'decRecruiterData'};
+            }
+        }
+        var chart = new Highcharts.Chart(options);
+    });
+
+    $("#month").on('change', function () {
+        //alert('f')
+        var selVal = $("#list").val();
+        var monVal = $("#month").val();
+        if (selVal == "A" || selVal == '') {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'spline'};
+            options.data = {table: 'monthlyData'};
+        }
+        else if (selVal == "B") {
             options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
-            options.data = {table: 'recruiterData'};
+            options.data = {table: 'yearlyData'};
+        }
+        else if (selVal == "C") {
+            options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+            options.data = {table: 'quarterlyData'};
+        }
+        else if (selVal == "D") {
+            if (monVal == "jan" || monVal == "") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'janRecruiterData'};
+            } else if (monVal == "feb") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'febRecruiterData'};
+            } else if (monVal == "mar") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'marRecruiterData'};
+            } else if (monVal == "apr") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'aprRecruiterData'};
+            } else if (monVal == "may") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'mayRecruiterData'};
+            } else if (monVal == "jun") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'junRecruiterData'};
+            } else if (monVal == "jul") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'julRecruiterData'};
+            } else if (monVal == "aug") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'augRecruiterData'};
+            } else if (monVal == "sep") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'sepRecruiterData'};
+            } else if (monVal == "oct") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'octRecruiterData'};
+            } else if (monVal == "nov") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'novRecruiterData'};
+            } else if (monVal == "dec") {
+                options.chart = {renderTo: 'container', defaultSeriesType: 'column'};
+                options.data = {table: 'decRecruiterData'};
+            }
         }
         var chart = new Highcharts.Chart(options);
     });
