@@ -11,6 +11,25 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ");
     }
 
+    public function getEnlistmentsByUser($userID)
+    {
+        return $this->_getDb()->fetchAll("
+            SELECT *
+            FROM xf_ct_rrd_enlistments
+            WHERE user_id = ?
+        ", $userID);
+    }
+
+    public function getOpenEnlistmentsByUser($userID)
+    {
+        return $this->_getDb()->fetchAll("
+            SELECT *
+            FROM xf_ct_rrd_enlistments
+            WHERE user_id = ?
+            AND hidden = 0
+        ", $userID);
+    }
+
     public function getAllEnlistment()
     {
         return $this->_getDb()->fetchAll('

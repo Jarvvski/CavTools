@@ -25,9 +25,23 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         return compact($botVars);
     }
 
+    public function enlistmentCheck($userID)
+    {
+        $enlistmentModel = $this->_getEnlistmentModel();
+        $enlistments     = $enlistmentModel->getEnlistmentsByUser($userID);
+        $status          = false;
+        if ($enlistments) {
+            foreach ($enlistments as $enlistment) {
+                if ($enlistment['hidden'] == 0) {
+                    $status = true;
+                }
+            }
+        }
+        return $status;
+    }
+
     /**
-     * GET RRD
-     * BOT VALUES
+     * LOAD INDEX
      *
      * @throws
      * @return array of View, route, array $viewParams
@@ -63,16 +77,41 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $model = $this->_getEnlistmentModel();
         $hasMilpac = $model->checkMilpac($visitor['user_id']);
 
-        //View Parameters
-        $viewParams = array(
-            'hasMilpac' => $hasMilpac,
-            'steamID_thread' => $steamID_thread,
-            'minRequire_thread' => $minRequire_thread,
-            'games' => $games
-        );
+        $status = $model->getOpenEnlistmentsByUser($visitor['user_id']);
+        $template = '';
+
+        if ($status) {
+            $template = 'CavTools_CurrentEnlistment';
+            $enlistments = $model->getOpenEnlistmentsByUser($visitor['user_id']);
+            $data = array();
+            foreach ($enlistments as $enlistment) {
+                $row = array();
+                $row['date'] = date("D M j G:i:s T Y", intval($enlistment['enlistment_date']));
+                print_r($row['date']);
+                $row['date'] = strval($row['date']);
+                $row['thread_id'] = $enlistment['thread_id'];
+                array_push($data, $row);
+            }
+
+            $viewParams = array(
+                'username' => $visitor['username'],
+                'enlistments' => $data
+            );
+        } else {
+            $template = 'CavTools_Enlistmentform';
+
+            //View Parameters
+            $viewParams = array(
+                'username' => $visitor['username'],
+                'hasMilpac' => $hasMilpac,
+                'steamID_thread' => $steamID_thread,
+                'minRequire_thread' => $minRequire_thread,
+                'games' => $games
+            );
+        }
 
         //Send to template to display
-        return $this->responseView('CavTools_ViewPublic_EnlistmentForm', 'CavTools_Enlistmentform', $viewParams);
+        return $this->responseView('CavTools_ViewPublic_EnlistmentForm', $template, $viewParams);
     }
 
     /**

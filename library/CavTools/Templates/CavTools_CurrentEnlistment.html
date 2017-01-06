@@ -1,0 +1,18 @@
+<xen:require css="CavTools_TigCheck.css" />
+
+<div class="section">
+    <xen:title>You already have an open enlistment</xen:title>
+
+    <table class="tigCheck">
+            <tr>
+                <th>Application</th>
+                <th>Date opened</th>
+            </tr>
+            <xen:foreach loop="$enlistments" value="$enlistment">
+                <tr>
+                    <td><a href="{xen:link 'threads', {xen:array 'thread_id={$enlistment.thread_id}'}}">link</a></td>
+                    <td><p>{xen:raw $enlistment.date}</p></td>
+                </tr>
+            </xen:foreach>
+    </table>
+</div>
