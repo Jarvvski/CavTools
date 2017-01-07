@@ -11,7 +11,10 @@
     }
 </script>
 <div class="section">
-    <h1 class="heading">Enlistment Application</h1>
+    <xen:title>Enlistment Application</xen:title>
+    <!-- <xen:if is="{$hasMilpac} == true">
+        <h1 class="heading">Welcome back {xen:raw $username}</h1>
+    </xen:if> -->
     <br />
     <br />
     <form action="{xen:link enlist/post}" method="post" class="xenForm AutoValidator enlistmentForm" onsubmit="return validateForm()" data-redirect="on" name="enlistment">

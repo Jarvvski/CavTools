@@ -25,9 +25,71 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         return compact($botVars);
     }
 
+    public function enlistmentCheck($userID)
+    {
+        $enlistmentModel = $this->_getEnlistmentModel();
+        $enlistments     = $enlistmentModel->getEnlistmentsByUser($userID);
+        $status          = false;
+        if ($enlistments) {
+            foreach ($enlistments as $enlistment) {
+                if ($enlistment['hidden'] == 0) {
+                    $status = true;
+                }
+            }
+        }
+        return $status;
+    }
+
+    public function getSteamProfile($ID)
+    {
+        //Set variables
+        $key = XenForo_Application::get('options')->steamAPIKey;
+        $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, $ID);
+
+        //Send curl message
+        $ch  = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $reply = curl_exec($ch);
+        curl_close($ch);
+
+        $reply = json_decode($reply, true);
+
+        try {
+            $name    = $reply['response']['players'][0]['personaname'];
+            $profile = $reply['response']['players'][0]['personastate'];
+            $avatar  = $reply['response']['players'][0]['avatarfull'];
+            $url     = $reply['response']['players'][0]['profileurl'];
+        } catch (Exception $e) {
+            $name    = "Invalid SteamID given";
+            $profile = 7;
+            $avatar  = "http://placehold.it/184x184";
+            $url     = '#';
+        }
+
+        try {
+            $visability = $reply['response']['players'][0]['communityvisibilitystate'];
+            if ($visability == 1 || $visability == 2) {
+                $status = 1;
+            } else if ($visability == 3) {
+                $status = 2;
+            }
+        }catch (Exception $e) {
+            $status = 3;
+        }
+
+        return array(
+            'avatar' => $avatar,
+            'personaname' => $name,
+            'personastate' => $profile,
+            'status' => $status,
+            'url' => $url
+        );
+    }
+
     /**
-     * GET RRD
-     * BOT VALUES
+     * LOAD INDEX
      *
      * @throws
      * @return array of View, route, array $viewParams
@@ -63,16 +125,87 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $model = $this->_getEnlistmentModel();
         $hasMilpac = $model->checkMilpac($visitor['user_id']);
 
-        //View Parameters
-        $viewParams = array(
-            'hasMilpac' => $hasMilpac,
-            'steamID_thread' => $steamID_thread,
-            'minRequire_thread' => $minRequire_thread,
-            'games' => $games
-        );
+        $status = $model->getOpenEnlistmentsByUser($visitor['user_id']);
+        $template = '';
+
+        if ($status) {
+            $template = 'CavTools_CurrentEnlistment';
+            $enlistments = $model->getEnlistmentsByUser($visitor['user_id']);
+            $data = array();
+            foreach ($enlistments as $enlistment) {
+                $row = array();
+
+                $firstName = ucwords($enlistment['first_name']);
+                $lastName  = ucwords($enlistment['last_name']);
+                $cavName   = '';
+                $cavName   = $lastName . "." . $firstName[0];
+
+                $steam = $this->getSteamProfile($enlistment['steamID']);
+
+
+                $enlistment['current_status'];
+
+                switch ($enlistment['current_status'])
+                {
+                    case 1: $status = '<div id="red">Denied</div>';break;
+                    case 2: $status = '<div id="green">Approved</div>';break;
+                    case 3: $status = '<div id="yellow">Open</div>';break;
+                }
+
+                switch ($steam['status'])
+                {
+                    case 1: $steamStatus = '<div id="red">Private</div>';break;
+                    case 2: $steamStatus = '<div id="green">Public</div>';break;
+                    case 3: $steamStatus = '<div id="yellow">Invalid SteamID given</div>';break;
+                }
+
+                switch ($steam['personastate'])
+                {
+                    case 0: $steamState = '<div id="red">Offline</div>';break;
+                    case 1:
+                    case 4:
+                    case 5:
+                    case 6:
+                            $steamState = '<div id="green">Online</div>';break;
+                    case 2: $steamState = '<div id="red">Away</div>';break;
+                    case 7: $steamState = '<div id="yellow">Invalid SteamID given</div>';break;
+                }
+
+                $row['status'] = $status;
+                $row['cav_name'] = $cavName;
+                $row['date'] = date("dMy G:i:s T", intval($enlistment['enlistment_date']));
+                $row['date'] = strtoupper($row['date']);
+                $row['enlistment_id'] = $enlistment['enlistment_id'];
+                $row['thread_id'] = $enlistment['thread_id'];
+                $row['game'] = $enlistment['game'];
+
+                $row['steam_image'] = $steam['avatar'];
+                $row['steam_username'] = $steam['personaname'];
+                $row['steam_state'] = $steamState;
+                $row['steam_status'] = $steamStatus;
+                $row['steam_url'] = $steam['url'];
+                array_push($data, $row);
+            }
+
+            $viewParams = array(
+                'username' => $visitor['username'],
+                'enlistments' => $data
+            );
+        } else {
+            $template = 'CavTools_Enlistmentform';
+
+            //View Parameters
+            $viewParams = array(
+                'username' => $visitor['username'],
+                'hasMilpac' => $hasMilpac,
+                'steamID_thread' => $steamID_thread,
+                'minRequire_thread' => $minRequire_thread,
+                'games' => $games
+            );
+        }
 
         //Send to template to display
-        return $this->responseView('CavTools_ViewPublic_EnlistmentForm', 'CavTools_Enlistmentform', $viewParams);
+        return $this->responseView('CavTools_ViewPublic_EnlistmentForm', $template, $viewParams);
     }
 
     /**
@@ -148,7 +281,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $forumID  = XenForo_Application::get('options')->enlistmentForumID;
 
         $threadID = $this->actionCreateThread($forumID, $thread['title'], $thread['message']);
-        $post     = $this->actionCreatePost($threadID, $this->createPostContent($steamID, $cavName, $age, $reenlistment));
+        $post     = $this->actionCreatePost($threadID, $this->createPostContent($steamID, $cavName, $age, $reenlistment, $visitor));
 
         if (!$denied) {
             if ($reenlistment == true) {
@@ -159,7 +292,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
 
                 $recipients = array($rrdOIC, $rrdXO, $rrdNCOIC, $userID);
-                $pm = $this->createPMContent($cavName, $date, $userID, $steamID);
+                $pm = $this->createPMContent($cavName, $date, $userID, $steamID, $visitor);
 
                 $this->createConversation($recipients, $pm,
                     $noInvites = false, $conversationClosed = false, $markReadForSender = true);
@@ -209,7 +342,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $checks  = "";
 
         $checkVac  = $this->checkVac($steamID);
-        $checkName = $this->checkName($cavName);
+        $checkName = $this->checkName($cavName, $visitor['user_id']);
         $checkAge  = $this->checkAge($age);
 
         if($reenlistment == true)
@@ -271,10 +404,10 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
      * ENLISTMENT REPLY
      */
 
-    public function createPostContent($steamID, $cavName, $age, $reenlistment)
+    public function createPostContent($steamID, $cavName, $age, $reenlistment, $visitor)
     {
         $checkVac = $this->checkVac($steamID);
-        $checkName = $this->checkName($cavName);
+        $checkName = $this->checkName($cavName, $visitor['user_id']);
         $checkAge = $this->checkAge($age);
 
         $newLine = "\n";
@@ -315,7 +448,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $writer->save();
     }
 
-    public function createPMContent($cavName, $date, $userID, $steamID)
+    public function createPMContent($cavName, $date, $userID, $steamID, $visitor)
     {
         $title = '[Re-enlistment] - ' . $cavName . ' - ' . date("m.d.y",$date);
 
@@ -327,7 +460,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $newLine = "\n";
 
         $checkVac = $this->checkVac($steamID);
-        $checkName = $this->checkName($cavName);
+        $checkName = $this->checkName($cavName, $visitor['user_id']);
         $banText = $this->banText($checkVac);
         $nameText = $this->nameText($checkName);
         $checks = $banText . $newLine . $nameText;
@@ -447,17 +580,23 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         return $banned;
     }
 
-    public function checkName($cavName)
+    public function checkName($cavName, $userID)
     {
         $enlistModel = $this->_getEnlistmentModel();
-        $query = $enlistModel->checkNameDupe($cavName);
+        $check = $enlistModel->checkEnlistedIsOwner($userID, $cavName);
 
-        if ($query == null) {
-            $count = 2;
-        } else if ($cavName === $query[0]["username"] || $cavName === $query) {
-            $count = 1;
+        if (!$check) {
+            $query = $enlistModel->checkNameDupe($cavName);
+
+            if ($query == null) {
+                $count = 2;
+            } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+                $count = 1;
+            } else {
+                $count = 3;
+            }
         } else {
-            $count = 3;
+            $count = 2;
         }
         return $count;
     }
