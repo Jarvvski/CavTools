@@ -60,10 +60,12 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             $name    = $reply['response']['players'][0]['personaname'];
             $profile = $reply['response']['players'][0]['personastate'];
             $avatar  = $reply['response']['players'][0]['avatarfull'];
+            $url     = $reply['response']['players'][0]['profileurl'];
         } catch (Exception $e) {
             $name    = "Invalid SteamID given";
             $profile = 7;
             $avatar  = "http://placehold.it/184x184";
+            $url     = '#';
         }
 
         try {
@@ -81,7 +83,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             'avatar' => $avatar,
             'personaname' => $name,
             'personastate' => $profile,
-            'status' => $status
+            'status' => $status,
+            'url' => $url
         );
     }
 
@@ -180,6 +183,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 $row['steam_username'] = $steam['personaname'];
                 $row['steam_state'] = $steamState;
                 $row['steam_status'] = $steamStatus;
+                $row['steam_url'] = $steam['url'];
 
                 array_push($data, $row);
             }
