@@ -531,7 +531,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     public function checkName($cavName, $userID)
     {
         $enlistModel = $this->_getEnlistmentModel();
-        $check = $enlistModel->checkEnlisted($userID);
+        $check = $enlistModel->checkEnlistedIsOwner($userID, $cavName);
 
         if (!$check) {
             $query = $enlistModel->checkNameDupe($cavName);

@@ -5,13 +5,27 @@
 
     <table class="tigCheck">
             <tr>
-                <th>Application</th>
-                <th>Date opened</th>
+                <th>Application ID</th>
+                <th>Application Name</th>
+                <th>Status</th>
+                <th>Game</th>
+                <th>Steam Profile</th>
+                <th>Steam Visability</th>
+                <th>Date Opened</th>
             </tr>
             <xen:foreach loop="$enlistments" value="$enlistment">
                 <tr>
-                    <td><a href="{xen:link 'threads', {xen:array 'thread_id={$enlistment.thread_id}'}}">link</a></td>
-                    <td><p>{xen:raw $enlistment.date}</p></td>
+                    <td><a href="{xen:link 'threads', {xen:array 'thread_id={$enlistment.thread_id}'}}">{xen:raw $enlistment.enlistment_id}</a></td>
+                    <td>{xen:raw $enlistment.cav_name}</td>
+                    <td>{xen:raw $enlistment.status}</td>
+                    <td>{xen:raw $enlistment.game}</td>
+                    <td>
+                        <img src="{xen:raw $enlistment.steam_image}"><br/>
+                        {xen:raw $enlistment.steam_username}<br/>
+                        {xen:raw $enlistment.steam_state}<br/>
+                    </td>
+                    <td>{xen:raw $enlistment.steam_status}<br/>
+                    <td>{xen:raw $enlistment.date}</td>
                 </tr>
             </xen:foreach>
     </table>

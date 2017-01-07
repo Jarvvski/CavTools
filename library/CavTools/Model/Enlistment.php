@@ -17,6 +17,7 @@ class CavTools_Model_Enlistment extends XenForo_Model {
             SELECT *
             FROM xf_ct_rrd_enlistments
             WHERE user_id = ?
+            ORDER BY enlistment_id DESC
         ", $userID);
     }
 
@@ -81,6 +82,22 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         FROM xf_pe_roster_user_relation
         WHERE user_id = ?
         ", $userID);
+
+        if ($query == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function checkEnlistedIsOwner($userID, $cavName)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT user_id
+        FROM xf_pe_roster_user_relation
+        WHERE user_id = '$userID'
+        AND username = '$cavName'
+        ");
 
         if ($query == null) {
             return false;

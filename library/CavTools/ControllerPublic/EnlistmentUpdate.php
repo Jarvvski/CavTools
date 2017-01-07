@@ -126,17 +126,25 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $gameUpdated = false;
         $reenlistingUpdated = false;
 
+        $enlistModel = $this->_getEnlistmentModel();
+        $currentData = $enlistModel->getEnlistmentById($enlistmentID);
+
         // write the enlistee details to the db
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
         $dw->setExistingData($enlistmentID);
         if ($lastName || $firstName) {
-            if ($lastName) {
+            if ($lastName == '') {
+                $lastName = $currentData['last_name'];
+            }else {
                 $lastName = ucwords($lastName);
                 $dw->set('last_name', $lastName);
             }
-            if ($firstName) {
+            if ($firstName == '') {
+                $firstName = $currentData['first_name'];
+            } else {
                 $firstName = ucwords($firstName);
                 $dw->set('first_name', $firstName);
+                $lastName = $currentData['last_name'];
             }
             $nameUpdated = true;
         }
@@ -174,7 +182,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         }
         $dw->set('last_update', XenForo_Application::$time);
 
-        $enlistModel = $this->_getEnlistmentModel();
+
         $query = $enlistModel->getEnlistmentById($enlistmentID);
         $firstName = ucwords($firstName);
         $lastName = ucwords($lastName);
@@ -189,7 +197,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $action = 'Updates: ';
         if ($nameUpdated) {
             $postContent .= "[B]Name updated[/B]" . $newline . $newline;
-            $postContent .= $this->createNamePostContent($cavName) .$newline .$newline .$newline;
+            $postContent .= $this->createNamePostContent($cavName, $query['user_id']) .$newline .$newline .$newline;
             $action .= "Name, ";
         }
         if ($banUpdated) {
@@ -218,15 +226,12 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             $action .= "Game, ";
         }
         if ($recruiter) {
-            $postContent .= "[B]Recruiter Updated[/B]" . $newline ."Recruiter: " .$game.
+            $postContent .= "[B]Recruiter Updated[/B]" . $newline ."Recruiter: " .$recruiter.
                 $newline . $newline . $newline;
             $action .= "Recruiter, ";
         }
 
         $this->writeLog($enlistmentID, $action);
-        $this->actionCreatePost($query['thread_id'], $postContent, $submittedBy);
-        $this->updateThread($query['thread_id'],$this->rebuildTitle($enlistmentID));
-
 
         $denied = false;
         if ($vacValue == 1) {
@@ -249,6 +254,9 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
             }
         }
         $dw->save();
+
+        $this->actionCreatePost($query['thread_id'], $postContent, $submittedBy);
+        $this->updateThread($query['thread_id'],$this->rebuildTitle($enlistmentID));
     }
 
     public function checkVac($steamID)
@@ -282,18 +290,22 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         return $banned;
     }
 
-    public function checkName($cavName)
+    public function checkName($cavName, $userID)
     {
         $enlistModel = $this->_getEnlistmentModel();
-        $query = $enlistModel->checkNameDupe($cavName);
+        $check = $enlistModel->checkEnlistedIsOwner($userID, $cavName);
 
-        $count = 0;
-        //$queryType = gettype($query['username']);
-        try {
-            if ($cavName === $query[0]["username"] || $cavName === $query) {
+        if (!$check) {
+            $query = $enlistModel->checkNameDupe($cavName);
+
+            if ($query == null) {
+                $count = 2;
+            } else if ($cavName === $query[0]["username"] || $cavName === $query) {
                 $count = 1;
+            } else {
+                $count = 3;
             }
-        } catch (Exception $e) {
+        } else {
             $count = 2;
         }
         return $count;
@@ -318,7 +330,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $newLine = "\n";
 
         $checkVac = $this->checkVac($query['steamID']);
-        $checkName = $this->checkName($cavName);
+        $checkName = $this->checkName($cavName, $query['user_id']);
         $banText = $this->banText($checkVac);
         $nameText = $this->nameText($checkName);
         $checks = $banText . $newLine . $nameText;
@@ -380,9 +392,9 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         return $messageReply;
     }
 
-    public function createNamePostContent($cavName)
+    public function createNamePostContent($cavName, $userID)
     {
-        $checkName = $this->checkName($cavName);
+        $checkName = $this->checkName($cavName, $userID);
 
         $newLine = "\n";
 
