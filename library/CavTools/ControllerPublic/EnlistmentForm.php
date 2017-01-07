@@ -184,7 +184,6 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 $row['steam_state'] = $steamState;
                 $row['steam_status'] = $steamStatus;
                 $row['steam_url'] = $steam['url'];
-
                 array_push($data, $row);
             }
 
