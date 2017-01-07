@@ -27,7 +27,7 @@
         <div id="game_selection" style="display:block;">
             <dl class="ctrlUnit">
                 <dt><label for="ctrl_message">Game selection</label></dt>
-                <dd><select name="game" class="textCtrl" required>
+                <dd><select name="game" class="textCtrl" onchange="javascript:gameCheck(this.value)" required>
                     <xen:foreach loop="$games" value="$game">
                         <option value="{xen:raw $game}">{xen:raw $game}</option>
                     </xen:foreach>
@@ -38,9 +38,9 @@
         <div id="class_selection" style="display:none">
             <dl class="ctrlUnit">
                 <dt><label for="ctrl_message">Class selection</label></dt>
-                <dd><select name="class" class="textCtrl">
-                    <xen:foreach loop="$classNames" value="$className">
-                        <option value="{xen:raw $className}">{xen:raw $className}</option>
+                <dd><select name="class" class="textCtrl" id="selector">
+                    <xen:foreach loop="$classes" value="$class">
+                        <option value="{xen:raw $class.class_name}" id="{xen:raw $class.game}">{xen:raw $class.class_name}</option>
                     </xen:foreach>
                 </select></dd>
             </dl>

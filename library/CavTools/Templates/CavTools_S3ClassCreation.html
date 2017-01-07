@@ -4,6 +4,14 @@
     <br />
     <form action="{xen:link createClass/post}" method="post" class="xenForm AutoValidator" data-redirect="on">
         <div id="operation_title" style="display:block">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Game selection</label></dt>
+                <dd><select name="game" class="textCtrl" required>
+                    <xen:foreach loop="$games" value="$game">
+                        <option value="{xen:raw $game}">{xen:raw $game}</option>
+                    </xen:foreach>
+                </select></dd>
+            </dl>
             <dl class="ctrlUnit fullWidth surplusLabel">
                 <dd><input type="text" name="className" class="textCtrl titleCtrl" id="ctrl_title_thread_create" maxlength="100" autofocus="true"
                     placeholder="Class name..."</dd>

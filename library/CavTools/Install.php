@@ -65,6 +65,7 @@ class CavTools_Install {
                 `class_text` LONGTEXT NOT NULL ,
                 `username` VARCHAR( 50 ) NOT NULL ,
                 `user_id` INT ( 10 ) NOT NULL ,
+                `game` VARCHAR( 50 ) NOT NULL ,
                 `hidden` TINYINT ( 10) NOT NULL ,
                 PRIMARY KEY (`class_id`)
                 )

@@ -16,6 +16,10 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
             throw $this->getNoPermissionResponseException();
         }
 
+        // Games from options
+        $games = XenForo_Application::get('options')->s3Games;
+        $games = explode(',', $games);
+
         //Set Time Zone to UTC
         date_default_timezone_set("UTC");
 
@@ -24,7 +28,8 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
 
         //View Parameters
         $viewParams = array(
-            'defaultMessage' => ""
+            'defaultMessage' => "",
+            'games' => $games
         );
 
         //Send to template to display
