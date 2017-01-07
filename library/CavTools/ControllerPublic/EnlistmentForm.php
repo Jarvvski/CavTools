@@ -59,11 +59,11 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         try {
             $name    = $reply['response']['players'][0]['personaname'];
             $profile = $reply['response']['players'][0]['personastate'];
-            $avatar  = $reply['response']['players'][0]['avatar'];
+            $avatar  = $reply['response']['players'][0]['avatarfull'];
         } catch (Exception $e) {
             $name    = "Invalid SteamID given";
             $profile = 7;
-            $avatar  = "http://placehold.it/32x32";
+            $avatar  = "http://placehold.it/184x184";
         }
 
         try {
