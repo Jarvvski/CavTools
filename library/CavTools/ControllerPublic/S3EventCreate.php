@@ -38,13 +38,6 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         $model = $this->_getS3ClassModel();
         // Do model query
         $query = $model->getClassList();
-        $classNames = array();
-
-        foreach ($query as $item)
-        {
-            // Get class names from return query
-            array_push($classNames, $item['class_name']);
-        }
 
         // Games from options
         $games = XenForo_Application::get('options')->s3Games;
@@ -63,7 +56,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
         //View Parameters
         $viewParams = array(
             'timeOptions' => $timeOptions,
-            'classNames' => $classNames,
+            'classes' => $query,
             'games' => $games,
             'defaultMessage' => ""
         );
@@ -167,6 +160,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
     public function createThreadTitle($eventTitle, $eventType, $game, $time, $date)
     {
         $eventDate = date('dMy', $date); // 13Jun2016
+        $eventDate = strtoupper($eventDate);
         $zuluTime = date('Hi', $time);
         $title = "";
         switch ($eventType)

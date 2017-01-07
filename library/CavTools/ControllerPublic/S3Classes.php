@@ -42,9 +42,9 @@ class CavTools_ControllerPublic_S3Classes extends XenForo_ControllerPublic_Abstr
                 $poster = $class['username'];
 
                 if ($canAction) {
-                    $classList .= "<tr><td>". $class['class_id'] ."</td><td>" . $class['class_name'] . "</td><td><a href=" . $member . "><b>" . $poster . "</b></a></td><td><input type=\"checkbox\" name=\"classes[]\" value=" . $class['class_id'] . "></td></tr>" . PHP_EOL;
+                    $classList .= "<tr><td>". $class['class_id'] ."</td><td>". $class['game']."</td><td>" . $class['class_name'] . "</td><td><a href=" . $member . "><b>" . $poster . "</b></a></td><td><input type=\"checkbox\" name=\"classes[]\" value=" . $class['class_id'] . "></td></tr>" . PHP_EOL;
                 } else {
-                    $classList .= "<tr><td>". $class['class_id'] . "</td><td>" . $class['class_name'] . "</td><td><a href=" . $member . "><b>" . $poster . "</b></a></td></tr>" . PHP_EOL;
+                    $classList .= "<tr><td>". $class['class_id'] . "</td><td>". $class['game']."</td><td>" . $class['class_name'] . "</td><td><a href=" . $member . "><b>" . $poster . "</b></a></td></tr>" . PHP_EOL;
                 }
             }
         }
