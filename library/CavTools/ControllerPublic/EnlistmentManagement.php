@@ -358,21 +358,27 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             {
                 case '1':
                     // Name Change - taken
-                    $message = '[B]Please select a different name. Your name has been already taken.[/B]';
+                    $nameTaken = XenForo_Application::get('options')->nameTaken;
+                    $message = '[B]'.$nameTaken.'[/B]';
+                    // $message = '[B]Please select a different name. Your name has been already taken.[/B]';
                     $action = 'Name Change - taken';
                     $this->writeLog($enlistmentID, $action);
                     $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '2':
                     // Name Change - inappropriate
-                    $message = '[B]Please select a different name. Your name is inappropriate.[/B]';
+                    $nameInap = XenForo_Application::get('options')->nameInap;
+                    $message = '[B]'.$nameInap.'[/B]';
+                    // $message = '[B]Please select a different name. Your name is inappropriate.[/B]';
                     $action = 'Name Change - inappropriate';
                     $this->writeLog($enlistmentID, $action);
                     $phrase = new XenForo_Phrase('Message Sent');
                     break;
                 case '3':
                     // Steam ID
-                    $message = '[B]Please provide your steam ID for checking.[/B]';
+                    $needSteam = XenForo_Application::get('options')->needSteam;
+                    $message = '[B]'.$needSteam.'[/B]';
+                    // $message = '[B]Please provide your steam ID for checking.[/B]';
                     $action = 'Steam ID';
                     $this->writeLog($enlistmentID, $action);
                     $phrase = new XenForo_Phrase('Message Sent');
@@ -398,7 +404,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     break;
                 case '5':
                     // Denied - Timed out
-                    $message = '[B]Application timed out. Enlistment denied[/B]';
+                    $timeOut = XenForo_Application::get('options')->timeOut;
+                    $message = '[B]'.$timeOut.'[/B]';
+                    // $message = '[B]Application timed out. Enlistment denied[/B]';
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
@@ -408,7 +416,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     break;
                 case '6':
                     // Denied
-                    $message = '[B]Enlistment denied.[/B]';
+                    $deniedMsg = XenForo_Application::get('options')->deniedMsg;
+                    $message = '[B]'.$deniedMsg.'[/B]';
+                    // $message = '[B]Enlistment denied.[/B]';
                     $currentStatus = 1;
                     $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                     $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
@@ -418,7 +428,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     break;
                 case '7':
                     // Moved
-                    $message = '[B]Application sorted[/B]';
+                    $sortedMsg = XenForo_Application::get('options')->sortedMsg;
+                    $message = '[B]'.$sortedMsg.'[/B]';
+                    // $message = '[B]Application sorted[/B]';
                     $this->sortApplication($enlistmentID, $query['thread_id'], $query['current_status']);
                     $phrase = new XenForo_Phrase('Application Sorted');
                     break;
