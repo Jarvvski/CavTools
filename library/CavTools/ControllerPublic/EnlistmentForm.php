@@ -159,6 +159,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                     case 3: $steamStatus = '<div id="yellow">Invalid SteamID given</div>';break;
                 }
 
+
                 switch ($steam['personastate'])
                 {
                     case 0: $steamState = '<div id="red">Offline</div>';break;
@@ -167,7 +168,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                     case 5:
                     case 6:
                             $steamState = '<div id="green">Online</div>';break;
-                    case 2: $steamState = '<div id="red">Away</div>';break;
+                    case 3:
+                    case 2:
+                            $steamState = '<div id="yellow">Away</div>';break;
                     case 7: $steamState = '<div id="yellow">Invalid SteamID given</div>';break;
                 }
 
