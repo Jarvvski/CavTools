@@ -62,25 +62,26 @@ class CavTools_CronJobs_S2QuartCheck {
                     array_push($goodProfiles, $profile);
                 }
             }
-            print_r($goodProfiles[0]['field_value']);
 
             foreach ($goodProfiles as $index => $data) {
 
 
                 //Set variables
-                $key   = XenForo_Application::get('options')->steamAPIKey;
+                // $key   = XenForo_Application::get('options')->steamAPIKey;
+                $key = "E1ABFA96B4D9917DF7478A070643C062";
                 $profile = array();
                 $profile['user_id'] = $data['user_id'];
                 $profile['username'] = $data['username'];
-                $profile['field_value'] = $data['field_value'];
+                $profile['field_value'] = $goodProfiles[$index]['field_value'];
+                $id = $data['field_value'];
                 $profile['relation_id'] = $data['relation_id'];
                 $profile['title'] = $data['title'];
 
-                $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, "76561197986300895");
+                $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, $id);
 
-                // Send curl message
+                //Send curl message
                 $ch  = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_URL, $url );
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
                 $reply = curl_exec($ch);
@@ -91,22 +92,23 @@ class CavTools_CronJobs_S2QuartCheck {
                 try {
                     $name    = $reply['response']['players'][0]['personaname'];
                     $state   = $reply['response']['players'][0]['personastate'];
-                    $avatar  = $reply['response']['players'][0]['avatar'];
-                    $url     = $reply['response']['players'][0]['replyurl'];
+                    $avatar  = $reply['response']['players'][0]['avatarmedium'];
+                    $url     = $reply['response']['players'][0]['profileurl'];
                     $vis     = $reply['response']['players'][0]['communityvisibilitystate'];
                 } catch (Exception $e) {
                     $name    = "Invalid SteamID given";
                     $state   = 7;
-                    $avatar  = "http://placehold.it/184x184";
+                    $avatar  = "http://placehold.it/64x64";
                     $url     = '#';
                     $vis     = "Invalid SteamID given";
                 }
 
                 switch ($vis)
                 {
-                    case 1: $steamStatus = '[COLOR="red"]Private[/COLOR]';break;
-                    case 2: $steamStatus = '[COLOR="green"]Public[/COLOR]';break;
-                    case 3: $steamStatus = '[COLOR="yellow"]Invalid SteamID given[/COLOR]';break;
+                    case 1: $vis = '[COLOR="red"]Private[/COLOR]';break;
+                    case 2: $vis = '[COLOR="red"]Private[/COLOR]';break;
+                    case 3: $vis = '[COLOR="green"]Public[/COLOR]';break;
+                    default: $vis = '[COLOR="yellow"]UNKOWN[/COLOR]';break;
                 }
 
 
@@ -117,19 +119,21 @@ class CavTools_CronJobs_S2QuartCheck {
                     case 4:
                     case 5:
                     case 6:
-                            $steamState = '[COLOR="green"]>Online[/COLOR]';break;
+                            $steamState = '[COLOR="green"]Online[/COLOR]';break;
                     case 3:
                     case 2:
                             $steamState = '[COLOR="yellow"]Away[/COLOR]';break;
                     case 7: $steamState = '[COLOR="yellow"]Invalid SteamID given[/COLOR]';break;
+                    default: $vis = '[COLOR="yellow"]UNKOWN[/COLOR]';break;
                 }
 
+                $profile['steam_vis'] = $vis;
                 $profile['steam_username'] = $name;
-                $profile['steam_state'] = $state;
+                $profile['steam_state'] = $steamState;
                 $profile['steam_avatar'] = $avatar;
                 $profile['steam_url'] = $url;
 
-                $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=%s&steamids=%s", $key, "76561197986300895");
+                $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=%s&steamids=%s", $key, $id);
 
                 // Send curl message
                 $ch  = curl_init();
@@ -155,8 +159,6 @@ class CavTools_CronJobs_S2QuartCheck {
                     $econBan = "Invalid SteamID given";
                 }
 
-
-
                 $profile['VAC_status'] = $VACban;
                 $profile['VAC_num'] = $VACnum;
                 $profile['community_ban_status'] = $communityBan;
@@ -171,12 +173,6 @@ class CavTools_CronJobs_S2QuartCheck {
             self::alertS2HQ($goodProfiles, $badProfiles, $thread);
         }
     }
-
-    // public static function profileCheck($data) {
-    //
-    //
-    //     return $profile;
-    // }
 
     public static function makeThread($goodProfiles, $badProfiles) {
 
@@ -193,50 +189,95 @@ class CavTools_CronJobs_S2QuartCheck {
 
             $profileLink = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['username']."[/URL][/B]";
 
-            $text .= $newline . $profileLink . $newline . "[B][COLOR=YELLOW]STEAM ID NOT PROVIDED[/COLOR][/B]" . $newline . $newline;
+            $text .= $newline . $profileLink . "  --  [B][COLOR=YELLOW]STEAM ID NOT PROVIDED[/COLOR][/B]" . $newline . $newline;
 
         }
-        $text .= $newline . $newline . "[H][COLOR=RED]SUSPECTS[/COLOR][/H]" . $newline . $newline;
 
         foreach ($goodProfiles as $profile) {
-            if ($profile['VAC_status'] == true || $profile['community_ban_status'] == true || $profile['econ_ban'] == "probation") {
-                $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['username']."[/URL][/B]";
+            if ($profile['steam_url'] == '#') {
+                $profileLink = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['username']."[/URL][/B]";
 
-                $steam      = "[IMG]".$profile['steam_avatar']."[/IMG][B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
-                                "".$profile['steam_state'].$newline."[B]Steam ID:[/B]".$profile['field_value'];
-
-
-                $profileLink = "[B]Profile Link: [/B]".$milpacProfile;
-                $VACbans     = "[B]Vac Banned: [/B]".($profile['VAC_status']);
-                $VACnum      = "[B]Number of VAC bans: [/B]".$profile['VAC_num'];
-                $comBan      = "[B]Community Banned: [/B]".($profile['community_ban_status']);
-                $gameBanNum  = "[B]Number of game: [/B]".$profile['game_ban_num'];
-                $econBan     = "[B]Economy Bans: [/B]".$profile['econ_ban'];
-                $text .= $newline . $profileLink . $newline . $steam . $newline . $VACbans . $newline . $VACnum . $newline . $comBan . $newline . $gameBanNum . $newline . $econBan . $newline;
-
+                $text .= $newline . $profileLink . "  --  [B][COLOR=YELLOW]INVALID STEAM ID[/COLOR][/B]" . $newline . $newline;
             }
         }
 
-        $count = 0;
+        if ($goodProfiles[0]['VAC_status'] == true || $goodProfiles[0]['community_ban_status'] == true || $goodProfiles[0]['econ_ban'] == "probation" || $goodProfiles[0]["game_ban_num"] > 0) {
+            $text .= $newline . $newline . "[H][COLOR=RED]SUSPECTS[/COLOR][/H]" . $newline . $newline;
+        }
+
+        foreach ($goodProfiles as $profile) {
+            if ($profile['steam_url'] != '#') {
+                if ($profile['VAC_status'] == true || $profile['community_ban_status'] == true || $profile['econ_ban'] == "probation" || $profile["game_ban_num"] > 0) {
+                    $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['title']." ".$profile['username']."[/URL][/B]";
+
+                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
+                                    "".$profile['steam_state'].$newline."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
+
+
+                    if ($profile['VAC_status'] == false) {
+                        $VACbanStatus = '[COLOR="green"]CLEAN[/COLOR]';
+                    } else if ($profile['VAC_status'] == true) {
+                        $VACbanStatus = '[COLOR="red"]BANNED[/COLOR]';
+                    } else {
+                        $VACbanStatus = '[COLOR="yellow"]UNKNOWN[/COLOR]';
+                    }
+
+                    if ($profile['community_ban_status'] == false) {
+                        $communityBanStatus = '[COLOR="green"]CLEAN[/COLOR]';
+                    } else if ($profile['community_ban_status'] == true) {
+                        $communityBanStatus = '[COLOR="red"]BANNED[/COLOR]';
+                    } else {
+                        $communityBanStatus = '[COLOR="yellow"]UNKNOWN[/COLOR]';
+                    }
+
+                    $profileLink = "[B]Milpac Link: [/B]".$milpacProfile;
+                    $VACban     = "[B]Vac Banned: [/B]".$VACbanStatus;
+                    $VACnum      = "[B]Number of VAC bans: [/B]".$profile['VAC_num'];
+                    $comBan      = "[B]Community Banned: [/B]".$communityBanStatus;
+                    $gameBanNum  = "[B]Number of game bans: [/B]".$profile['game_ban_num'];
+                    $econBan     = "[B]Economy Bans: [/B]".$profile['econ_ban'];
+                    $text .= $newline . $steam  . $newline . $profileLink . $newline . $VACban . $newline . $VACnum . $newline . $comBan . $newline . $gameBanNum . $newline . $econBan . $newline;
+                }
+            }
+        }
+
         $text .= $newline . $newline . "[H][COLOR=GREEN]RANDOM SPOT CHECK[/COLOR][/H]" . $newline . $newline;
         foreach ($goodProfiles as $profile) {
-            if ($count == 0 || ($count % 25 == 0)) {
 
-                $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['username']."[/URL][/B]";
+            if ($profile['steam_url'] != '#') {
+                $randVal = rand(1,4);
+                if ($randVal == 2) {
 
-                $steam      = "[IMG]".$profile['steam_avatar']."[/IMG][B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
-                                "".$profile['steam_state'].$newline."[B]Steam ID:[/B]".$profile['field_value'];
+                    $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['title']." ".$profile['username']."[/URL][/B]";
 
-                $profileLink = "[B]Profile Link: [/B]".$milpacProfile;
-                $VACbans     = "[B]Vac Banned: [/B]".($profile['VAC_status']);
-                $VACnum      = "[B]Number of VAC bans: [/B]".$profile['VAC_num'];
-                $comBan      = "[B]Community Banned: [/B]".($profile['community_ban_status']);
-                $gameBanNum  = "[B]Number of game: [/B]".$profile['game_ban_num'];
-                $econBan     = "[B]Economy Bans: [/B]".$profile['econ_ban'];
-                $text .= $newline . $profileLink . $newline . $steam . $newline . $VACbans . $newline . $VACnum . $newline . $comBan . $newline . $gameBanNum . $newline . $econBan . $newline;
+                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
+                                    "".$profile['steam_state'].$newline."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
+
+                    if ($profile['VAC_status'] == false) {
+                        $VACbanStatus = '[COLOR="green"]CLEAN[/COLOR]';
+                    } else if ($profile['VAC_status'] == true) {
+                        $VACbanStatus = '[COLOR="red"]BANNED[/COLOR]';
+                    } else {
+                        $VACbanStatus = '[COLOR="yellow"]UNKNOWN[/COLOR]';
+                    }
+
+                    if ($profile['community_ban_status'] == false) {
+                        $communityBanStatus = '[COLOR="green"]CLEAN[/COLOR]';
+                    } else if ($profile['community_ban_status'] == true) {
+                        $communityBanStatus = '[COLOR="red"]BANNED[/COLOR]';
+                    } else {
+                        $communityBanStatus = '[COLOR="yellow"]UNKNOWN[/COLOR]';
+                    }
+
+                    $profileLink = "[B]Milpac Link: [/B]".$milpacProfile;
+                    $VACban     = "[B]Vac Banned: [/B]".$VACbanStatus;
+                    $VACnum      = "[B]Number of VAC bans: [/B]".$profile['VAC_num'];
+                    $comBan      = "[B]Community Banned: [/B]".$communityBanStatus;
+                    $gameBanNum  = "[B]Number of game bans: [/B]".$profile['game_ban_num'];
+                    $econBan     = "[B]Economy Bans: [/B]".$profile['econ_ban'];
+                    $text .= $newline . $steam . $newline . $profileLink . $newline . $VACban . $newline . $VACnum . $newline . $comBan . $newline . $gameBanNum . $newline . $econBan . $newline;
+                }
             }
-
-            $count = $count + 1;
         }
 
         $eventDate = date('dMy'); // 13Jun2016
@@ -291,8 +332,10 @@ class CavTools_CronJobs_S2QuartCheck {
 
         if ($badProfilesCount > 0) {
             $badProfilesCountText = "[B][COLOR=RED]".$badProfilesCount."[/COLOR][/B]";
+            $text .= "I encountered " . $badProfilesCountText . " profiles who didn't submit their steam ID for checking. ";
         } else {
             $badProfilesCountText = "[B][COLOR=GREEN]".$badProfilesCount."[/COLOR][/B]";
+            $text .= "I encountered " . $badProfilesCountText . " profiles without Steam IDs!";
         }
 
         $incorectIdCount = 0;
@@ -304,27 +347,33 @@ class CavTools_CronJobs_S2QuartCheck {
 
         if ($incorectIdCount > 0) {
             $incorectIdCountText = "[B][COLOR=RED]".$incorectIdCount."[/COLOR][/B]";
+            $text .= "I also found " . $incorectIdCountText . " cases of an incorect Steam ID format. ";
         } else {
             $incorectIdCountText = "[B][COLOR=GREEN]".$incorectIdCount."[/COLOR][/B]";
+            $text .= "There were also " . $incorectIdCountText . " incorectly formatted steam IDs! ";
         }
 
-        $text .= $newline . $newline . " I encountered " . $badProfilesCountText . " profiles who did not submit their steam ID for checking.";
-        $text .= " I also found " . $incorectIdCountText . " cases of an incorect Steam ID format.";
+
+
 
         $suspectCount = 0;
         foreach ($goodProfiles as $profile) {
-            if ($profile['VAC_status'] || $profile['community_ban_status'] || $profile['econ_ban'] == "probation") {
-                $suspectCount = $suspectCount + 1;
+            if ($profile['steam_url'] != '#') {
+                if ($profile['VAC_status'] == true || $profile['community_ban_status'] == true || $profile['econ_ban'] == "probation" || $profile["game_ban_num"] > 0) {
+                    $suspectCount = $suspectCount + 1;
+                }
             }
         }
 
         if ($suspectCount > 0) {
             $suspectCountText = "[B][COLOR=RED]".$suspectCount."[/COLOR][/B]";
+            $text .= "In total, there are " . $suspectCountText . " suspect induviduals I thought you would be interested in. ";
         } else {
             $suspectCountText = "[B][COLOR=GREEN]".$suspectCount."[/COLOR][/B]";
+            $text .= "There are " . $suspectCountText . " suspect induviduals! Congrats! ";
         }
 
-        $text .= "In total, there are " . $suspectCountText . " suspect induviduals I thought you would be interested in." . $newline . $newline;
+
 
         $threadURL = "https://dev.7cav.us/threads/";
         $text .= "Check report enclosed [URL=".$threadURL.$threadID."]" . "here[/URL]";
