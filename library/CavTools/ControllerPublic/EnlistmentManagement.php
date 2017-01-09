@@ -739,7 +739,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         $aliases = "[B]Aliases:[/B] ";
         $ip = "[B]IP Addresses:[/B] ";
-        $email = "[B]Email address:[/B] " . $userDetails['email'];
         $originID = "[B]Origin ID:[/B] " . $query['origin'];
         $age = "[B]Age:[/b] " . $query['age'];
         $rtcThreadURL = '[URL="http://' .$home.'/threads/'.$query['rtc_thread_id'].'"]'. 'RTC Folder'.'[/URL]';
@@ -780,8 +779,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $misc = "[B]Miscellaneous-[/B]";
         $summary = "[B]Summary -[/B]";
 
-        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $reenlistment . $newLine . $aliases . $newLine .
-            $email . $newLine . $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam .
+        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $reenlistment . $newLine . $aliases .
+            $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam .
             $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases .
             $newLine . $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
             $newLine . $summary;
