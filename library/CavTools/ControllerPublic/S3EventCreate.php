@@ -160,7 +160,7 @@ class CavTools_ControllerPublic_S3EventCreate extends XenForo_ControllerPublic_A
     public function createThreadTitle($eventTitle, $eventType, $game, $time, $date)
     {
         $eventDate = date('dMy', $date); // 13Jun2016
-        $eventDate = strtoupper($eventDate);
+        $eventDate = strtoupper($eventDate); // 13JUN2016
         $zuluTime = date('Hi', $time);
         $title = "";
         switch ($eventType)
