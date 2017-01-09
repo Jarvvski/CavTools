@@ -183,7 +183,7 @@ class CavTools_CronJobs_S2QuartCheck {
         $message    = "";
         $newline    = "\n";
         $milpacsURL = 'https://dev.7cav.us/rosters/profile?uniqueid=';
-        $text       = '';
+        $text       = "[CENTER]";
 
         foreach ($badProfiles as $profile) {
 
@@ -279,6 +279,8 @@ class CavTools_CronJobs_S2QuartCheck {
                 }
             }
         }
+
+        $text .= "[/CENTER]";
 
         $eventDate = date('dMy'); // 13Jun2016
         $eventDate = strtoupper($eventDate); // 13JUN2016
