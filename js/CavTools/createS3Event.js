@@ -29,3 +29,11 @@ function gameCheck(game) {
         }
     }
 }
+
+function onLoad() {
+    var selector = document.getElementById("selector");
+
+    for (var i=0; i<selector.length; i++) {
+        selector.options[i].style.display="none";
+    }
+}
