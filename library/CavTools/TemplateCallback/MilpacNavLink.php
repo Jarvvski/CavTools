@@ -2,10 +2,6 @@
 
 class CavTools_TemplateCallback_MilpacNavLink {
 
-    public static function getMilpac($userID) {
-
-    }
-
     public static function getMilpacID($content, $params, XenForo_Template_Abstract $template) {
          // Get whatever your var is here however you need to.
 

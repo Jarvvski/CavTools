@@ -1,7 +1,7 @@
 <xen:require css="CavTools_TigCheck.css" />
 
 <div class="section">
-    <xen:title>You already have an open enlistment</xen:title>
+    <xen:title>{xen:raw $username}'s enlistments</xen:title>
 
     <table class="tigCheck">
             <tr>
@@ -10,7 +10,7 @@
                 <th>Status</th>
                 <th>Game</th>
                 <th>Steam Profile</th>
-                <th>Steam Visability</th>
+                <th>Age applied with</th>
                 <th>Date Opened</th>
             </tr>
             <xen:foreach loop="$enlistments" value="$enlistment">
@@ -20,11 +20,15 @@
                     <td>{xen:raw $enlistment.status}</td>
                     <td>{xen:raw $enlistment.game}</td>
                     <td>
-                        <img src="{xen:raw $enlistment.steam_image}"><br/>
-                        {xen:raw $enlistment.steam_username}<br/>
-                        {xen:raw $enlistment.steam_state}<br/>
+                        <a href="{xen:raw $enlistment.steam_url}">
+                			<div class="steamCard">
+                    			<img src="{xen:raw $enlistment.steam_image}">
+                    			<span class="steamName">{xen:raw $enlistment.steam_username}</span>
+                    			<span class="steamState">{xen:raw $enlistment.steam_state}</span>
+                			</div>
+                        </a>
                     </td>
-                    <td>{xen:raw $enlistment.steam_status}<br/>
+                    <td>{xen:raw $enlistment.age}
                     <td>{xen:raw $enlistment.date}</td>
                 </tr>
             </xen:foreach>

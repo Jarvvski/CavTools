@@ -242,6 +242,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $branchDur    = $this->_input->filterSingle('branch_dur', XenForo_Input::STRING);
         $militaryMOS  = $this->_input->filterSingle('military_mos', XenForo_Input::STRING);
 
+        $db = XenForo_Application::get('db');
+
         // capitalise the first letters of the first and last name, even if uppercase already
         $firstName = ucwords($firstName);
         $lastName  = ucwords($lastName);
@@ -429,9 +431,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 $messageReply .= $newLine . $newLine . 'Applicant under age. Application denied.';
             }
         } else if($reenlistment) {
-            $messageReply .= $newLine . $newLine . 'Check your inbox for more information.';
+            $messageReply .= $newLine . $newLine . XenForo_Application::get('options')->reenlistmentReply;
         } else {
-            $messageReply .= $newLine . $newLine . 'A recruiter will contact you shortly.';
+            $messageReply .= $newLine . $newLine . XenForo_Application::get('options')->standardReply;
         }
 
         return $messageReply;
