@@ -41,6 +41,7 @@ class CavTools_CronJobs_S2QuartCheck {
             INNER JOIN xf_pe_roster_rank t3
             ON t2.rank_id = t3.rank_id
             WHERE field_id = 'armaGUID'
+            AND t2.roster_id = 1
         ");
     }
 
@@ -67,8 +68,7 @@ class CavTools_CronJobs_S2QuartCheck {
 
 
                 //Set variables
-                // $key   = XenForo_Application::get('options')->steamAPIKey;
-                $key = "E1ABFA96B4D9917DF7478A070643C062";
+                $key   = XenForo_Application::get('options')->steamAPIKey;
                 $profile = array();
                 $profile['user_id'] = $data['user_id'];
                 $profile['username'] = $data['username'];
@@ -91,13 +91,11 @@ class CavTools_CronJobs_S2QuartCheck {
 
                 try {
                     $name    = $reply['response']['players'][0]['personaname'];
-                    $state   = $reply['response']['players'][0]['personastate'];
                     $avatar  = $reply['response']['players'][0]['avatarmedium'];
                     $url     = $reply['response']['players'][0]['profileurl'];
                     $vis     = $reply['response']['players'][0]['communityvisibilitystate'];
                 } catch (Exception $e) {
                     $name    = "Invalid SteamID given";
-                    $state   = 7;
                     $avatar  = "http://placehold.it/64x64";
                     $url     = '#';
                     $vis     = "Invalid SteamID given";
@@ -111,25 +109,8 @@ class CavTools_CronJobs_S2QuartCheck {
                     default: $vis = '[COLOR="yellow"]UNKOWN[/COLOR]';break;
                 }
 
-
-                switch ($state)
-                {
-                    case 0: $steamState = '[COLOR="red"]Offline[/COLOR]';break;
-                    case 1:
-                    case 4:
-                    case 5:
-                    case 6:
-                            $steamState = '[COLOR="green"]Online[/COLOR]';break;
-                    case 3:
-                    case 2:
-                            $steamState = '[COLOR="yellow"]Away[/COLOR]';break;
-                    case 7: $steamState = '[COLOR="yellow"]Invalid SteamID given[/COLOR]';break;
-                    default: $vis = '[COLOR="yellow"]UNKOWN[/COLOR]';break;
-                }
-
                 $profile['steam_vis'] = $vis;
                 $profile['steam_username'] = $name;
-                $profile['steam_state'] = $steamState;
                 $profile['steam_avatar'] = $avatar;
                 $profile['steam_url'] = $url;
 
@@ -201,7 +182,17 @@ class CavTools_CronJobs_S2QuartCheck {
             }
         }
 
-        if ($goodProfiles[0]['VAC_status'] == true || $goodProfiles[0]['community_ban_status'] == true || $goodProfiles[0]['econ_ban'] == "probation" || $goodProfiles[0]["game_ban_num"] > 0) {
+        $suspectStatus = false;
+
+        foreach ($goodProfiles as $profile) {
+            if ($profile['steam_url'] != '#') {
+                if ($profile['VAC_status'] == true || $profile['community_ban_status'] == true || $profile['econ_ban'] == "probation" || $profile["game_ban_num"] > 0) {
+                    $suspectStatus = true;
+                }
+            }
+        }
+
+        if ($suspectStatus) {
             $text .= $newline . $newline . "[H][COLOR=RED]SUSPECTS[/COLOR][/H]" . $newline . $newline;
         }
 
@@ -210,8 +201,8 @@ class CavTools_CronJobs_S2QuartCheck {
                 if ($profile['VAC_status'] == true || $profile['community_ban_status'] == true || $profile['econ_ban'] == "probation" || $profile["game_ban_num"] > 0) {
                     $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['title']." ".$profile['username']."[/URL][/B]";
 
-                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
-                                    "".$profile['steam_state'].$newline."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
+                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline
+                                    ."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
 
 
                     if ($profile['VAC_status'] == false) {
@@ -245,13 +236,13 @@ class CavTools_CronJobs_S2QuartCheck {
         foreach ($goodProfiles as $profile) {
 
             if ($profile['steam_url'] != '#') {
-                $randVal = rand(1,4);
+                $randVal = mt_rand(0,3);
                 if ($randVal == 2) {
 
                     $milpacProfile = "[B][URL=".$milpacsURL.$profile['relation_id']."]".$profile['title']." ".$profile['username']."[/URL][/B]";
 
-                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline.
-                                    "".$profile['steam_state'].$newline."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
+                    $steam      = "[IMG]".$profile['steam_avatar']."[/IMG]".$newline."[B]"."[URL=".$profile['steam_url']."]".$profile['steam_username']."[/URL]"."[/B]".$newline
+                                    ."[B]Visability:[/B] ".$profile['steam_vis'].$newline."[B]Steam ID: [/B]".$profile['field_value'];
 
                     if ($profile['VAC_status'] == false) {
                         $VACbanStatus = '[COLOR="green"]CLEAN[/COLOR]';
@@ -377,7 +368,7 @@ class CavTools_CronJobs_S2QuartCheck {
 
 
 
-        $threadURL = "https://dev.7cav.us/threads/";
+        $threadURL = "https://7cav.us/threads/";
         $text .= "Check report enclosed [URL=".$threadURL.$threadID."]" . "here[/URL]";
 
         $conversationDw = XenForo_DataWriter::create('XenForo_DataWriter_ConversationMaster');
