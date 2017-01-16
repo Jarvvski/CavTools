@@ -40,6 +40,20 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ", $userID);
     }
 
+    public function getMostRecentEnlistmentPerUser()
+    {
+        return $this->_getDb()->fetchAll("
+            SELECT t1.*
+            FROM xf_ct_rrd_enlistments as t1
+            INNER JOIN (
+                SELECT user_id, max(enlistment_date) as enlistment_date
+                FROM xf_ct_rrd_enlistments
+                GROUP BY user_id) as t2
+            ON t1.user_id = t2.user_id
+            AND t1.enlistment_date = t2.enlistment_date
+        ");
+    }
+
     public function getAllEnlistment()
     {
         return $this->_getDb()->fetchAll('

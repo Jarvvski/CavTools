@@ -181,6 +181,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 $row['enlistment_id'] = $enlistment['enlistment_id'];
                 $row['thread_id'] = $enlistment['thread_id'];
                 $row['game'] = $enlistment['game'];
+                $row['age'] = $enlistment['age'];
 
                 $row['steam_image'] = $steam['avatar'];
                 $row['steam_username'] = $steam['personaname'];

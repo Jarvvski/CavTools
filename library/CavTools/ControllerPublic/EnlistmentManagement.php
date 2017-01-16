@@ -735,7 +735,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $general = "[Size=6][B]General Information[/B][/Size]";
         $username = "[b]Username: [/b]" . '[URL="https://' .$home.'/members/'.$query['user_id'].'"]'. $userDetails['username']. '[/URL]';
         $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . ", ". $query['last_name'];
-        $enlistments = "[B]Enlistments:[/B]" . '[URL="https://' .$home.'/enlistments/view?id='.$query['user_id'].'"]'. "Tracker". '[/URL]';
+        $enlistments = "[B]Enlistments: [/B]" . '[URL="https://' .$home.'/enlistments/view?id='.$query['user_id'].'"]'. "Tracker". '[/URL]';
 
         if ($query['reenlistment'])
         {
@@ -786,7 +786,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $misc = "[B]Miscellaneous-[/B]";
         $summary = "[B]Summary -[/B]";
 
-        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newline .  $reenlistment . $newLine . $aliases .
+        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
             $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam .
             $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases .
             $newLine . $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .

@@ -55,7 +55,9 @@ class CavTools_CronJobs_SetBillets
 
                             // Deal with positions
                             $positonTitle = $getPositonTitle;
-                            $positonTitle = implode(',',$positonTitle);
+                            try {
+                                $positonTitle = implode(',',$positonTitle);
+                            } catch (Exception $e) {}
 
                             // Concatonate all user secondary billets
                             $billetContent .= $positonTitle;
