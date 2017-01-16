@@ -11,6 +11,15 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         ");
     }
 
+    public function getUserDetails($userID)
+    {
+        return $this->_getDb()->fetchRow("
+            SELECT *
+            FROM xf_user
+            WHERE user_id = ?
+        ", $userID);
+    }
+
     public function getEnlistmentsByUser($userID)
     {
         return $this->_getDb()->fetchAll("
@@ -96,8 +105,8 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         SELECT user_id
         FROM xf_pe_roster_user_relation
         WHERE user_id = '$userID'
-        AND username = '$cavName'
-        ");
+        AND username = ?
+        ", $cavName);
 
         if ($query == null) {
             return false;
