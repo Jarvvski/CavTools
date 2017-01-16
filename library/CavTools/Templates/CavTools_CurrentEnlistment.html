@@ -1,7 +1,11 @@
 <xen:require css="CavTools_TigCheck.css" />
 
 <div class="section">
-    <xen:title>{xen:raw $username}'s enlistments</xen:title>
+    <xen:if is="{$value}">
+        <xen:title>You already have an open enlistment</xen:title>
+    <xen:else/>
+        <xen:title>{xen:raw $username}'s enlistments</xen:title>
+    </xen:if>
 
     <table class="tigCheck">
             <tr>

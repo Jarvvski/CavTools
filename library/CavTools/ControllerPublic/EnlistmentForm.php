@@ -190,7 +190,10 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 array_push($data, $row);
             }
 
+            $value = true;
+
             $viewParams = array(
+                'value' => $value,
                 'username' => $visitor['username'],
                 'enlistments' => $data
             );
