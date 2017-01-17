@@ -163,7 +163,7 @@ class CavTools_CronJobs_S2QuartCheck {
         $count      = 0;
         $message    = "";
         $newline    = "\n";
-        $milpacsURL = 'https://dev.7cav.us/rosters/profile?uniqueid=';
+        $milpacsURL = 'https://7cav.us/rosters/profile?uniqueid=';
         $text       = "[CENTER]";
 
         foreach ($badProfiles as $profile) {
