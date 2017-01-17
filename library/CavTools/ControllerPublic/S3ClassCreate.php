@@ -47,12 +47,14 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
 
         // Get form values
         $className = $this->_input->filterSingle('className', XenForo_Input::STRING);
+        $classGame = $this->_input->filterSingle('game', XenForo_Input::STRING);
         $classText = $this->getHelper('Editor')->getMessageText('message', $this->_input);
 
         $className = htmlspecialchars($className);
+        $classGame = htmlspecialchars($classGame);
         $classText = htmlspecialchars($classText);
 
-        $this->createData($className, $classText, $visitor);
+        $this->createData($className, $classText, $visitor, $classGame);
 
         // redirect after post
         return $this->responseRedirect(
@@ -62,11 +64,12 @@ class CavTools_ControllerPublic_S3ClassCreate extends XenForo_ControllerPublic_A
         );
     }
 
-    public function createData($className, $classText, $visitor)
+    public function createData($className, $classText, $visitor, $classGame)
     {
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_S3Class');
         $dw->set('class_name', $className);
         $dw->set('class_text', $classText);
+        $dw->set('game', $classGame);
         $dw->set('username', $visitor['username']);
         $dw->set('user_id', $visitor['user_id']);
         $dw->save();
