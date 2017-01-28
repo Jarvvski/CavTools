@@ -139,6 +139,10 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $charlie31PLData = "<br><h5>3rd Platoon: (Combat Engineers)</h5><hr><br>";
         $delta11PLData = "<br><h5>1st Platoon: (Infantry)</h5><hr><br>";
         $delta21PLData = "<br><h5>2nd Platoon: (Support)</h5><hr><br>";
+        $echo11PLData   = "<br><h5>1st Platoon: </h5><hr><br>";
+        $echo21PLData   = "<br><h5>2nd Platoon: </h5><hr><br>";
+        $echo31PLData  = "<br><h5>3rd Platoon: </h5><hr><br>";
+        $echo41PLData  = "<br><h5>4th Platoon: </h5><hr><br>";
         $trainingUnitData = "<br><h5>In Training</h5><hr><br>";
 
         // Begin 2BN headings
@@ -348,7 +352,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     // All Echo company
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
-                        case (in_array($member['position_id'], $delta11PLIDs)):
+                        case (in_array($member['position_id'], $echo11PLIDs)):
                             if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
                                 $echo11PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
                             } else {
