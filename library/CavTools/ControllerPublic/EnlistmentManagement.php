@@ -361,7 +361,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Name Change - taken
                         $nameTaken = XenForo_Application::get('options')->nameTaken;
                         $message = '[B]'.$nameTaken.'[/B]';
-                        // $message = '[B]Please select a different name. Your name has been already taken.[/B]';
                         $action = 'Name Change - taken';
                         $this->writeLog($enlistmentID, $action);
                         $phrase = new XenForo_Phrase('Message Sent');
@@ -370,7 +369,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Name Change - inappropriate
                         $nameInap = XenForo_Application::get('options')->nameInap;
                         $message = '[B]'.$nameInap.'[/B]';
-                        // $message = '[B]Please select a different name. Your name is inappropriate.[/B]';
                         $action = 'Name Change - inappropriate';
                         $this->writeLog($enlistmentID, $action);
                         $phrase = new XenForo_Phrase('Message Sent');
@@ -379,7 +377,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Steam ID
                         $needSteam = XenForo_Application::get('options')->needSteam;
                         $message = '[B]'.$needSteam.'[/B]';
-                        // $message = '[B]Please provide your steam ID for checking.[/B]';
                         $action = 'Steam ID';
                         $this->writeLog($enlistmentID, $action);
                         $phrase = new XenForo_Phrase('Message Sent');
@@ -390,15 +387,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         $currentStatus = 2;
                         $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                         $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
-                        if ($query['reenlistment'] === 0) {
-                            if ($folderCreation) {
-                                $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
-                                $this->setRTCThreadID($enlistmentID, $rtcThreadID);
-                                $steamContent = $this->getSteamContent($query['steamID']);
-                                $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
-                                $this->setS2ThreadID($enlistmentID, $s2ThreadID);
-                            }
-                        }
+
                         $action = 'Approved';
                         $this->writeLog($enlistmentID, $action);
                         $phrase = new XenForo_Phrase('Application Approved');
@@ -407,7 +396,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Denied - Timed out
                         $timeOut = XenForo_Application::get('options')->timeOut;
                         $message = '[B]'.$timeOut.'[/B]';
-                        // $message = '[B]Application timed out. Enlistment denied[/B]';
                         $currentStatus = 1;
                         $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                         $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
@@ -419,7 +407,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Denied
                         $deniedMsg = XenForo_Application::get('options')->deniedMsg;
                         $message = '[B]'.$deniedMsg.'[/B]';
-                        // $message = '[B]Enlistment denied.[/B]';
                         $currentStatus = 1;
                         $this->updateEnlistmentsData($enlistmentID, $currentStatus);
                         $this->updateThread($query['thread_id'], $this->buildTitle($enlistmentID));
@@ -431,7 +418,15 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Moved
                         $sortedMsg = XenForo_Application::get('options')->sortedMsg;
                         $message = '[B]'.$sortedMsg.'[/B]';
-                        // $message = '[B]Application sorted[/B]';
+                        if ($query['reenlistment'] === 0) {
+                            if ($folderCreation) {
+                                $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
+                                $this->setRTCThreadID($enlistmentID, $rtcThreadID);
+                                $steamContent = $this->getSteamContent($query['steamID']);
+                                $s2ThreadID = $this->createThread(XenForo_Application::get('options')->s2FolderForumID, $this->createS2FolderTitle($enlistmentID), $this->createS2FolderContent($enlistmentID, $steamContent));
+                                $this->setS2ThreadID($enlistmentID, $s2ThreadID);
+                            }
+                        }
                         $this->sortApplication($enlistmentID, $query['thread_id'], $query['current_status']);
                         $phrase = new XenForo_Phrase('Application Sorted');
                         break;
