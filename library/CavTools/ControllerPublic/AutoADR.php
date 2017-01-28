@@ -9,7 +9,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $enable = XenForo_Application::get('options')->enableADR;
 
         // If not enabled, escape
-        if(!$enable) 
+        if(!$enable)
         {
             throw $this->getNoPermissionResponseException();
         }
@@ -106,6 +106,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $bravo1Data = "<br><h4>Bravo Company 1-7</h4><hr><br>";
         $charlie1Data = "<br><h4>Charlie Company 1-7</h4><hr><br>";
         $delta1Data = "<br><h4>Delta Company 1-7 (ACV)</h4><hr><br>";
+        $echo1Data = "<br><h4>Echo Company 1-7</h4><hr><br>";
         $training1Data = "<br><h4>Training Unit 1-7</h4><hr><br>";
         $bat2HQData = "<br><h4>2-7 Command</h4><hr><br>";
         $bravo2Data = "<br><h4>Bravo Company 2-7</h4><hr><br>";
@@ -150,7 +151,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         // Main pos IDs
         $posGrpIDs = XenForo_Application::get('options')->posGrpIDs;
         $posGrpIDs = explode(',',$posGrpIDs);
-        
+
         // 1BN
         $alpha11PLIDs = explode(',',XenForo_Application::get('options')->alpha11PLID);
         $alpha21PLIDs = explode(',',XenForo_Application::get('options')->alpha21PLID);
@@ -162,6 +163,10 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $charlie31PLIDs = explode(',',XenForo_Application::get('options')->charlie31PLID);
         $delta11PLIDs = explode(',',XenForo_Application::get('options')->delta11PLID);
         $delta21PLIDs = explode(',',XenForo_Application::get('options')->delta21PLID);
+        $echo11PLIDs = explode(',', XenForo_Application::get('options')->echo11PLID);
+        $echo21PLIDs = explode(',', XenForo_Application::get('options')->echo21PLID);
+        $echo31PLIDs = explode(',', XenForo_Application::get('options')->echo31PLID);
+        $echo41PLIDs = explode(',', XenForo_Application::get('options')->echo41PLID);
         $trainingUnitIDs = explode(',',XenForo_Application::get('options')->trainingUnitID);
 
         // 2BN
@@ -183,10 +188,10 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $mpPosID = explode(',',XenForo_Application::get('options')->mpPosID);
         $ncoPosID = explode(',',XenForo_Application::get('options')->ncoPosID);
         $cagPosID = explode(',',XenForo_Application::get('options')->cagPosID);
-        
+
         // Squad leader POS IDs
         $slPosID = explode(',',XenForo_Application::get('options')->slPosID);
-        
+
         // Create data entry for each member
         foreach ($members as $member) {
             // Build Profile link
@@ -340,6 +345,41 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                     }
                     break;
                 case $posGrpIDs[7]:
+                    // All Echo company
+                    // Decide on which platoon via position ID
+                    switch($member['position_id']) {
+                        case (in_array($member['position_id'], $delta11PLIDs)):
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $echo11PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $echo11PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
+                            break;
+                        case (in_array($member['position_id'], $echo21PLIDs)):
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $echo21PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $echo21PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
+                            break;
+                        case (in_array($member['position_id'], $echo31PLIDs)):
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $echo31PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $echo31PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
+                            break;
+                        case (in_array($member['position_id'], $echo41PLIDs)):
+                            if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+                                $echo41PLData .= "<br><p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            } else {
+                                $echo41PLData .= "<p>" . $member['position_title'] . " : " . $userURL . $newLine . "</p>";
+                            }
+                            break;
+                        default: $echo1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
+                    }
+                    break;
+                case $posGrpIDs[8]:
                     // All Training Unit
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
@@ -349,13 +389,13 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                         default: $training1Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
                     break;
-                case $posGrpIDs[8]:
+                case $posGrpIDs[9]:
                     $bat2HQData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case $posGrpIDs[9]:
+                case $posGrpIDs[10]:
                     $alpha2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case $posGrpIDs[10]:
+                case $posGrpIDs[11]:
                     // All Bravo company
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
@@ -390,7 +430,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                         default: $bravo2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
                     break;
-                case $posGrpIDs[11]:
+                case $posGrpIDs[12]:
                     // All Charlie company
                     // Decide on which platoon via position ID
                     switch($member['position_id']) {
@@ -404,34 +444,35 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                         default: $charlie2Data .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     }
                     break;
-                case $posGrpIDs[12]:
+                case $posGrpIDs[13]:
                     $newRecruitsData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
-                case $posGrpIDs[13]:
+                case $posGrpIDs[14]:
                     $starterData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
             }
         }
-        
+
         // Build Company Data
         $alpha1Data .= $alpha11PLData . $alpha21PLData;
         $bravo1Data .= $bravo11PLData . $bravo21PLData . $bravo31PLData;
         $charlie1Data .= $charlie11PLData . $charlie21PLData . $charlie31PLData;
         $delta1Data .= $delta11PLData . $delta21PLData;
+        $echo1Data .= $echo11PLData . $echo21PLData . $echo31PLData . $echo41PLData;
         $training1Data .= $trainingUnitData;
         $bravo2Data .= $bravo12PLData . $bravo22PLData . $bravo32PLData . $bravo52PLData;
         $charlie2Data .= $charlie12PLData;
-        
+
 
         // Build Battalion Data
-        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $alpha1Data . $bravo1Data . $charlie1Data . $delta1Data . $training1Data. $starterData;
+        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $alpha1Data . $bravo1Data . $charlie1Data . $delta1Data . $echo1Data . $training1Data. $starterData;
         $bat2Total = "<h3>2nd Battalion</h3><hr><br>" . $bat2HQData . $alpha2Data . $bravo2Data . $charlie2Data;
         $recruitTotal = $newRecruitsData;
 
         // Build Support Data
         $suptData  .=  $s1Data . $newLine . $s2Data . $newLine . $s3Data . $newLine .
-            $s5Data . $newLine . $s6Data .$newLine . $mpData . $newLine . $jagData . 
-            $newLine .$rrdData . $newLine .$rtcData . $newLine .$ncoData . $newLine . 
+            $s5Data . $newLine . $s6Data .$newLine . $mpData . $newLine . $jagData .
+            $newLine .$rrdData . $newLine .$rtcData . $newLine .$ncoData . $newLine .
             $cagData. $newLine;
 
         // Combine data sets
@@ -476,4 +517,3 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         return $this->getModelFromCache ( 'CavTools_Model_ADR' );
     }
 }
-
