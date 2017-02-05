@@ -418,7 +418,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                         // Moved
                         $sortedMsg = XenForo_Application::get('options')->sortedMsg;
                         $message = '[B]'.$sortedMsg.'[/B]';
-                        if ($query['reenlistment'] === 0 && $query['current_status'] != 1) {
+                        if ($query['reenlistment'] === 0 && $query['current_status'] === 2) {
                             if ($folderCreation) {
                                 $rtcThreadID = $this->createThread(XenForo_Application::get('options')->rtcFolderForumID, $this->createRTCFolderTitle($enlistmentID), $this->createRTCFolderContent($enlistmentID));
                                 $this->setRTCThreadID($enlistmentID, $rtcThreadID);
