@@ -19,7 +19,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         $botVars = array("userID", "username");
         return compact($botVars);
     }
-    
+
 	public function actionIndex()
 	{
 		//Get values from options
@@ -212,8 +212,8 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 		//Send to template to display
 		return $this->responseView('CavTools_ViewPublic_AwolTracker', 'CavTools_awoltracker', $viewParams);
 	}
-    
-    public function actionPost() 
+
+    public function actionPost()
     {
 
         //Action can only be called via post
@@ -221,7 +221,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
         // Get Current user
         $visitor = XenForo_Visitor::getInstance()->toArray();
-        
+
         // get user values
         $users = $_POST['users'];
         $awolOption = $this->_input->filterSingle('awol_option', XenForo_Input::STRING);
@@ -240,7 +240,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
                 $message = $messageText;
                 $this->createConversation($users, $subject, $message);
-                
+
                 $phrase = new XenForo_Phrase('PM Created');
                 break;
             case '2':
@@ -259,9 +259,9 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
                 $phrase = new XenForo_Phrase('Thread Created');
                 $redirect = XenForo_Link::buildPublicLink('threads', array('thread_id' => $threadID));
                 break;
-            
+
         }
-        
+
         $this->tweet($visitor, $awolOption);
 
         // redirect back to the normal scratchpad index page
@@ -305,7 +305,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
 
         return $conversationDw->getMergedData();
     }
-    
+
     public function awolReminderContent($users, $battalion, $visitor)
     {
         $title = "";
@@ -315,15 +315,14 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
         // Create a new DateTime object
         $nextSunday = date("jS M Y", strtotime('next sunday'));
 
-        $intro = "[i]The following troopers are hereby declared AWOL. 
-        They have until Sunday " . $nextSunday ." @ 2300 Zulu, to post on the forums, reply to this thread, 
-        or have someone from their CoC post on their behalf. Failure to do so will result in discharge 
-        from the 7th Cavalry Regiment:[/i]";
+        $intro = "[i]The following troopers are hereby declared AWOL. \n\n" .
+		"They have until Sunday " . $nextSunday ." @ 2300 Zulu, to post on the forums, reply to this thread, or have someone from their CoC post on their behalf.\n\n" .
+		"Failure to do so will result in discharge from the 7th Cavalry Regiment:[/i]";
 
-        $daysTillInt 		= XenForo_Application::get('options')->awolDaysTill;
-        $awolTime = ($daysTillInt * 86400);
-        $model = $this->_getAwolModel();
-        $home = XenForo_Application::get('options')->homeURL;
+		$daysTillInt = XenForo_Application::get('options')->awolDaysTill;
+		$awolTime    = ($daysTillInt * 86400);
+		$model       = $this->_getAwolModel();
+		$home        = XenForo_Application::get('options')->homeURL;
 
         $table = "[table]" . $newLine . "|-". $newLine  . "| class=\"primaryContent\" colspan=\"4\" align=\"center\" | AWOL Tracking" .
             $newLine . "|- " . $newLine . "| style=\"font-style: italic\" align=\"center\" |Member" . $newLine . "| style=\"font-style: italic\" align=\"center\" |Position" .
@@ -346,7 +345,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
             $username = $model->getUsername($user);
 
             // Build username
-            $username = '[B][URL="http://' .$home.'/members/'.$user.'/"]'. $username.'[/URL][/B]';
+            $username = '[USER='.$user.']@'. $username.'[/USER]';
 
             $table .= "| align=\"center\" |". $username . " || align=\"center\" |" . $position . " || align=\"center\" |" . $lastPostDate. "|| align=\"center\" |" . $daysAwol . $newLine . "|-" . $newLine;
         }
@@ -371,7 +370,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
             'message' => $message
         );
     }
-    
+
     public function awolDischContent($users, $battalion, $visitor)
     {
         $title = "";
@@ -461,7 +460,7 @@ class CavTools_ControllerPublic_AwolTracker extends XenForo_ControllerPublic_Abs
                 $hashtag = "#AWOL #7Cav #IMO";
                 break;
         }
-        
+
         $twitterModel = $this->_getTwitterBot();
         $twitterModel->postStatus($text, $hashtag);
     }
