@@ -117,7 +117,6 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         } else {
             $clanStatus = false;
         }
-        $vacValue = $this->checkVac($steamID);
 
         $nameUpdated = false;
         $banUpdated = false;
@@ -133,13 +132,13 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_Enlistments');
         $dw->setExistingData($enlistmentID);
         if ($lastName || $firstName) {
-            if ($lastName == '') {
+            if ($lastName == null) {
                 $lastName = $currentData['last_name'];
-            }else {
+            } else {
                 $lastName = ucwords($lastName);
                 $dw->set('last_name', $lastName);
             }
-            if ($firstName == '') {
+            if ($firstName == null) {
                 $firstName = $currentData['first_name'];
             } else {
                 $firstName = ucwords($firstName);
@@ -147,12 +146,18 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
                 $lastName = $currentData['last_name'];
             }
             $nameUpdated = true;
-        }
+        } else {
+			$lastName = $currentData['last_name'];
+			$firstName = $currentData['first_name'];
+		}
+
         if ($timezone) {
             $dw->set('timezone', $timezone);
             $timeZoneUpdated = true;
         }
+
         if ($steamID) {
+			$vacValue = $this->checkVac($steamID);
             $dw->set('steamID', $steamID);
             if ($vacValue) {
                 $dw->set('vac_ban', $vacValue);
@@ -184,9 +189,13 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
 
 
         $query = $enlistModel->getEnlistmentById($enlistmentID);
+
         $firstName = ucwords($firstName);
-        $lastName = ucwords($lastName);
+
+		$lastName = ucwords($lastName);
+
         $cavName = '';
+
         $cavName = $lastName . "." . $firstName[0];
         $newline = "\n";
         $home = XenForo_Application::get('options')->homeURL;
@@ -253,7 +262,7 @@ class CavTools_ControllerPublic_EnlistmentUpdate extends XenForo_ControllerPubli
                     $noInvites = false, $conversationClosed = false, $markReadForSender = true);
             }
         }
-        $dw->save();
+		$dw->save();
 
         $this->actionCreatePost($query['thread_id'], $postContent, $submittedBy);
         $this->updateThread($query['thread_id'],$this->rebuildTitle($enlistmentID));
