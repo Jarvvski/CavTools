@@ -724,9 +724,11 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $query = $enlistModel->getEnlistmentById($enlistmentID);
         $content = "";
         $newLine = "\n";
+		$divider = "----------";
         $userDetails = $enlistModel->userDetails($query['user_id']);
         $home = XenForo_Application::get('options')->homeURL;
 
+		// general info begin
         $general = "[Size=6][B]General Information[/B][/Size]";
         $username = "[b]Username: [/b]" . '[URL="https://' .$home.'/members/'.$query['user_id'].'"]'. $userDetails['username']. '[/URL]';
         $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . ", ". $query['last_name'];
@@ -747,7 +749,13 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $rtcThread = '[B]RTC Folder:[/B] ' . $rtcThreadURL;
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
-        $steam = "[Size=6][B]Steam Review-Cleared/Hold[/B][/Size]";
+
+		$generalInfo = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
+            $newline . $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread;
+		// General info End
+
+		// Steam info begin
+        $steam = "[Size=6][B]Steam Review - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
         $steamName = "[B]Username:[/B] '" . $steamContent['name'] . "'";
 
         if ($steamContent['status'] == 1) {
@@ -763,9 +771,17 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $steamLink = "[B]Account link:[/B] " . $steamURL;
         $steamGroups = "[B]Groups:[/B] ";
         $steamAliases = "[B]Aliases:[/B] ";
-
         $info = "[B]Additional Information:[/B] ";
-        $echelon  = "[Size=6][B]Echelon Review Status-Cleared/Hold[/B][/Size]";
+		$steamRep = "[URL=http://steamrep.com/search?q=". $steamContent['id'] . "]SteamRep[/URL]";
+		$steamIO = "[URL=https://steamid.io/lookup/" . $steamContent['id'] . "]SteamID.io[/URL]";
+
+		$steamInfo  = $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine .
+		$steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine . $newLine .  $info . $newLine .
+		$divider . $newLine . $steamRep . $newLine . $steamIO;
+		// Steam info end
+
+		// Echelon info begin
+        $echelon  = "[Size=6][B][URL=https://echelon.7cav.us/login.php]Echelon[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
         $echelonName = "[B]Name:[/B]";
         $echelonIP = "[B]IP Address:[/B]";
         $echelonID = "[B]Client ID:[/B]";
@@ -775,17 +791,48 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $echelonBans = "[B]# of Temp Bans:[/B]";
         $echelonBansFor = "Temp Bans for:";
         $echelonAdd = "[B]Additional Information[/B]";
-        $echelonContent = $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
+        $echelonInfo = $echelon . $newLine . $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
             $newLine . $echelonBansFor . $newLine . $echelonAdd;
-        $misc = "[B]Miscellaneous-[/B]";
-        $summary = "[B]Summary -[/B]";
+		// Echelon info end
 
-        return $content = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
-            $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread . $newLine . $newLine . $steam .
-            $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine . $steamLink . $newLine . $steamGroups . $newLine . $steamAliases .
-            $newLine . $info . $newLine . $newLine . $echelon . $newLine . $echelonContent . $newLine . $newLine . $misc . $newLine .
-            $newLine . $summary;
+		// Google info begin
+		$google = "[Size=6][B][URL=https://google.com]Google[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
+		$playerIndex = "[URL=https://webinterface.playerindex.de/default.aspx]PlayerIndex[/URL]";
+		$TS3Index = "[URL=https://ts3index.com/?page=searchclient]TS3Index[/URL]";
+		$steamSearch = "Steam ID64 / ID32";
+		$googleAliases = "Aliases";
+		$clanAffil = "Clan Affiliations";
+		$serverBans = "Server Bans";
+		$misc = "Miscellaneous";
+		$googleAdd = "[B]Additional Information[/B]";
+		$googleInfo = $google . $newLine . $playerIndex . $newLine . $TS3Index . $newLine . $steamSearch . $newLine . $googleAliases . $newLine
+		. $clanAffil . $newLine . $serverBans . $newLine . $misc . $newLine . $newLine . $googleAdd;
+		// Google info end
+
+		// Regimental info begin
+		$regimental = "[Size=6][B]Regimental Assets Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
+		$deniedEnlistments = "[URL=https://7cav.us/forums/denied-enlistment-papers.255/]Denied Enlistments[/URL]";
+		$pastEnlistments = "[URL=https://7cav.us/forums/completed-enlistment-papers.5/]Past Enlistments[/URL]";
+		$memberNotes = "[URL=https://7cav.us/forums/past-member-notes.98/]Member Notes[/URL]";
+		$milpacs = "[URL=https://7cav.us/rosters/]Milpacs[/URL]";
+		$milpacsArchive = "[URL=https://milpacs.treck.ninja/index.php?roster=master]Milpacs Archive[/URL]";
+		$memWarnings = "[URL=https://7cav.us/forums/member-warnings.258/]Member Warnings[/URL]";
+		$hotlist = "[URL=https://7cav.us/forums/player-hot-list.102/]Player hotlist[/URL]";
+		$banList = "[URL=https://7cav.us/forums/banned.100/]Banned List[/URL]";
+		$previousChecks = "[URL=https://7cav.us/forums/s2-checks-completed.78/]Previous S2 checks[/URL]";
+		$regiMisc = "[B]Miscellaneous:[/B]";
+		$regiInfo = $regimental . $newLine . $deniedEnlistments . $newLine . $pastEnlistments . $newLine . $memberNotes . $newLine
+		. $milpacs . $newLine . $milpacsArchive . $newLine . $memWarnings . $newLine . $hotlist . $newLine . $banList . $newLine
+		. $previousChecks . $newLine . $newLine . $regiMisc;
+		// Regimental info End
+
+        $summary = "[B]Summary: [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B]";
+		$signed = "[B]Signed:[/B]";
+
+        return $content =  $generalInfo . $newLine . $newLine . $steamInfo . $newLine . $newLine .
+		$echelonInfo . $newLine . $newLine . $googleInfo . $newLine . $newLine . $regiInfo
+		. $newLine . $newLine . $summary . $newLine . $signed;
     }
 
     public function setS2ThreadID($enlistmentID, $threadID)
