@@ -288,7 +288,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         // create enlistment thread
         $thread = $this->createThreadContent($lastName, $firstName, $reenlistment, $timezone,
-            $game, $inClan, $pastClans, $steamID, $age, $military, $branchDur, $militaryMOS, $cavName, $visitor);
+            $game, $inClan, $pastClans, $steamID, $age, $military, $branchDur, $militaryMOS, $cavName, $visitor, $recruiter);
 
         //Get values from options
         $forumID  = XenForo_Application::get('options')->enlistmentForumID;
@@ -345,7 +345,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
     public function createThreadContent($lastName, $firstName, $reenlistment, $timezone,
                                         $game, $inClan, $pastClans, $steamID, $age, $military,
-                                        $branchDur, $militaryMOS, $cavName, $visitor)
+                                        $branchDur, $militaryMOS, $cavName, $visitor, $recruiter)
     {
         $status  = "";
         $newLine = "\n";
@@ -374,7 +374,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             $militaryText = $newLine . 'None';
         }
 
-
+		$recruitedBy = '[Size=3][I]Recruited by - ' . $recruiter . '[/I][/Size]';
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
         $submittedBy  = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
 
@@ -388,7 +388,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             $newLine . '[B]Re-enlistment[/B]' . $newLine . $reenlisting . $newLine . '[B]Time zone[/B]' . $newLine .
             $timezone . $newLine . $newLine . '[Size=6][B]Game Information[/B][/Size]' . $newLine. '[B]Game applied for[/B]' .
             $newLine . $game . $newLine . '[B]Clan status[/B]' . $newLine . $inClan . $newLine . '[B]Past Clans[/B]'. $newLine. $pastClans .
-            $newLine . $newLine . '[Size=6][B]Military Information[/B][/Size]' . $militaryText . $newLine . $newLine . $submittedBy;
+            $newLine . $newLine . '[Size=6][B]Military Information[/B][/Size]' . $militaryText . $newLine . $newLine . $recruitedBy .
+			$newLine . $submittedBy;
 
         return array('title' => $title, 'message' => $message);
 
