@@ -750,8 +750,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
 
-		$generalInfo = $general . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
-            $newline . $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread;
+		$generalInfo = $general . $newLine . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
+            $newLine . $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread;
 		// General info End
 
 		// Steam info begin
@@ -775,7 +775,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 		$steamRep = "[URL=http://steamrep.com/search?q=". $steamContent['id'] . "]SteamRep[/URL]";
 		$steamIO = "[URL=https://steamid.io/lookup/" . $steamContent['id'] . "]SteamID.io[/URL]";
 
-		$steamInfo  = $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine .
+		$steamInfo  = $steam . $newLine . $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine .
 		$steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine . $newLine .  $info . $newLine .
 		$divider . $newLine . $steamRep . $newLine . $steamIO;
 		// Steam info end
@@ -791,7 +791,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $echelonBans = "[B]# of Temp Bans:[/B]";
         $echelonBansFor = "Temp Bans for:";
         $echelonAdd = "[B]Additional Information[/B]";
-        $echelonInfo = $echelon . $newLine . $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
+        $echelonInfo = $echelon . $newLine . $newLine . $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
             $newLine . $echelonBansFor . $newLine . $echelonAdd;
 		// Echelon info end
@@ -806,7 +806,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 		$serverBans = "Server Bans";
 		$misc = "Miscellaneous";
 		$googleAdd = "[B]Additional Information[/B]";
-		$googleInfo = $google . $newLine . $playerIndex . $newLine . $TS3Index . $newLine . $steamSearch . $newLine . $googleAliases . $newLine
+		$googleInfo = $google . $newLine . $newLine . $playerIndex . $newLine . $TS3Index . $newLine . $steamSearch . $newLine . $googleAliases . $newLine
 		. $clanAffil . $newLine . $serverBans . $newLine . $misc . $newLine . $newLine . $googleAdd;
 		// Google info end
 
@@ -822,7 +822,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 		$banList = "[URL=https://7cav.us/forums/banned.100/]Banned List[/URL]";
 		$previousChecks = "[URL=https://7cav.us/forums/s2-checks-completed.78/]Previous S2 checks[/URL]";
 		$regiMisc = "[B]Miscellaneous:[/B]";
-		$regiInfo = $regimental . $newLine . $deniedEnlistments . $newLine . $pastEnlistments . $newLine . $memberNotes . $newLine
+		$regiInfo = $regimental . $newLine . $newLine . $deniedEnlistments . $newLine . $pastEnlistments . $newLine . $memberNotes . $newLine
 		. $milpacs . $newLine . $milpacsArchive . $newLine . $memWarnings . $newLine . $hotlist . $newLine . $banList . $newLine
 		. $previousChecks . $newLine . $newLine . $regiMisc;
 		// Regimental info End
