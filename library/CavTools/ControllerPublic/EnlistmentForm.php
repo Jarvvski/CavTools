@@ -117,6 +117,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $steamID_thread = "threads/".$steamID_thread;
         $minRequire_thread = XenForo_Application::get('options')->minRequireThread;
         $minRequire_thread = "threads/".$minRequire_thread;
+		$genOrders = XenForo_Application::get('options')->genOrders;
+		$codeOfConduct = XenForo_Application::get('options')->codeOfConduct;
         $games = XenForo_Application::get('options')->games;
 
         $games = explode(',', $games);
@@ -206,6 +208,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
                 'username' => $visitor['username'],
                 'hasMilpac' => $hasMilpac,
                 'steamID_thread' => $steamID_thread,
+				'genOrders' => $genOrders,
+				'codeOfConduct' => $codeOfConduct,
                 'minRequire_thread' => $minRequire_thread,
                 'games' => $games
             );
