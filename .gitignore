@@ -2,6 +2,7 @@
 *
 #Except for:
 !.gitignore
+!.DS_Store
 !js/
 !js/CavTools/
 !js/CavTools/*
