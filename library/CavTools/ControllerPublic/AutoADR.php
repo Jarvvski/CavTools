@@ -101,6 +101,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         // Begin headings
         $hqData = "<br><h3>Regimental Headquarters</h3><hr><br>";
         $bat1HQData = "<br><h4>1-7 Command</h4><hr><br>";
+		$hhcData = "<br /><h4>HHC</h4><hr /><br />";
         $suptData = "<br><h3>Support Departments</h3><hr><br>";
         $alpha1Data = "<br><h4>Alpha Company 1-7</h4><hr><br>";
         $bravo1Data = "<br><h4>Bravo Company 1-7</h4><hr><br>";
@@ -129,6 +130,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $cagData = "<br><h4>CAG (Combat Applications Group)</h4><hr><br>";
 
         // Begin 1BN headings
+        $medPLData = "<br /><h5>Medical Platoon:</h5><hr /><br />";
         $alpha11PLData = "<br><h5>1st Platoon: (Rotary Transport)</h5><hr><br>";
         $alpha21PLData = "<br><h5>2nd Platoon: (Rotary & Fixed Attack)</h5><hr><br>";
         $bravo11PLData = "<br><h5>1st Platoon: (Armor)</h5><hr><br>";
@@ -157,7 +159,8 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $posGrpIDs = explode(',',$posGrpIDs);
 
         // 1BN
-        $alpha11PLIDs = explode(',',XenForo_Application::get('options')->alpha11PLID);
+        $medPlIDs = explode(',',XenForo_Application::get('options')->medPLID);
+		$alpha11PLIDs = explode(',',XenForo_Application::get('options')->alpha11PLID);
         $alpha21PLIDs = explode(',',XenForo_Application::get('options')->alpha21PLID);
         $bravo11PLIDs = explode(',',XenForo_Application::get('options')->bravo11PLID);
         $bravo21PLIDs = explode(',',XenForo_Application::get('options')->bravo21PLID);
@@ -454,10 +457,19 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
                 case $posGrpIDs[14]:
                     $starterData .= "<p>".$member['position_title'] . " : " . $userURL . $newLine."</p>";
                     break;
+				case $posGrpIDs[15]:
+					if (strpos($member['position_title'], 'Squad Leader' ) !== false || strpos($member['position_title'], 'Section Leader' ) !== false) {
+							$medPLData .= "<br /><p>".$member['position_title']." : " . $userURL . $newLine . "</p>";
+					} else {
+						$medPLData .= "<p>".$member['position_title']." : " . $userURL . $newLine . "</p>";
+					}
+
+					break;
             }
         }
 
         // Build Company Data
+        $hhcData .= $medPLData;
         $alpha1Data .= $alpha11PLData . $alpha21PLData;
         $bravo1Data .= $bravo11PLData . $bravo21PLData . $bravo31PLData;
         $charlie1Data .= $charlie11PLData . $charlie21PLData . $charlie31PLData;
@@ -469,8 +481,8 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
 
 
         // Build Battalion Data
-        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $alpha1Data . $bravo1Data . $charlie1Data . $delta1Data . $echo1Data . $training1Data. $starterData;
-        $bat2Total = "<h3>2nd Battalion</h3><hr><br>" . $bat2HQData . $alpha2Data . $bravo2Data . $charlie2Data;
+        $bat1Total = "<h3>1st Battalion</h3><hr><br>" . $bat1HQData . $hhcData . $alpha1Data . $bravo1Data . $charlie1Data . $delta1Data . $echo1Data . $training1Data. $starterData;
+        // $bat2Total = "<h3>2nd Battalion</h3><hr><br>" . $bat2HQData . $alpha2Data . $bravo2Data . $charlie2Data;
         $recruitTotal = $newRecruitsData;
 
         // Build Support Data
@@ -480,7 +492,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
             $cagData. $newLine;
 
         // Combine data sets
-        $data .= $newLine . $hqData . $suptData . $bat1Total .$newLine . $newLine. $bat2Total . $newLine . $recruitTotal;
+        $data .= $newLine . $hqData . $suptData . $bat1Total . $newLine . $recruitTotal;
 
         // Return new ADR
         return $data;
