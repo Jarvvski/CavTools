@@ -136,7 +136,7 @@ class CavTools_ControllerPublic_AutoADR extends XenForo_ControllerPublic_Abstrac
         $bravo31PLData = "<br><h5>3rd Platoon: (Mechanized Infantry)</h5><hr><br>";
         $charlie11PLData = "<br><h5>1st Platoon: (Airborne Infantry)</h5><hr><br>";
         $charlie21PLData = "<br><h5>2nd Platoon: (Airborne Infantry)</h5><hr><br>";
-        $charlie31PLData = "<br><h5>3rd Platoon: (Combat Engineers)</h5><hr><br>";
+        $charlie31PLData = "<br><h5>3rd Platoon: (Airborne Weapons Infantry)</h5><hr><br>";
         $delta11PLData = "<br><h5>1st Platoon: (Infantry)</h5><hr><br>";
         $delta21PLData = "<br><h5>2nd Platoon: (Support)</h5><hr><br>";
         $echo11PLData   = "<br><h5>1st Platoon: </h5><hr><br>";
