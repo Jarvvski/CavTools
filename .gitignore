@@ -1,6 +1,7 @@
 #Ignore all
 *
 #Except for:
+!docker-compose.yml
 !.gitignore
 !.DS_Store
 !js/
