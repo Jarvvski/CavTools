@@ -847,6 +847,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
     {
         // get rrd bot values
         $poster = $this->getRRDBot();
+	$message = utf8_encode($message);
 
         // write the thread
         $writer = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
