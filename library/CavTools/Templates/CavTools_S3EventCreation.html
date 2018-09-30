@@ -1,0 +1,63 @@
+<xen:require js="js/CavTools/createS3Event.js" />
+<div class="section">
+    <h2 class="subHeading">Create S3 Event</h2>
+    <br />
+    <br />
+    <form action="{xen:link createEvent/post}" method="post" class="xenForm AutoValidator createS3Event" data-redirect="on">
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Event type</label></dt>
+            <dd><input type="radio" name="type" value="Class" id="class" required onclick="javascript:typeCheck();"> Class
+                <br /><br />
+                <input type="radio" name="type" value="Operation" id="operation" onclick="javascript:typeCheck();"> Operation<br></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Event date</label></dt>
+            <dd>
+                <input id="ctrl_message" type="date" class="textCtrl autoSize" name="event_date"/>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Event time (in zulu)</label></dt>
+            <dd><select name="event_time" class="textCtrl" required>
+                <xen:foreach loop="$timeOptions" value="$timeOption">
+                    <option value="{xen:raw $timeOption}">{xen:raw $timeOption}</option>
+                </xen:foreach>
+            </select></dd>
+        </dl>
+        <div id="game_selection" style="display:block;">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Game selection</label></dt>
+                <dd><select name="game" class="textCtrl" onchange="javascript:gameCheck(this.value)" required>
+                    <xen:foreach loop="$games" value="$game">
+                        <option value="{xen:raw $game}">{xen:raw $game}</option>
+                    </xen:foreach>
+                </select></dd>
+            </dl>
+        </div>
+
+        <div id="class_selection" style="display:none">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Class selection</label></dt>
+                <dd><select name="class" class="textCtrl" id="selector">
+                    <xen:foreach loop="$classes" value="$class">
+                        <option value="{xen:raw $class.class_name}" id="{xen:raw $class.game}">{xen:raw $class.class_name}</option>
+                    </xen:foreach>
+                </select></dd>
+            </dl>
+        </div>
+        <div id="operation_title" style="display:none">
+            <dl class="ctrlUnit fullWidth surplusLabel">
+                <dd><input type="text" name="title" class="textCtrl titleCtrl" id="ctrl_title_thread_create" maxlength="100" autofocus="true"
+                    placeholder="Operation name..."</dd>
+            </dl>
+            <dl class="ctrlUnit fullWidth">
+                <dt></dt>
+                <dd>{xen:raw $editorTemplate}</dd>
+            </dl>
+        </div>
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="submit" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </form>
+</div>

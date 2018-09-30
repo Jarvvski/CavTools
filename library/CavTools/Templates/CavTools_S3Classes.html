@@ -1,0 +1,36 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<div class="section">
+    <form action="{xen:link s3classes/post}" method="post" class="AutoValidator" data-redirect="on">
+        <xen:if is="{$classList}">
+            <h5>Classes</h5>
+            <table>
+                <tr>
+                    <th>Class ID</th>
+                    <th>Class Game</th>
+                    <th>Class Name</th>
+                    <th>Class creator</th>
+                    <xen:if is="{$canAction}"><th>Select Class</th></xen:if>
+                </tr>
+                {xen:raw $classList}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$canAction}">
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Remove Class</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+        </xen:if>
+        <br/>
+        <dl class="ctrlUnit logsButton">
+            <dd>
+                <a href="{xen:link createClass}">Create Class</a>
+            </dd>
+        </dl>
+    </form>
+</div>

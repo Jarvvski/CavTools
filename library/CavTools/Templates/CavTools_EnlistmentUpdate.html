@@ -1,0 +1,176 @@
+<xen:require js="js/CavTools/enlistmentUpdate.js" />
+<div class="section">
+    <h1 class="heading">Enlistment Update</h1>
+    <br />
+    <br />
+    <form action="{xen:link enlistmentupdate/post}" method="post" class="xenForm AutoValidator enlistmentUpdate" data-redirect="on">
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Enlistment ID</label></dt>
+            <dd><textarea name="enlistment_id" id="ctrl_message" class="textCtrl" rows="1" cols="20" required></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Last Name</label></dt>
+            <dd><textarea name="last_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" style="text-transform: capitalize;"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">First Name</label></dt>
+            <dd><textarea name="first_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" style="text-transform: capitalize;"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Re-enlistment</label></dt>
+            <dd><input type="radio" name="reenlistment" value="Yes"> Yes
+                <br /><br />
+                <input type="radio" name="reenlistment" value="No"> No<br></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_recipients">Recruiter(s)</label></dt>
+            <dd>
+                <textarea name="recruiter" id="ctrl_recipients" rows="1" cols="20" class="textCtrl AutoComplete {xen:if '{$remaining} == 1', AcSingle}"></textarea>
+                    <p class="explain">Separate names with a comma.</p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Change Time Zone</label></dt>
+            <dd><input type="radio" name="timezoneChange" value="Yes" id="time-change" onclick="javascript:typeCheck();"> Yes
+                <br /><br />
+                <input type="radio" name="timezoneChange" value="No" onclick="javascript:typeCheck();"> No<br></dd>
+        </dl>
+        <div id="change-time" style="display:none;">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Your Time Zone</label></dt>
+                <dd><select name="timezone" class="textCtrl" id="ctrl_timezone">
+                    <option value="UTC-11:00">(UTC-11:00) American Samoa</option>
+                    <option value="UTC-10:00">(UTC-10:00) Hawaii</option>
+                    <option value="UTC-09:30">(UTC-09:30) Marquesas Islands</option>
+                    <option value="UTC-09:00">(UTC-09:00) Alaska</option>
+                    <option value="UTC-08:00">(UTC-08:00) Pacific Time (US &amp; Canada)</option>
+                    <option value="UTC-08:00">(UTC-08:00) Baja California</option>
+                    <option value="UTC-08:00">(UTC-08:00) Tijuana</option>
+                    <option value="UTC-07:00">(UTC-07:00) Mountain Time (US &amp; Canada)</option>
+                    <option value="UTC-07:00">(UTC-07:00) Chihuahua, La Paz, Mazatlan</option>
+                    <option value="UTC-07:00">(UTC-07:00) Arizona</option>
+                    <option value="UTC-06:00">(UTC-06:00) Central Time (US &amp; Canada)</option>
+                    <option value="UTC-06:00">(UTC-06:00) Saskatchewan, Central America</option>
+                    <option value="UTC-06:00">(UTC-06:00) Guadalajara, Mexico City, Monterrey</option>
+                    <option value="UTC-06:00">(UTC-06:00) Easter Island</option>
+                    <option value="UTC-05:00">(UTC-05:00) Eastern Time (US &amp; Canada)</option>
+                    <option value="UTC-05:00">(UTC-05:00) Cuba</option>
+                    <option value="UTC-05:00">(UTC-05:00) Bogota, Lima, Quito</option>
+                    <option value="UTC-04:30">(UTC-04:30) Caracas</option>
+                    <option value="UTC-04:00">(UTC-04:00) Atlantic Time (Canada)</option>
+                    <option value="UTC-04:00">(UTC-04:00) Atlantic Time (Goose Bay)</option>
+                    <option value="UTC-04:00">(UTC-04:00) Asuncion</option>
+                    <option value="UTC-04:00">(UTC-04:00) Santiago</option>
+                    <option value="UTC-04:00">(UTC-04:00) Cuiaba</option>
+                    <option value="UTC-04:00">(UTC-04:00) Georgetown, La Paz, Manaus, San Juan</option>
+                    <option value="UTC-03:30">(UTC-03:30) Newfoundland</option>
+                    <option value="UTC-03:00">(UTC-03:00) Buenos Aires</option>
+                    <option value="UTC-03:00">(UTC-03:00) San Luis</option>
+                    <option value="UTC-03:00">(UTC-03:00) Argentina, Cayenne, Fortaleza</option>
+                    <option value="UTC-03:00">(UTC-03:00) Falkland Islands</option>
+                    <option value="UTC-03:00">(UTC-03:00) Greenland</option>
+                    <option value="UTC-03:00">(UTC-03:00) Montevideo</option>
+                    <option value="UTC-03:00">(UTC-03:00) Brasilia</option>
+                    <option value="UTC-03:00">(UTC-03:00) Saint Pierre and Miquelon</option>
+                    <option value="UTC-02:00">(UTC-02:00) Mid-Atlantic</option>
+                    <option value="UTC-01:00">(UTC-01:00) Cape Verde Is.</option>
+                    <option value="UTC-01:00">(UTC-01:00) Azores</option>
+                    <option value="UTC " selected="selected">(UTC) Dublin, Edinburgh, Lisbon, London</option>
+                    <option value="UTC ">(UTC) Casablanca</option>
+                    <option value="UTC ">(UTC) Monrovia, Reykjavik</option>
+                    <option value="UTC+01:00">(UTC+01:00) Central European Time</option>
+                    <option value="UTC+01:00">(UTC+01:00) West Central Africa</option>
+                    <option value="UTC+01:00">(UTC+01:00) Windhoek</option>
+                    <option value="UTC+01:00">(UTC+01:00) Tunis</option>
+                    <option value="UTC+02:00">(UTC+02:00) Eastern European Time</option>
+                    <option value="UTC+02:00">(UTC+02:00) South Africa Standard Time</option>
+                    <option value="UTC+02:00">(UTC+02:00) Kaliningrad</option>
+                    <option value="UTC+02:00">(UTC+02:00) Amman</option>
+                    <option value="UTC+02:00">(UTC+02:00) Beirut</option>
+                    <option value="UTC+02:00">(UTC+02:00) Cairo</option>
+                    <option value="UTC+02:00">(UTC+02:00) Jerusalem</option>
+                    <option value="UTC+02:00">(UTC+02:00) Gaza</option>
+                    <option value="UTC+02:00">(UTC+02:00) Syria</option>
+                    <option value="UTC+03:00">(UTC+03:00) Moscow, St. Petersburg, Volgograd</option>
+                    <option value="UTC+03:00">(UTC+03:00) Minsk</option>
+                    <option value="UTC+03:00">(UTC+03:00) Nairobi, Baghdad, Kuwait, Qatar, Riyadh</option>
+                    <option value="UTC+03:30">(UTC+03:30) Tehran</option>
+                    <option value="UTC+04:00">(UTC+04:00) Abu Dhabi, Muscat, Tbilisi</option>
+                    <option value="UTC+04:00">(UTC+04:00) Yerevan</option>
+                    <option value="UTC+04:00">(UTC+04:00) Baku</option>
+                    <option value="UTC+04:00">(UTC+04:00) Mauritius</option>
+                    <option value="UTC+04:30">(UTC+04:30) Kabul</option>
+                    <option value="UTC+05:00">(UTC+05:00) Ekaterinburg</option>
+                    <option value="UTC+05:00">(UTC+05:00) Tashkent, Karachi</option>
+                    <option value="UTC+05:30">(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
+                    <option value="UTC+05:45">(UTC+05:45) Kathmandu</option>
+                    <option value="UTC+06:00">(UTC+06:00) Novosibirsk</option>
+                    <option value="UTC+06:00">(UTC+06:00) Astana, Dhaka</option>
+                    <option value="UTC+06:00">(UTC+06:00) Almaty, Bishkek, Qyzylorda</option>
+                    <option value="UTC+06:30">(UTC+06:30) Yangon (Rangoon)</option>
+                    <option value="UTC+07:00">(UTC+07:00) Krasnoyarsk</option>
+                    <option value="UTC+07:00">(UTC+07:00) Bangkok, Hanoi, Jakarta</option>
+                    <option value="UTC+08:00">(UTC+08:00) Irkutsk</option>
+                    <option value="UTC+08:00">(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi</option>
+                    <option value="UTC+08:00">(UTC+08:00) Kuala Lumpur, Singapore</option>
+                    <option value="UTC+08:00">(UTC+08:00) Perth</option>
+                    <option value="UTC+09:00">(UTC+09:00) Yakutsk</option>
+                    <option value="UTC+09:00">(UTC+09:00) Osaka, Sapporo, Tokyo</option>
+                    <option value="UTC+09:00">(UTC+09:00) Seoul</option>
+                    <option value="UTC+09:30">(UTC+09:30) Adelaide</option>
+                    <option value="UTC+09:30">(UTC+09:30) Darwin</option>
+                    <option value="UTC+10:00">(UTC+10:00) Vladivostok</option>
+                    <option value="UTC+10:00">(UTC+10:00) Magadan</option>
+                    <option value="UTC+10:00">(UTC+10:00) Brisbane, Guam</option>
+                    <option value="UTC+10:00">(UTC+10:00) Sydney, Melbourne, Hobart</option>
+                    <option value="UTC+11:00">(UTC+11:00) Solomon Is., New Caledonia</option>
+                    <option value="UTC+11:30">(UTC+11:30) Norfolk Island</option>
+                    <option value="UTC+12:00">(UTC+12:00) Anadyr, Kamchatka</option>
+                    <option value="UTC+12:00">(UTC+12:00) Auckland, Wellington</option>
+                    <option value="UTC+12:00">(UTC+12:00) Fiji</option>
+                    <option value="UTC+12:45">(UTC+12:45) Chatham Islands</option>
+                    <option value="UTC+13:00">(UTC+13:00) Nuku'alofa</option>
+                    <option value="UTC+13:00">(UTC+13:00) Apia, Samoa</option>
+                    <option value="UTC+14:00">(UTC+14:00) Kiritimati</option>
+                </select></dd>
+            </dl>
+        </div>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Steam Account ID (64-bit)</label></dt>
+            <dd><input name="steamID" pattern="[0-9]{17}" id="ctrl_message" class="textCtrl" rows="1" cols="50">
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Change game</label></dt>
+            <dd><input type="radio" name="gameChange" value="Yes" id="game-Change" onclick="javascript:typeCheck();"> Yes
+                <br /><br />
+                <input type="radio" name="gameChange" value="No" onclick="javascript:typeCheck();"> No<br></dd>
+        </dl>
+        <div id="change-game" style="display:none;">
+            <dl class="ctrlUnit">
+                <dt><label for="ctrl_message">Game</label></dt>
+                <dd><select name="game" class="textCtrl">
+                    <xen:foreach loop="$games" value="$game">
+                        <option value="{xen:raw $game}">{xen:raw $game}</option>
+                    </xen:foreach>
+                </select></dd>
+
+            </dl>
+        </div>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Clan status</label></dt>
+            <dd><input type="radio" name="in_clan" value="Yes"> Yes
+                <br /><br />
+                <input type="radio" name="in_clan" value="No"> No</dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Past Clans<br/><br/></label></dt>
+            <dd><textarea name="past_clans" id="ctrl_message" class="textCtrl" rows="4" cols="50"></textarea>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="Update Application" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </form>
+</div>

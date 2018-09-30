@@ -1,0 +1,18 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<div class="section">
+        <xen:if is="{$logRows}">
+            <h5>Enlistment Management Logs</h5>
+            <table>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Enlistment ID</th>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Log date</th>
+                    <th>Action taken</th>
+                </tr>
+                {xen:raw $logRows }
+            </table>
+            <br><br>
+        </xen:if>
+</div>

@@ -1,0 +1,66 @@
+h5
+{
+@property "subHeading";
+    font-size: 11px;
+    color: @secondaryDarker;
+    background: @secondaryLighter url('@imagePath/xenforo/gradients/category-23px-light.png') repeat-x top;
+    padding: 5px 10px;
+    margin: 3px auto 0;
+    border-top: 1px solid @secondaryLighter;
+    border-bottom: 1px solid @secondaryLight;
+@property "/subHeading";
+}
+tr:first-of-type
+{
+@property "sectionFooter";
+    font-size: 11px;
+    color: @primaryLightish;
+    background: @primaryLighterStill url('@imagePath/xenforo/gradients/category-23px-light.png') repeat-x top;
+    padding: 4px 10px;
+    border-bottom: 1px solid @primaryLighter;
+    line-height: 16px;
+@property "/sectionFooter";
+}
+table
+{
+    table-layout:fixed;
+    width: 100%
+}
+th
+{
+    text-align:center;
+    font-weight:bold;
+    padding-left:10px;
+}
+td
+{
+    text-align:center;
+    padding:10px 0 0 10px;
+}
+.submitUnit
+{
+    text-align:center;
+}
+input[type="checkbox"]
+{
+    text-align:center;
+    margin-left: 10px;
+}
+.rrdActions
+{
+    text-align:center;
+}
+.option
+{
+    display: inline-block;
+    margin-left: 25px;
+}
+#green {
+    color: @cavtoolsApproved;
+}
+#yellow {
+    color: @cavtoolsWarning;
+}
+#red {
+    color: @cavtoolsDenied;
+}

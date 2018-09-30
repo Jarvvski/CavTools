@@ -1,0 +1,246 @@
+<xen:require js="js/CavTools/enlistmentForm.js" />
+<script>
+    function validateForm() {
+        var age = document.forms["enlistment"]["age"].value;
+        if (age == 0) {
+            alert("Really bro, you're aged 0?");
+            return false;
+        } else {
+            return true;
+        }
+    }
+</script>
+<div class="section">
+    <xen:title>Enlistment Application</xen:title>
+    <!-- <xen:if is="{$hasMilpac} == true">
+        <h1 class="heading">Welcome back {xen:raw $username}</h1>
+    </xen:if> -->
+    <br />
+    <br />
+    <form action="{xen:link enlist/post}" method="post" class="xenForm AutoValidator enlistmentForm" onsubmit="return validateForm()" data-redirect="on" name="enlistment">
+        <h2 class="subHeading">Choosing your name</h2>
+        <br />
+        <br />
+        <p>Please choose a realistic first and last name. You do not have to use your real name. All names are subject to approval.</p>
+        <br />
+        <p><b>You may not use the following:</b></p>
+        <ul>
+            <li>- Historically important names</li>
+            <li>- Actors</li>
+            <li>- Cartoon Names</li>
+            <li>- Names of importance from novels, television, movies, etc</li>
+            <li>- Religious names</li>
+            <li>- Names of political significance</li>
+        </ul>
+        <br />
+        <p>You are only allowed to change your name within the first 30 days of enlistment. No Exceptions. The 7th Cavalry does not delete records.
+            If you choose to use your real name, be prepared for it to be on record for as long as this website exists.</p>
+        <br />
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message"><b>Last Name</b></label></dt>
+            <dd><textarea name="last_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="Doe" style="text-transform: capitalize;" required></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">First Name</label></dt>
+            <dd><textarea name="first_name" id="ctrl_message" class="textCtrl" rows="1" cols="20" placeholder="John" style="text-transform: capitalize;" required></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Name Agreement</label></dt>
+            <dd><input type="checkbox" name="name_agree" value="agreement" required>  <i>Terms can be found above.</i><br></dd>
+        </dl>
+        <br />
+        <br />
+        <h2 class="subHeading">Personal Information</h2>
+        <br />
+        <br />
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Are you re-enlisting?</label></dt>
+            <dd><input type="radio" name="reenlistment" value="Yes" required> Yes
+                <br /><br />
+                <input type="radio" name="reenlistment" value="No"> No<br></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_recipients">Recruiter(s)</label></dt>
+            <dd>
+                <textarea name="recruiter" id="ctrl_recipients" rows="1" cols="20" class="textCtrl AutoComplete {xen:if '{$remaining} == 1', AcSingle}" maxlength="50"></textarea>
+                <p class="explain"><i>Separate names with a comma.</i></p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Age</label></dt>
+            <dd><input type="text" name="age" class="textCtrl" maxlength="2" step="1" pattern="[0-9]{2}" required>
+                <p class="explain"><i>18+ requirement</i></p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Your Time Zone</label></dt>
+            <dd><select name="timezone" class="textCtrl" id="ctrl_timezone" required>
+                <option value="UTC-11:00">(UTC-11:00) American Samoa</option>
+                <option value="UTC-10:00">(UTC-10:00) Hawaii</option>
+                <option value="UTC-09:30">(UTC-09:30) Marquesas Islands</option>
+                <option value="UTC-09:00">(UTC-09:00) Alaska</option>
+                <option value="UTC-08:00">(UTC-08:00) Pacific Time (US &amp; Canada)</option>
+                <option value="UTC-08:00">(UTC-08:00) Baja California</option>
+                <option value="UTC-08:00">(UTC-08:00) Tijuana</option>
+                <option value="UTC-07:00">(UTC-07:00) Mountain Time (US &amp; Canada)</option>
+                <option value="UTC-07:00">(UTC-07:00) Chihuahua, La Paz, Mazatlan</option>
+                <option value="UTC-07:00">(UTC-07:00) Arizona</option>
+                <option value="UTC-06:00">(UTC-06:00) Central Time (US &amp; Canada)</option>
+                <option value="UTC-06:00">(UTC-06:00) Saskatchewan, Central America</option>
+                <option value="UTC-06:00">(UTC-06:00) Guadalajara, Mexico City, Monterrey</option>
+                <option value="UTC-06:00">(UTC-06:00) Easter Island</option>
+                <option value="UTC-05:00">(UTC-05:00) Eastern Time (US &amp; Canada)</option>
+                <option value="UTC-05:00">(UTC-05:00) Cuba</option>
+                <option value="UTC-05:00">(UTC-05:00) Bogota, Lima, Quito</option>
+                <option value="UTC-04:30">(UTC-04:30) Caracas</option>
+                <option value="UTC-04:00">(UTC-04:00) Atlantic Time (Canada)</option>
+                <option value="UTC-04:00">(UTC-04:00) Atlantic Time (Goose Bay)</option>
+                <option value="UTC-04:00">(UTC-04:00) Asuncion</option>
+                <option value="UTC-04:00">(UTC-04:00) Santiago</option>
+                <option value="UTC-04:00">(UTC-04:00) Cuiaba</option>
+                <option value="UTC-04:00">(UTC-04:00) Georgetown, La Paz, Manaus, San Juan</option>
+                <option value="UTC-03:30">(UTC-03:30) Newfoundland</option>
+                <option value="UTC-03:00">(UTC-03:00) Buenos Aires</option>
+                <option value="UTC-03:00">(UTC-03:00) San Luis</option>
+                <option value="UTC-03:00">(UTC-03:00) Argentina, Cayenne, Fortaleza</option>
+                <option value="UTC-03:00">(UTC-03:00) Falkland Islands</option>
+                <option value="UTC-03:00">(UTC-03:00) Greenland</option>
+                <option value="UTC-03:00">(UTC-03:00) Montevideo</option>
+                <option value="UTC-03:00">(UTC-03:00) Brasilia</option>
+                <option value="UTC-03:00">(UTC-03:00) Saint Pierre and Miquelon</option>
+                <option value="UTC-02:00">(UTC-02:00) Mid-Atlantic</option>
+                <option value="UTC-01:00">(UTC-01:00) Cape Verde Is.</option>
+                <option value="UTC-01:00">(UTC-01:00) Azores</option>
+                <option value="UTC " selected="selected">(UTC) Dublin, Edinburgh, Lisbon, London</option>
+                <option value="UTC ">(UTC) Casablanca</option>
+                <option value="UTC ">(UTC) Monrovia, Reykjavik</option>
+                <option value="UTC+01:00">(UTC+01:00) Central European Time</option>
+                <option value="UTC+01:00">(UTC+01:00) West Central Africa</option>
+                <option value="UTC+01:00">(UTC+01:00) Windhoek</option>
+                <option value="UTC+01:00">(UTC+01:00) Tunis</option>
+                <option value="UTC+02:00">(UTC+02:00) Eastern European Time</option>
+                <option value="UTC+02:00">(UTC+02:00) South Africa Standard Time</option>
+                <option value="UTC+02:00">(UTC+02:00) Kaliningrad</option>
+                <option value="UTC+02:00">(UTC+02:00) Amman</option>
+                <option value="UTC+02:00">(UTC+02:00) Beirut</option>
+                <option value="UTC+02:00">(UTC+02:00) Cairo</option>
+                <option value="UTC+02:00">(UTC+02:00) Jerusalem</option>
+                <option value="UTC+02:00">(UTC+02:00) Gaza</option>
+                <option value="UTC+02:00">(UTC+02:00) Syria</option>
+                <option value="UTC+03:00">(UTC+03:00) Moscow, St. Petersburg, Volgograd</option>
+                <option value="UTC+03:00">(UTC+03:00) Minsk</option>
+                <option value="UTC+03:00">(UTC+03:00) Nairobi, Baghdad, Kuwait, Qatar, Riyadh</option>
+                <option value="UTC+03:30">(UTC+03:30) Tehran</option>
+                <option value="UTC+04:00">(UTC+04:00) Abu Dhabi, Muscat, Tbilisi</option>
+                <option value="UTC+04:00">(UTC+04:00) Yerevan</option>
+                <option value="UTC+04:00">(UTC+04:00) Baku</option>
+                <option value="UTC+04:00">(UTC+04:00) Mauritius</option>
+                <option value="UTC+04:30">(UTC+04:30) Kabul</option>
+                <option value="UTC+05:00">(UTC+05:00) Ekaterinburg</option>
+                <option value="UTC+05:00">(UTC+05:00) Tashkent, Karachi</option>
+                <option value="UTC+05:30">(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
+                <option value="UTC+05:45">(UTC+05:45) Kathmandu</option>
+                <option value="UTC+06:00">(UTC+06:00) Novosibirsk</option>
+                <option value="UTC+06:00">(UTC+06:00) Astana, Dhaka</option>
+                <option value="UTC+06:00">(UTC+06:00) Almaty, Bishkek, Qyzylorda</option>
+                <option value="UTC+06:30">(UTC+06:30) Yangon (Rangoon)</option>
+                <option value="UTC+07:00">(UTC+07:00) Krasnoyarsk</option>
+                <option value="UTC+07:00">(UTC+07:00) Bangkok, Hanoi, Jakarta</option>
+                <option value="UTC+08:00">(UTC+08:00) Irkutsk</option>
+                <option value="UTC+08:00">(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi</option>
+                <option value="UTC+08:00">(UTC+08:00) Kuala Lumpur, Singapore</option>
+                <option value="UTC+08:00">(UTC+08:00) Perth</option>
+                <option value="UTC+09:00">(UTC+09:00) Yakutsk</option>
+                <option value="UTC+09:00">(UTC+09:00) Osaka, Sapporo, Tokyo</option>
+                <option value="UTC+09:00">(UTC+09:00) Seoul</option>
+                <option value="UTC+09:30">(UTC+09:30) Adelaide</option>
+                <option value="UTC+09:30">(UTC+09:30) Darwin</option>
+                <option value="UTC+10:00">(UTC+10:00) Vladivostok</option>
+                <option value="UTC+10:00">(UTC+10:00) Magadan</option>
+                <option value="UTC+10:00">(UTC+10:00) Brisbane, Guam</option>
+                <option value="UTC+10:00">(UTC+10:00) Sydney, Melbourne, Hobart</option>
+                <option value="UTC+11:00">(UTC+11:00) Solomon Is., New Caledonia</option>
+                <option value="UTC+11:30">(UTC+11:30) Norfolk Island</option>
+                <option value="UTC+12:00">(UTC+12:00) Anadyr, Kamchatka</option>
+                <option value="UTC+12:00">(UTC+12:00) Auckland, Wellington</option>
+                <option value="UTC+12:00">(UTC+12:00) Fiji</option>
+                <option value="UTC+12:45">(UTC+12:45) Chatham Islands</option>
+                <option value="UTC+13:00">(UTC+13:00) Nuku'alofa</option>
+                <option value="UTC+13:00">(UTC+13:00) Apia, Samoa</option>
+                <option value="UTC+14:00">(UTC+14:00) Kiritimati</option>
+            </select></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Steam Account ID (64-bit)</label></dt>
+            <dd><input name="steamID" pattern="[0-9]{17}" id="ctrl_message" class="textCtrl" rows="1" cols="50" required>
+                <p class="explain"><i>Details on how to obtain your 64-bit ID found <a href="{$steamID_thread}">here</a>.</i></p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Origin ID (Origin username)</label></dt>
+            <dd><input name="origin" id="ctrl_message" class="textCtrl" rows="1" cols="50" maxlength="15">
+                <p class="explain"><i>Only for Battlefield 1.</i></p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Policy agreement</label></dt>
+            <dd><input type="checkbox" name="orders" value="agreement" required>  <i>Read: <a href="{$codeOfConduct}">Code of Conduct</a> ,
+                <a href="{$minRequire_thread}">Minimum Requirements</a> ,
+                <a href="{$genOrders}">General Orders</a><br></i></dd>
+        </dl>
+        <br />
+        <br />
+        <h2 class="subHeading">Game Information</h2>
+        <br />
+        <br />
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Which game are you applying for?</label></dt>
+            <dd><select name="game" class="textCtrl" required>
+                <xen:foreach loop="$games" value="$game">
+                    <option value="{xen:raw $game}">{xen:raw $game}</option>
+                </xen:foreach>
+            </select>
+            <p class="explain"><i>All respective games are PC only.</i></p>
+            </dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Are you currently in a clan?</label></dt>
+            <dd><input type="radio" name="in_clan" value="Yes" required placeholder="The 7th Cavalry does not allow dual clanning."> Yes
+                <br /><br />
+                <input type="radio" name="in_clan" value="No"> No</dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Past Clans<br/><br/></label></dt>
+            <dd><textarea name="past_clans" id="ctrl_message" class="textCtrl" rows="4" cols="50"></textarea>
+                <p class="explain"><i>Provide a link to their website along
+                    with a description of your position in said clan.</i></p>
+            </dd>
+        </dl>
+        <br />
+        <br />
+        <h2 class="subHeading">Military Information</h2>
+        <br />
+        <br />
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Military experience</label></dt>
+            <dd><input type="radio" name="miltary_exp" value="Yes" required> Yes
+                <br /><br />
+                <input type="radio" name="miltary_exp" value="No"> No</dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Branch and duration</label></dt>
+            <dd><textarea name="branch_dur" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">MOS</label></dt>
+            <dd><textarea name="military_mos" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea>
+                <p class="explain"><i>If sensitive, please generalize</i></p>
+            </dd>
+        </dl>
+        <br />
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="Submit Application" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </form>
+</div>

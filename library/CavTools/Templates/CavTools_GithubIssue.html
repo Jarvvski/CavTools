@@ -1,0 +1,29 @@
+<div class="section">
+    <xen:title>Submit a Feature Request</xen:title>
+    <br />
+    <br />
+    <form action="{xen:link featurerequest/post-note}" method="post" class="xenForm AutoValidator" data-redirect="on">
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Type</label></dt>
+            <dd><input type="radio" name="type" value="Bug" required> Bug
+                <br /><br />
+                <input type="radio" name="type" value="Request"> Request<br></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Title</label></dt>
+            <dd><textarea name="title" id="ctrl_message" class="textCtrl" rows="1" cols="50"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Problem</label></dt>
+            <dd><textarea name="problem" id="ctrl_message" class="textCtrl" rows="3" cols="50"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit">
+            <dt><label for="ctrl_message">Reason</label></dt>
+            <dd><textarea name="reason" id="ctrl_message" class="textCtrl" rows="3" cols="50"></textarea></dd>
+        </dl>
+        <dl class="ctrlUnit submitUnit">
+            <dt></dt>
+            <dd><input type="submit" value="submit" class="button primary" accesskey="s" /></dd>
+        </dl>
+    </form>
+</div>

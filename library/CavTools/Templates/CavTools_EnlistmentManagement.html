@@ -1,0 +1,421 @@
+<xen:require css="CavTools_EnlistmentManagement.css" />
+<xen:require js="https://code.highcharts.com/highcharts.js" />
+<xen:require js="https://code.highcharts.com/modules/data.js" />
+<xen:require js="https://code.highcharts.com/modules/exporting.js" />
+<xen:require js="js/CavTools/enlistmentManagement.js" />
+
+<div class="section">
+    <form action="{xen:link enlistments/post}" method="post" class="AutoValidator" data-redirect="on">
+        <dl class="ctrlUnit rrdActions">
+            <dd>
+                <SELECT id="list" class="textCtrl" onchange="report(this.value)" style="margin-right:1.5em;">
+                    <OPTION VALUE="A">Yearly in-depth</option>
+                    <OPTION VALUE="B">Yearly comparison</option>
+                    <OPTION VALUE="C">Quarterly comparison</option>
+                    <OPTION VALUE="D">Recruiter monthly tracker</option>
+                </SELECT>
+                <SELECT id="month" class="textCtrl" style="display:none;">
+                    <OPTION VALUE="jan">Jan</option>
+                    <OPTION VALUE="feb">Feb</option>
+                    <OPTION VALUE="mar">Mar</option>
+                    <OPTION VALUE="apr">Apr</option>
+                    <OPTION VALUE="may">May</option>
+                    <OPTION VALUE="jun">Jun</option>
+                    <OPTION VALUE="jul">Jul</option>
+                    <OPTION VALUE="aug">Aug</option>
+                    <OPTION VALUE="sep">Sep</option>
+                    <OPTION VALUE="oct">Oct</option>
+                    <OPTION VALUE="nov">Nov</option>
+                    <OPTION VALUE="dev">Dec</option>
+                </SELECT>
+            </dd>
+        </dl>
+
+        <br />
+        <dl class="ctrlUnit">
+            <dd>
+                <h5>Statistics</h5>
+                <div id="container" style="height: 400px"></div>
+            </dd>
+        </dl>
+    <br />
+    <br />
+        <table id="quarterlyData" style="display:none;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <th>{xen:raw $gameData.title}</th>
+                    </xen:foreach>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Previous Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.prev_quart_enlist}</td>
+                    </xen:foreach>
+                </tr>
+                <tr>
+                    <th>Current Quarter</th>
+                    <xen:foreach loop="$totalGameData" value="$gameData">
+                        <td>{xen:raw $gameData.curr_quart_enlist}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="yearlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Previous Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.prev_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            <tr>
+                <th>Current Year</th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <td>{xen:raw $gameData.curr_year_enlist}</td>
+                </xen:foreach>
+            </tr>
+            </tbody>
+        </table>
+        <table id="monthlyData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$totalGameData" value="$gameData">
+                    <th>{xen:raw $gameData.title}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                {xen:raw $tableBody}
+            </tbody>
+        </table>
+        <table id="janRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$janRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$janRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="febRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$febRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$febRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="marRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$marRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$marRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="marRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$marRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$marRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="aprRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$aprRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$aprRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="mayRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$mayRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$mayRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="junRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$junRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$junRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="julRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$julRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$julRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="augRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$augRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$augRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="sepRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$sepRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$sepRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="octRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$octRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$octRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="novRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$novRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$novRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+        <table id="decRecruiterData" style="display:none;">
+            <thead>
+            <tr>
+                <th></th>
+                <xen:foreach loop="$decRecruiterData" value="$data">
+                    <th>{xen:raw $data.username}</th>
+                </xen:foreach>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Recruiters</th>
+                    <xen:foreach loop="$decRecruiterData" value="$data">
+                        <td>{xen:raw $data.count}</td>
+                    </xen:foreach>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+        <xen:if is="{$normalEnlistments}">
+            <h5>Enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Last update</th>
+                    <th>Name</th>
+                    <th>First Name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $normalEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$reEnlistments}">
+            <h5>Re-enlistments</h5>
+            <table>
+                <tr>
+                    <th>Enlistment ID</th>
+                    <th>Enlistment Date</th>
+                    <th>Last update</th>
+                    <th>Name</th>
+                    <th>First name</th>
+                    <th>Recruiter</th>
+                    <th>Steam ID</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                    <xen:if is="{$canAction}"><th>Select application</th></xen:if>
+                </tr>
+                {xen:raw $reEnlistments}
+            </table>
+            <br><br>
+        </xen:if>
+        <xen:if is="{$canMajorAction} == 1">
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="2"> Name change - inappropriate</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="3"> Steam ID missing</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="4"> Approved</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="5"> Timed out / denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="6"> Denied</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="7"> Move application</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+            <dl class="ctrlUnit logsButton">
+                <dd>
+                    <a href="{xen:link enlistmentlogs}">Logs</a>
+                </dd>
+            </dl>
+
+            <xen:elseif is="{$canAction} == 1"  />
+            <dl class="ctrlUnit rrdActions">
+                <dd>
+                    <div class="option"><input type="radio" name="rrd_option" value="1" required > Name change - taken</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="2"> Name change - inappropriate</div>
+                    <div class="option"><input type="radio" name="rrd_option" value="3"> Steam ID missing</div>
+                    <br /><br />
+                </dd>
+            </dl>
+            <dl class="ctrlUnit submitUnit">
+                <dd><input type="submit" value="Submit Action" class="button primary" accesskey="s" /></dd>
+            </dl>
+        </xen:if>
+        <br/>
+        <dl class="ctrlUnit logsButton">
+            <dd>
+                <a href="{xen:link enlistmentupdate}">Enlistment Update</a>
+            </dd>
+        </dl>
+    </form>
+</div>
