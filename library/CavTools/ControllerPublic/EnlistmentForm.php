@@ -249,6 +249,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $militaryExp  = $this->_input->filterSingle('miltary_exp', XenForo_Input::STRING);
         $branchDur    = $this->_input->filterSingle('branch_dur', XenForo_Input::STRING);
         $militaryMOS  = $this->_input->filterSingle('military_mos', XenForo_Input::STRING);
+        $recruitedVia = $this->_input->filterSingle('find_us', XenForo_Input::STRING);
 
         $db = XenForo_Application::get('db');
 
@@ -261,6 +262,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         $ageValue  = $this->checkAge($age);
         $denied    = false;
         $currentStatus = 3;
+
+        // escape out any weird stuff they try to add in
+        $recruitedVia = htmlspecialchars($recruitedVia);
 
         if ($reenlisting == "Yes") {
             $reenlistment = true;
@@ -288,7 +292,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         // create enlistment thread
         $thread = $this->createThreadContent($lastName, $firstName, $reenlistment, $timezone,
-            $game, $inClan, $pastClans, $steamID, $age, $military, $branchDur, $militaryMOS, $cavName, $visitor, $recruiter);
+            $game, $inClan, $pastClans, $steamID, $age, $military, $branchDur, $militaryMOS, $cavName, $visitor, $recruiter, $recruitedVia);
 
         //Get values from options
         $forumID  = XenForo_Application::get('options')->enlistmentForumID;
@@ -345,7 +349,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
     public function createThreadContent($lastName, $firstName, $reenlistment, $timezone,
                                         $game, $inClan, $pastClans, $steamID, $age, $military,
-                                        $branchDur, $militaryMOS, $cavName, $visitor, $recruiter)
+                                        $branchDur, $militaryMOS, $cavName, $visitor, $recruiter, $recruitedVia)
     {
         $status  = "";
         $newLine = "\n";
@@ -374,6 +378,8 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             $militaryText = $newLine . 'None';
         }
 
+        $recruitedVia = '[b]Found via:[/B]' . $newLine . $recruitedVia;
+
 		$recruitedBy = '[Size=3][I]Recruited by - ' . $recruiter . '[/I][/Size]';
         $submittedURL = '[URL="http://' .$home.'/members/'.$visitor['user_id'].'"]'.$visitor['username'].'[/URL]';
         $submittedBy  = '[Size=3][I]Submitted by - ' . $submittedURL . '[/I][/Size]';
@@ -388,7 +394,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             $newLine . '[B]Re-enlistment[/B]' . $newLine . $reenlisting . $newLine . '[B]Time zone[/B]' . $newLine .
             $timezone . $newLine . $newLine . '[Size=6][B]Game Information[/B][/Size]' . $newLine. '[B]Game applied for[/B]' .
             $newLine . $game . $newLine . '[B]Clan status[/B]' . $newLine . $inClan . $newLine . '[B]Past Clans[/B]'. $newLine. $pastClans .
-            $newLine . $newLine . '[Size=6][B]Military Information[/B][/Size]' . $militaryText . $newLine . $newLine . $recruitedBy .
+            $newLine . $newLine . '[Size=6][B]Military Information[/B][/Size]' . $militaryText . $newLine . $newLine . $recruitedVia . $newLine . $newLine . $recruitedBy .
 			$newLine . $submittedBy;
 
         return array('title' => $title, 'message' => $message);
@@ -588,7 +594,7 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
             } else if ($reply['players'][0]['VACBanned'] == false) {
                 $banned = 2;
             }
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $banned = 3;
         }
         return $banned;
