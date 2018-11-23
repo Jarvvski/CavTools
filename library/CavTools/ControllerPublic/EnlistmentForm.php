@@ -303,16 +303,12 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         if (!$denied) {
             if ($reenlistment == true) {
                 // Get values from options
-                $positionIDs = XenForo_Application::get('options')->enlistmentPMPositionIDs;
-                $positionIDs = explode(",", $positionIDs);
+                $rrdOIC = XenForo_Application::get('options')->rrdOICuserID;
+                $rrdXO = XenForo_Application::get('options')->rrdXOuserID;
+                $rrdNCOIC = XenForo_Application::get('options')->rrdNCOICuserID;
 
-                $recipients = [];
 
-                foreach($positionIDs as $positionID) {
-                    $milpac = $this->_getEnlistmentModel()->getMilpacByPosition($positionID);
-                    $recipients[] = $milpac['user_id'];
-                }
-
+                $recipients = array($rrdOIC, $rrdXO, $rrdNCOIC, $userID);
                 $pm = $this->createPMContent($cavName, $date, $userID, $steamID, $visitor);
 
                 $this->createConversation($recipients, $pm,
@@ -592,15 +588,17 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         curl_close($ch);
 
         $reply = json_decode($reply, true);
-        try {
-            if ($reply['players'][0]['DaysSinceLastBan'] < 1825) {
-                $banned = 1;
-            } else if ($reply['players'][0]['DaysSinceLastBan'] >= false) {
-                $banned = 2;
-            }
-        } catch (Exception $e) {
-            $banned = 3;
-        }
+	try {
+		if ($reply['players'][0]['DaysSinceLastBan'] >= 1825) {
+			$banned = 2;
+		} else if ($reply['players'][0]['DaysSinceLastBan'] == 0) {
+			$banned = 2;
+		} else if ($reply['players'][0]['DaysSinceLastBan'] < 1825) {
+			$banned = 1;
+		}
+	} catch (Exception $e) {
+		$banned = 3;
+	}
         return $banned;
     }
 
@@ -661,9 +659,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         switch($banned)
         {
             case 1:
-                return "[Size=6][COLOR=red][B]VAC BAN[/B][/COLOR][/SIZE]";
+                return "[Size=6][COLOR=red][B]RECENT BAN DETECTED[/B][/COLOR][/SIZE]";
             case 2:
-                return "[Size=6][COLOR=green][B]NO VAC BAN[/B][/COLOR][/SIZE]";
+                return "[Size=6][COLOR=green][B]NO RECENT BAN DETECTED[/B][/COLOR][/SIZE]";
             case 3:
                 return "[Size=6][COLOR=yellow][B]BAN CHECK FAILED[/B][/COLOR][/SIZE]";
             default:
