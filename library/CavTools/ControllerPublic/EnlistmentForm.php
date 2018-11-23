@@ -303,12 +303,16 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
         if (!$denied) {
             if ($reenlistment == true) {
                 // Get values from options
-                $rrdOIC = XenForo_Application::get('options')->rrdOICuserID;
-                $rrdXO = XenForo_Application::get('options')->rrdXOuserID;
-                $rrdNCOIC = XenForo_Application::get('options')->rrdNCOICuserID;
+                $positionIDs = XenForo_Application::get('options')->enlistmentPMPositionIDs;
+                $positionIDs = explode(",", $positionIDs);
 
+                $recipients = [];
 
-                $recipients = array($rrdOIC, $rrdXO, $rrdNCOIC, $userID);
+                foreach($positionIDs as $positionID) {
+                    $milpac = $this->_getEnlistmentModel()->getMilpacByPosition($positionID);
+                    $recipients[] = $milpac['user_id'];
+                }
+
                 $pm = $this->createPMContent($cavName, $date, $userID, $steamID, $visitor);
 
                 $this->createConversation($recipients, $pm,
@@ -589,9 +593,9 @@ class CavTools_ControllerPublic_EnlistmentForm extends XenForo_ControllerPublic_
 
         $reply = json_decode($reply, true);
         try {
-            if ($reply['players'][0]['VACBanned'] == true) {
+            if ($reply['players'][0]['DaysSinceLastBan'] < 1825) {
                 $banned = 1;
-            } else if ($reply['players'][0]['VACBanned'] == false) {
+            } else if ($reply['players'][0]['DaysSinceLastBan'] >= false) {
                 $banned = 2;
             }
         } catch (Exception $e) {

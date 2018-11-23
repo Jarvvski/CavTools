@@ -283,4 +283,15 @@ class CavTools_Model_Enlistment extends XenForo_Model {
         return $usernames;
     }
 
+    public function getMilpacByPosition($id)
+    {
+        $query = $this->_getDb()->fetchRow("
+        SELECT *
+        FROM xf_pe_roster_user_relation
+        WHERE CAST(secondary_position_ids AS CHAR(100)) LIKE '%?%'
+        ", $id);
+
+        return $query;
+    }
+
 }
