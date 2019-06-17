@@ -796,8 +796,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
 
         // Battlemetrics info begin
-        $bm = "[B][SIZE=6][B][URL='https://www.battlemetrics.com/']BattleMetrics[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/SIZE][/B][/B]";
-        $name = "[B]name:[/B]";
+        $bm = "[B][SIZE=6][URL='https://www.battlemetrics.com/']BattleMetrics[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/SIZE][/B]";
+        $name = "[B]Name:[/B]";
         $GUID = "[B]GUID:[/B] " . $this->generateGUID($steamContent['id']);
         $warns = "[B]# of Warnings:[/B]\nWarnings for:";
         $bans = "[B]# of Temp Bans:[/B]\nTemp Bans for:";
@@ -1040,3 +1040,4 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         return $this->getModelFromCache('CavTools_Model_IMOBot');
     }
 }
+

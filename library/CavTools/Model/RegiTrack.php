@@ -53,3 +53,4 @@ class CavTools_Model_RegiTrack extends XenForo_Model
         ");
     }
 }
+
