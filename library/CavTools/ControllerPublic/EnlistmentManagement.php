@@ -1,30 +1,28 @@
 <?php
 
-class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerPublic_Abstract {
-
-    public function actionIndex() {
+class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerPublic_Abstract
+{
+    public function actionIndex()
+    {
 
         //Get values from options
         $enable = XenForo_Application::get('options')->enableEnlistmentManagement;
 
-        if(!$enable) {
+        if (!$enable) {
             throw $this->getNoPermissionResponseException();
         }
 
-        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'EnlistmentManagement'))
-        {
+        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'EnlistmentManagement')) {
             throw $this->getNoPermissionResponseException();
         }
 
-        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canMajorActionEnlistment'))
-        {
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canMajorActionEnlistment')) {
             $canMajorAction = true;
         } else {
             $canMajorAction = false;
         }
 
-        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canActionEnlistment'))
-        {
+        if (XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'canActionEnlistment')) {
             $canAction = true;
         } else {
             $canAction = false;
@@ -42,7 +40,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         if (count($enlistments) != 0) {
             foreach ($enlistments as $enlistment) {
-
                 $thread = $threadURL . $enlistment['thread_id'];
                 $underage = $enlistment['under_age'];
                 $reenlistment = $enlistment['reenlistment'];
@@ -53,10 +50,9 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 $lastName = ucwords($enlistment['last_name']);
                 $cavname = "";
                 $cavName = $lastName . "." . $firstName[0];
-                $nameCheck = $this->checkName($cavName,$enlistment['user_id']);
+                $nameCheck = $this->checkName($cavName, $enlistment['user_id']);
 
-                switch ($enlistment['current_status'])
-                {
+                switch ($enlistment['current_status']) {
                     case 1: $status = '<td><div id="red">Denied</div></td>';break;
                     case 2: $status = '<td><div id="green">Approved</div></td>';break;
                     case 3: $status = '<td><div id="yellow">Open</div></td>';break;
@@ -69,8 +65,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                     $dayStatus = '<td><div>';
                 }
 
-                switch($nameCheck)
-                {
+                switch ($nameCheck) {
                     case 1: $nameStatus = '<td><div id="red">';break;
                     case 2: $nameStatus = '<td><div id="green">';break;
                     case 3: $nameStatus = '<td><div id="yellow">';break;
@@ -128,7 +123,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $gameData = array();
 
         foreach ($games as $game) {
-
             $currQuarterData = $enlistModel->getEnlistmentsForPeriod($quarter['start'], $quarter['end'], $game);
             $prevQuarterData = $enlistModel->getEnlistmentsForPeriod($prevQuarter['start'], $prevQuarter['end'], $game);
 
@@ -136,8 +130,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $prevYearData = $enlistModel->getEnlistmentsForPeriod($prevYear['start'], $prevYear['end'], $game);
 
             $monthlyData =array();
-            for($i=1;$i<13;$i++)
-            {
+            for ($i=1;$i<13;$i++) {
                 $monthNum  = $i;
                 $dateObj   = DateTime::createFromFormat('!m', $monthNum);
                 $monthName = $dateObj->format('F');
@@ -250,11 +243,11 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
      */
     public static function getDatesOfQuarter($quarter = 'current', $year = null, $format = 'U')
     {
-        if ( !is_int($year) ) {
+        if (!is_int($year)) {
             $year = (new DateTime)->format('Y');
         }
         $current_quarter = ceil((new DateTime)->format('n') / 3);
-        switch (  strtolower($quarter) ) {
+        switch (strtolower($quarter)) {
             case 'this':
             case 'current':
                 $quarter = ceil((new DateTime)->format('n') / 3);
@@ -282,7 +275,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
                 $quarter = (!is_int($quarter) || $quarter < 1 || $quarter > 4) ? $current_quarter : $quarter;
                 break;
         }
-        if ( $quarter === 'this' ) {
+        if ($quarter === 'this') {
             $quarter = ceil((new DateTime)->format('n') / 3);
         }
         $start = new DateTime($year.'-'.(3*$quarter-2).'-1 00:00:00');
@@ -300,7 +293,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $format = 'U';
         }
 
-        if ( !is_string($year)) {
+        if (!is_string($year)) {
             $year = (new DateTime)->format('Y');
         } else {
             switch ($year) {
@@ -345,18 +338,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         // get form values
         $rrdOption = $this->_input->filterSingle('rrd_option', XenForo_Input::STRING);
         if (array_key_exists('enlistments', $_POST) && $_POST['enlistments'] != 0) {
-
             $enlistments = $_POST['enlistments'];
-            foreach($enlistments as $enlistmentID)
-            {
-
+            foreach ($enlistments as $enlistmentID) {
                 $enlistModel = $this->_getEnlistmentModel();
                 $query = $enlistModel->getEnlistmentById($enlistmentID);
                 $folderCreation = XenForo_Application::get('options')->enableFolderCreation;
                 $message = "";
 
-                switch($rrdOption)
-                {
+                switch ($rrdOption) {
                     case '1':
                         // Name Change - taken
                         $nameTaken = XenForo_Application::get('options')->nameTaken;
@@ -462,16 +451,14 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $status = $query['current_status'];
         $title = "";
 
-        if ($reenlistment)
-        {
+        if ($reenlistment) {
             $title = "[Re-Enlistment]";
         } else {
             $title = "[Enlistment]";
         }
         $title .= " - " . $cavName . " - " . $game;
 
-        switch ($status)
-        {
+        switch ($status) {
             case 1: $title .= " - DENIED"; break;
             case 2: $title .= " - APPROVED"; break;
         }
@@ -533,7 +520,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $visitor  = XenForo_Visitor::getInstance()->toArray();
 
         $dw = XenForo_DataWriter::create('CavTools_DataWriter_EnlistmentLogs');
-        $dw->set('enlistment_id',$enlistmentID);
+        $dw->set('enlistment_id', $enlistmentID);
         $dw->set('user_id', $visitor['user_id']);
         $dw->set('username', $visitor['username']);
         $dw->set('log_date', time());
@@ -551,7 +538,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
             if ($query == null) {
                 $count = 2;
-            } else if ($cavName === $query[0]["username"] || $cavName === $query) {
+            } elseif ($cavName === $query[0]["username"] || $cavName === $query) {
                 $count = 1;
             } else {
                 $count = 3;
@@ -569,8 +556,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $deniedAppID = XenForo_Application::get('options')->deniedForumID;
         $forumID = '';
 
-        switch ($status)
-        {
+        switch ($status) {
             case 1:
                 // Move to Denied
                 $forumID = $deniedAppID;break;
@@ -580,7 +566,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         }
 
         $this->removeEnlistment($enlistmentID);
-        $this->movethread($threadID,$forumID);
+        $this->movethread($threadID, $forumID);
     }
 
     public function removeEnlistment($enlistmentID)
@@ -616,8 +602,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $newLine = "\n";
 
         $generalInformation = "[Size=6][B]General Information[/B][/Size]";
-        if ($query['reenlistment'])
-        {
+        if ($query['reenlistment']) {
             $reenlistment = "[B]Re-enlistment:[/B] Yes";
         } else {
             $reenlistment = "[B]Re-enlistment:[/B] No";
@@ -679,7 +664,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, $steamID);
         //Send curl message
         $ch  = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url );
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         $reply = curl_exec($ch);
@@ -699,10 +684,10 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $visability = $reply['response']['players'][0]['communityvisibilitystate'];
             if ($visability == 1 || $visability == 2) {
                 $status = 1;
-            } else if ($visability == 3) {
+            } elseif ($visability == 3) {
                 $status = 2;
             }
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $status = 3;
         }
 
@@ -724,18 +709,17 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $query = $enlistModel->getEnlistmentById($enlistmentID);
         $content = "";
         $newLine = "\n";
-		$divider = "----------";
+        $divider = "----------";
         $userDetails = $enlistModel->userDetails($query['user_id']);
         $home = XenForo_Application::get('options')->homeURL;
 
-		// general info begin
+        // general info begin
         $general = "[Size=6][B]General Information[/B][/Size]";
         $username = "[b]Username: [/b]" . '[URL="https://' .$home.'/members/'.$query['user_id'].'"]'. $userDetails['username']. '[/URL]';
         $enlistedName = "[B]Enlisted Name:[/B] ". $query['first_name'] . ", ". $query['last_name'];
         $enlistments = "[B]Enlistments: [/B]" . '[URL="https://' .$home.'/enlistments/view?id='.$query['user_id'].'"]'. "Tracker". '[/URL]';
 
-        if ($query['reenlistment'])
-        {
+        if ($query['reenlistment']) {
             $reenlistment = "[B]Re-enlistment:[/B] Yes";
         } else {
             $reenlistment = "[B]Re-enlistment:[/B] No";
@@ -750,19 +734,19 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $threadURL = '[URL="http://' .$home.'/threads/'.$query['thread_id'].'"]'. 'Enlistment #' .$query['enlistment_id']. '[/URL]';
         $thread = '[B]Enlistment Thread:[/B] ' . $threadURL;
 
-		$generalInfo = $general . $newLine . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
+        $generalInfo = $general . $newLine . $newLine . $username . $newLine. $enlistedName . $newLine . $enlistments . $newLine .  $reenlistment . $newLine . $aliases .
             $newLine . $originID . $newLine . $age . $newLine . $ip . $newLine .  $rtcThread . $newLine . $thread;
-		// General info End
+        // General info End
 
-		// Steam info begin
+        // Steam info begin
         $steam = "[Size=6][B]Steam Review - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
         $steamName = "[B]Username:[/B] '" . $steamContent['name'] . "'";
 
         if ($steamContent['status'] == 1) {
             $steamStatus = "[B]Status:[/B] [Color=red]Private[/Color]";
-        } else if ($steamContent['status'] == 2) {
+        } elseif ($steamContent['status'] == 2) {
             $steamStatus = "[B]Status:[/B] [Color=green]Public[/Color]";
-        } else if ($steamContent['status'] == 3) {
+        } elseif ($steamContent['status'] == 3) {
             $steamStatus = "[B]Status:[/B] [Color=yellow]Unknown[/Color]";
         }
 
@@ -772,15 +756,15 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $steamGroups = "[B]Groups:[/B] ";
         $steamAliases = "[B]Aliases:[/B] ";
         $info = "[B]Additional Information:[/B] ";
-		$steamRep = "[URL=http://steamrep.com/search?q=". $steamContent['id'] . "]SteamRep[/URL]";
-		$steamIO = "[URL=https://steamid.io/lookup/" . $steamContent['id'] . "]SteamID.io[/URL]";
+        $steamRep = "[URL=http://steamrep.com/search?q=". $steamContent['id'] . "]SteamRep[/URL]";
+        $steamIO = "[URL=https://steamid.io/lookup/" . $steamContent['id'] . "]SteamID.io[/URL]";
 
-		$steamInfo  = $steam . $newLine . $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine .
-		$steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine . $newLine .  $info . $newLine .
-		$divider . $newLine . $steamRep . $newLine . $steamIO;
-		// Steam info end
+        $steamInfo  = $steam . $newLine . $newLine .  $steamName . $newLine . $steamStatus . $newLine . $steamID . $newLine .
+        $steamLink . $newLine . $steamGroups . $newLine . $steamAliases . $newLine . $newLine .  $info . $newLine .
+        $divider . $newLine . $steamRep . $newLine . $steamIO;
+        // Steam info end
 
-		// Echelon info begin
+        // Echelon info begin
         $echelon  = "[Size=6][B][URL=https://echelon.7cav.us/login.php]Echelon[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
         $echelonName = "[B]Name:[/B]";
         $echelonIP = "[B]IP Address:[/B]";
@@ -794,45 +778,56 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $echelonInfo = $echelon . $newLine . $newLine . $echelonName . $newLine . $echelonIP . $newLine . $echelonID . $newLine .
             $echelonCons . $newLine . $echelonWarn . $newLine . $echelonWarnFor . $newLine . $echelonBans .
             $newLine . $echelonBansFor . $newLine . $echelonAdd;
-		// Echelon info end
+        // Echelon info end
 
-		// Google info begin
-		$google = "[Size=6][B][URL=https://google.com]Google[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
-		$playerIndex = "[URL=https://webinterface.playerindex.de/default.aspx]PlayerIndex[/URL]";
-		$TS3Index = "[URL=https://ts3index.com/?page=searchclient]TS3Index[/URL]";
-		$steamSearch = "Steam ID64 / ID32";
-		$googleAliases = "Aliases";
-		$clanAffil = "Clan Affiliations";
-		$serverBans = "Server Bans";
-		$misc = "Miscellaneous";
-		$googleAdd = "[B]Additional Information[/B]";
-		$googleInfo = $google . $newLine . $newLine . $playerIndex . $newLine . $TS3Index . $newLine . $steamSearch . $newLine . $googleAliases . $newLine
-		. $clanAffil . $newLine . $serverBans . $newLine . $misc . $newLine . $newLine . $googleAdd;
-		// Google info end
+        // Google info begin
+        $google = "[Size=6][B][URL=https://google.com]Google[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
+        $playerIndex = "[URL=https://webinterface.playerindex.de/default.aspx]PlayerIndex[/URL]";
+        $TS3Index = "[URL=https://ts3index.com/?page=searchclient]TS3Index[/URL]";
+        $steamSearch = "Steam ID64 / ID32";
+        $googleAliases = "Aliases";
+        $clanAffil = "Clan Affiliations";
+        $serverBans = "Server Bans";
+        $misc = "Miscellaneous";
+        $googleAdd = "[B]Additional Information[/B]";
+        $googleInfo = $google . $newLine . $newLine . $playerIndex . $newLine . $TS3Index . $newLine . $steamSearch . $newLine . $googleAliases . $newLine
+        . $clanAffil . $newLine . $serverBans . $newLine . $misc . $newLine . $newLine . $googleAdd;
+        // Google info end
 
-		// Regimental info begin
-		$regimental = "[Size=6][B]Regimental Assets Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
-		$deniedEnlistments = "[URL=https://7cav.us/forums/denied-enlistment-papers.255/]Denied Enlistments[/URL]";
-		$pastEnlistments = "[URL=https://7cav.us/forums/completed-enlistment-papers.5/]Past Enlistments[/URL]";
-		$memberNotes = "[URL=https://7cav.us/forums/past-member-notes.98/]Member Notes[/URL]";
-		$milpacs = "[URL=https://7cav.us/rosters/]Milpacs[/URL]";
-		$milpacsArchive = "[URL=https://milpacs.treck.ninja/index.php?roster=master]Milpacs Archive[/URL]";
-		$memWarnings = "[URL=https://7cav.us/forums/member-warnings.258/]Member Warnings[/URL]";
-		$hotlist = "[URL=https://7cav.us/forums/player-hot-list.102/]Player hotlist[/URL]";
-		$banList = "[URL=https://7cav.us/forums/banned.100/]Banned List[/URL]";
-		$previousChecks = "[URL=https://7cav.us/forums/s2-checks-completed.78/]Previous S2 checks[/URL]";
-		$regiMisc = "[B]Miscellaneous:[/B]";
-		$regiInfo = $regimental . $newLine . $newLine . $deniedEnlistments . $newLine . $pastEnlistments . $newLine . $memberNotes . $newLine
-		. $milpacs . $newLine . $milpacsArchive . $newLine . $memWarnings . $newLine . $hotlist . $newLine . $banList . $newLine
-		. $previousChecks . $newLine . $newLine . $regiMisc;
-		// Regimental info End
+
+        // Battlemetrics info begin
+        $bm = "[B][SIZE=6][B][URL='https://www.battlemetrics.com/']BattleMetrics[/URL] Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/SIZE][/B][/B]";
+        $name = "[B]name:[/B]";
+        $GUID = "[B]GUID:[/B] " . $this->generateGUID($steamContent['id']);
+        $warns = "[B]# of Warnings:[/B]\nWarnings for:";
+        $bans = "[B]# of Temp Bans:[/B]\nTemp Bans for:";
+        $additional = "[B]Additional Information[/B]";
+
+        $bmInfo = $bm . $newLine . $newLine . $name . $newLine . $GUID . $newLine . $warns . $newLine . $bans . $newLine . $additional;
+
+        // Regimental info begin
+        $regimental = "[Size=6][B]Regimental Assets Review Status - [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B][/Size]";
+        $deniedEnlistments = "[URL=https://7cav.us/forums/denied-enlistment-papers.255/]Denied Enlistments[/URL]";
+        $pastEnlistments = "[URL=https://7cav.us/forums/completed-enlistment-papers.5/]Past Enlistments[/URL]";
+        $memberNotes = "[URL=https://7cav.us/forums/past-member-notes.98/]Member Notes[/URL]";
+        $milpacs = "[URL=https://7cav.us/rosters/]Milpacs[/URL]";
+        $milpacsArchive = "[URL=https://milpacs.treck.ninja/index.php?roster=master]Milpacs Archive[/URL]";
+        $memWarnings = "[URL=https://7cav.us/forums/member-warnings.258/]Member Warnings[/URL]";
+        $hotlist = "[URL=https://7cav.us/forums/player-hot-list.102/]Player hotlist[/URL]";
+        $banList = "[URL=https://7cav.us/forums/banned.100/]Banned List[/URL]";
+        $previousChecks = "[URL=https://7cav.us/forums/s2-checks-completed.78/]Previous S2 checks[/URL]";
+        $regiMisc = "[B]Miscellaneous:[/B]";
+        $regiInfo = $regimental . $newLine . $newLine . $deniedEnlistments . $newLine . $pastEnlistments . $newLine . $memberNotes . $newLine
+        . $milpacs . $newLine . $milpacsArchive . $newLine . $memWarnings . $newLine . $hotlist . $newLine . $banList . $newLine
+        . $previousChecks . $newLine . $newLine . $regiMisc;
+        // Regimental info End
 
         $summary = "[B]Summary: [COLOR=#006600]Clear[/COLOR]/[COLOR=#b30000]HOLD[/COLOR][/B]";
-		$signed = "[B]Signed:[/B]";
+        $signed = "[B]Signed:[/B]";
 
         return $content =  $generalInfo . $newLine . $newLine . $steamInfo . $newLine . $newLine .
-		$echelonInfo . $newLine . $newLine . $googleInfo . $newLine . $newLine . $regiInfo
-		. $newLine . $newLine . $summary . $newLine . $signed;
+        $echelonInfo . $newLine . $newLine . $bmInfo . $newLine . $newLine . $googleInfo . $newLine . $newLine . $regiInfo
+        . $newLine . $newLine . $summary . $newLine . $signed;
     }
 
     public function setS2ThreadID($enlistmentID, $threadID)
@@ -843,11 +838,23 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         $dw->save();
     }
 
+    public function generateGUID($steamID)
+    {
+        $temp = '';
+
+        for ($i = 0; $i < 8; $i++) {
+            $temp .= chr($steamID & 0xFF);
+            $steamID >>= 8;
+        }
+
+        return md5('BE' . $temp);
+    }
+
     public function createThread($forumID, $title, $message)
     {
         // get rrd bot values
         $poster = $this->getRRDBot();
-	$message = utf8_encode($message);
+        $message = utf8_encode($message);
 
         // write the thread
         $writer = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
@@ -892,8 +899,8 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
         return $message = $header.$newLine.$newLine.$quote.$newLine.$newLine.$teamspeak.$newLine.$newLine.$notes.$newLine.$newLine;
     }
 
-    public function actionView() {
-
+    public function actionView()
+    {
         $userID = $_GET['id'];
         $model = $this->_getEnlistmentModel();
         $user = $model->getUserDetails($userID);
@@ -914,23 +921,20 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
             $enlistment['current_status'];
 
-            switch ($enlistment['current_status'])
-            {
+            switch ($enlistment['current_status']) {
                 case 1: $status = '<div id="red">Denied</div>';break;
                 case 2: $status = '<div id="green">Approved</div>';break;
                 case 3: $status = '<div id="yellow">Open</div>';break;
             }
 
-            switch ($steam['status'])
-            {
+            switch ($steam['status']) {
                 case 1: $steamStatus = '<div id="red">Private</div>';break;
                 case 2: $steamStatus = '<div id="green">Public</div>';break;
                 case 3: $steamStatus = '<div id="yellow">Invalid SteamID given</div>';break;
             }
 
 
-            switch ($steam['personastate'])
-            {
+            switch ($steam['personastate']) {
                 case 0: $steamState = '<div id="red">Offline</div>';break;
                 case 1:
                 case 4:
@@ -967,17 +971,17 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
         //Send to template to display
         return $this->responseView('CavTools_ViewPublic_EnlistmentForm', $template, $viewParams);
-
     }
 
-    public function getSteamProfile($ID) {
+    public function getSteamProfile($ID)
+    {
         //Set variables
         $key = XenForo_Application::get('options')->steamAPIKey;
         $url   = sprintf("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", $key, $ID);
 
         //Send curl message
         $ch  = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url );
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         $reply = curl_exec($ch);
@@ -1001,10 +1005,10 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
             $visability = $reply['response']['players'][0]['communityvisibilitystate'];
             if ($visability == 1 || $visability == 2) {
                 $status = 1;
-            } else if ($visability == 3) {
+            } elseif ($visability == 3) {
                 $status = 2;
             }
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $status = 3;
         }
 
@@ -1019,7 +1023,7 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
     protected function _getEnlistmentModel()
     {
-        return $this->getModelFromCache ( 'CavTools_Model_Enlistment' );
+        return $this->getModelFromCache('CavTools_Model_Enlistment');
     }
 
     public function tweet($visitor)
@@ -1033,6 +1037,6 @@ class CavTools_ControllerPublic_EnlistmentManagement extends XenForo_ControllerP
 
     protected function _getTwitterBot()
     {
-        return $this->getModelFromCache( 'CavTools_Model_IMOBot' );
+        return $this->getModelFromCache('CavTools_Model_IMOBot');
     }
 }

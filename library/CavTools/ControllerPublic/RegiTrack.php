@@ -2,7 +2,6 @@
 
 class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstract
 {
-
     public function actionIndex()
     {
 
@@ -10,23 +9,21 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
         $enable = XenForo_Application::get('options')->enableRegiTrack;
 
         // If not enabled, escape
-        if(!$enable)
-        {
+        if (!$enable) {
             throw $this->getNoPermissionResponseException();
         }
 
         // If cannot view, escape
-        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'viewRegiTrack'))
-        {
+        if (!XenForo_Visitor::getInstance()->hasPermission('CavToolsGroupId', 'viewRegiTrack')) {
             throw $this->getNoPermissionResponseException();
         }
 
         $regiPosGrps = XenForo_Application::get('options')->regiPosGrps;
-        $regiPosGrps = explode(',',$regiPosGrps);
+        $regiPosGrps = explode(',', $regiPosGrps);
         $bat1PosGrps = XenForo_Application::get('options')->bat1PosGrps;
-        $bat1PosGrps = explode(',',$bat1PosGrps);
+        $bat1PosGrps = explode(',', $bat1PosGrps);
         $bat2PosGrps = XenForo_Application::get('options')->bat2PosGrps;
-        $bat2PosGrps = explode(',',$bat2PosGrps);
+        $bat2PosGrps = explode(',', $bat2PosGrps);
 
 
         $model = $this->_getRegiModel();
@@ -60,7 +57,7 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
         }
 
         foreach ($bat2PosGrps as $posGrp) {
-            $num = $model->getSectionStats($posGrp);
+            $num = $model->getReserveStats($posGrp);
             $query = $model->getPosGrpInfo($posGrp);
             $store = array(
                 'title' => $query['title'],
@@ -76,7 +73,7 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
             'number' => $bat1Total
         );
         $bat2 = array(
-            'title' => '2nd Battalion',
+            'title' => 'Reserves',
             'number' => $bat2Total
         );
 
@@ -102,6 +99,6 @@ class CavTools_ControllerPublic_RegiTrack extends XenForo_ControllerPublic_Abstr
 
     protected function _getRegiModel()
     {
-        return $this->getModelFromCache( 'CavTools_Model_RegiTrack' );
+        return $this->getModelFromCache('CavTools_Model_RegiTrack');
     }
 }
